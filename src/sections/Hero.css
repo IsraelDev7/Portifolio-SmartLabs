@@ -117,6 +117,9 @@
 
 /* Massive Typography */
 .hero-massive-text {
+  /* Da profundidade real ao translateZ do RTL. Sem perspectiva no pai,
+     z vira numero decorativo e nao acontece nada na tela. */
+  perspective: 900px;
   position: absolute;
   top: 0;
   left: 0;

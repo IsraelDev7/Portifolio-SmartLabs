@@ -26,12 +26,47 @@ export default function Hero() {
     /* Distancia ate a linha imaginaria do meio da pagina.
        offsetLeft, nao getBoundingClientRect: o rect ja vem somado dos
        transforms e mediria a posicao animada em vez da de layout. */
-    const centroDeLayout = (el) => {
+    const esquerdaDeLayout = (el) => {
       let x = 0, n = el;
       while (n) { x += n.offsetLeft; n = n.offsetParent; }
-      return x + el.offsetWidth / 2;
+      return x;
     };
-    const daLinhaDoMeio = (i, el) => window.innerWidth / 2 - centroDeLayout(el);
+
+    /* A margem imaginaria do meio da pagina. Nao basta levar o bloco ate
+       o centro: ele tem que ficar INTEIRO do lado de la para se esconder
+       dentro dela — SMA encosta a borda ESQUERDA na linha, ABS encosta a
+       DIREITA. Se parassem com o centro na linha, metade continuaria
+       aparecendo do outro lado. */
+    const encostaEsquerda = (i, el) => window.innerWidth / 2 - esquerdaDeLayout(el);
+    const encostaDireita = (i, el) =>
+      window.innerWidth / 2 - el.offsetWidth - esquerdaDeLayout(el);
+
+    /* A margem do meio recorta em coordenada de PAGINA, nao do elemento,
+       entao o clip nao pode ser um tween: ele tem que ser recalculado a
+       partir do x atual, a cada quadro. Assim vale para as duas
+       timelines — a de entrada e a de scroll — sem precisar duplicar
+       nada, e continua certo se as duas se sobrepuserem. */
+    const l1 = container.current.querySelector('.line-1');
+    const l3 = container.current.querySelector('.line-3');
+
+    const mascararNaMargem = () => {
+      const meio = window.innerWidth / 2;
+
+      // SMA: so existe o que ja passou para a ESQUERDA da linha
+      const e1 = esquerdaDeLayout(l1) + (Number(gsap.getProperty(l1, 'x')) || 0);
+      const w1 = l1.offsetWidth;
+      const cortaDir = Math.min(Math.max(e1 + w1 - meio, 0), w1);
+      l1.style.clipPath = `inset(0px ${cortaDir}px 0px 0px)`;
+
+      // ABS: so existe o que ja passou para a DIREITA
+      const e3 = esquerdaDeLayout(l3) + (Number(gsap.getProperty(l3, 'x')) || 0);
+      const w3 = l3.offsetWidth;
+      const cortaEsq = Math.min(Math.max(meio - e3, 0), w3);
+      l3.style.clipPath = `inset(0px 0px 0px ${cortaEsq}px)`;
+    };
+
+    const reduz = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduz) gsap.ticker.add(mascararNaMargem);
 
     // ============ ENTRADA ============
     const tl = gsap.timeline({ delay: 0.2 });
@@ -40,20 +75,22 @@ export default function Hero() {
     // Como `x` e funcao, cada um calcula o proprio deslocamento: o de fora
     // esta mais longe do centro e por isso percorre mais caminho no mesmo
     // tempo — os dois chegam juntos vindo de distancias diferentes.
-    tl.from('.line-1, .line-3', {
-      x: daLinhaDoMeio,
-      duration: 1.4,
-      ease: 'expo.out',
-    }, 0);
+    tl.from('.line-1', { x: encostaEsquerda, duration: 1.4, ease: 'expo.out' }, 0);
+    tl.from('.line-3', { x: encostaDireita, duration: 1.4, ease: 'expo.out' }, 0);
 
-    // RTL nao corre para lado nenhum: vem do fundo para a frente.
+    /* RTL vem por dentro de um funil: o translateZ com perspectiva no pai
+       da a boca do cone (longe = pequeno e convergindo para o ponto de
+       fuga), e o scaleX menor que o scaleY aperta a garganta — sem esse
+       esmagamento horizontal seria so um zoom, nao um funil. */
     tl.from('.line-2', {
-      scale: 0.18,
+      z: -900,
+      scaleX: 0.12,
+      scaleY: 0.42,
       opacity: 0,
       transformOrigin: '50% 50%',
-      duration: 1.5,
+      duration: 1.6,
       ease: 'expo.out',
-    }, 0.08);
+    }, 0.06);
 
     // As letras so carregam o fade, escalonado. O gesto de cada palavra e
     // do bloco; a letra da textura sem disputar com ele.
@@ -98,8 +135,13 @@ export default function Hero() {
       ease: 'power2.out',
     }, 0.6);
 
+    /* Distancia curta como a do bloco do autor, nao a largura inteira da
+       linha: o texto e largo e viajar 105% dele deixaria a entrada
+       arrastada e diferente do resto. Quem esconde e o clip; o x so da o
+       empurrao. */
     tl.from('.services-text p', {
-      xPercent: -105,
+      x: -190,
+      clipPath: 'inset(0px 100% 0px 0px)',
       opacity: 0,
       duration: 0.9,
       stagger: 0.09,
@@ -129,14 +171,16 @@ export default function Hero() {
       }
     });
 
-    // SMA e ABS voltam para a linha do meio de onde nasceram.
-    scrollTl.to('.line-1, .line-3', { x: daLinhaDoMeio, opacity: 0, ease: 'none' }, 0);
+    // SMA e ABS se recolhem para dentro da margem do meio de onde
+    // nasceram. Nao ha fade: quem os faz sumir e a propria margem.
+    scrollTl.to('.line-1', { x: encostaEsquerda, ease: 'none' }, 0);
+    scrollTl.to('.line-3', { x: encostaDireita, ease: 'none' }, 0);
 
-    // RTL recua para o fundo.
-    scrollTl.to('.line-2', { scale: 0.18, opacity: 0, ease: 'none' }, 0);
+    // RTL recua pelo funil.
+    scrollTl.to('.line-2', { z: -900, scaleX: 0.12, scaleY: 0.42, opacity: 0, ease: 'none' }, 0);
 
     // Bloco esquerdo: as linhas se recolhem para tras da borda...
-    scrollTl.to('.services-text p', { xPercent: -105, opacity: 0, stagger: 0.05, ease: 'none' }, 0);
+    scrollTl.to('.services-text p', { x: -190, clipPath: 'inset(0px 100% 0px 0px)', opacity: 0, stagger: 0.05, ease: 'none' }, 0);
     scrollTl.to('.hero-services-index, .hero-ctas', { x: -60, opacity: 0, ease: 'none' }, 0.05);
     // ...e so entao a borda recolhe, ficando por ultimo. Ela e a ultima
     // coisa a sair porque foi a primeira a entrar.
@@ -158,6 +202,9 @@ export default function Hero() {
       0.12
     );
 
+    return () => {
+      gsap.ticker.remove(mascararNaMargem);
+    };
   }, { scope: container });
 
   return (
