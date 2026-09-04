@@ -17,13 +17,19 @@ import * as THREE from 'three';
  * Como e scrub, o caminho de volta e o mesmo invertido — de graca.
  */
 
-const VOXELS_POR_DEGRAU = 140;
+// Tela estreita e quase sempre GPU fraca: metade dos cubos, mesma leitura.
+const COMPACTO = typeof window !== 'undefined'
+  && window.matchMedia('(max-width: 820px)').matches;
+
+const VOXELS_POR_DEGRAU = COMPACTO ? 40 : 80;
 const TOTAL_VOXELS = VOXELS_POR_DEGRAU * 3;
 
 const clamp01 = (v) => Math.min(1, Math.max(0, v));
 // mapeia p de [a,b] para [0,1]
 const faixa = (p, a, b) => clamp01((p - a) / (b - a));
-const easeOut = (t) => 1 - Math.pow(1 - t, 3);
+// easeOut arranca na velocidade maxima — e dali que vinha o solavanco.
+// easeInOut entra macio e sai macio, que e o que a cena pedia.
+const suave = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
 export function Monolith({ progress, accent = '#D14D29' }) {
   const grupo = useRef(null);
@@ -56,7 +62,7 @@ export function Monolith({ progress, accent = '#D14D29' }) {
           rot: Math.random() * Math.PI,
           giro: (Math.random() - 0.5) * 2.5,
           escala: 0.05 + Math.random() * 0.09,
-          atraso: Math.random() * 0.35,   // dispersao nao e simultanea
+          atraso: Math.random() * 0.45,   // dispersao nao e simultanea
           degrau: di,
         });
       }
@@ -74,20 +80,22 @@ export function Monolith({ progress, accent = '#D14D29' }) {
 
     if (grupo.current) {
       // deriva lenta e constante — presenca, nao espetaculo
-      grupo.current.rotation.y = Math.sin(t * 0.15) * 0.28 + p * 0.5;
-      grupo.current.position.y = Math.sin(t * 0.4) * 0.06;
+      grupo.current.rotation.y = Math.sin(t * 0.10) * 0.20 + p * 0.38;
+      grupo.current.position.y = Math.sin(t * 0.28) * 0.045;
     }
 
     // ---- construcao dos degraus ----
     const refs = [degrau1, degrau2, degrau3];
-    const janelas = [[0.0, 0.22], [0.22, 0.44], [0.44, 0.66]];
+    // Sobrepostas de proposito: sem isso cada degrau para antes do
+    // proximo comecar e a sequencia sai em staccato.
+    const janelas = [[0.00, 0.26], [0.20, 0.50], [0.44, 0.72]];
 
     refs.forEach((ref, i) => {
       if (!ref.current) return;
       const d = degraus[i];
-      const sobe = easeOut(faixa(p, janelas[i][0], janelas[i][1]));
+      const sobe = suave(faixa(p, janelas[i][0], janelas[i][1]));
       // desmonte: a partir de 0.66 o solido some dando lugar aos voxels
-      const desmonta = faixa(p, 0.66, 0.80);
+      const desmonta = faixa(p, 0.72, 0.86);
       const vivo = sobe * (1 - desmonta);
 
       ref.current.scale.y = Math.max(0.001, vivo);
@@ -99,14 +107,14 @@ export function Monolith({ progress, accent = '#D14D29' }) {
 
     // ---- dispersao em voxels ----
     if (voxels.current) {
-      const disp = faixa(p, 0.66, 1.0);
+      const disp = faixa(p, 0.72, 1.0);
       voxels.current.visible = disp > 0.001;
 
       if (disp > 0.001) {
         for (let i = 0; i < TOTAL_VOXELS; i++) {
           const v = nuvem[i];
           // cada cubo tem seu proprio atraso -> a nuvem "descola" em ondas
-          const local = easeOut(clamp01((disp - v.atraso) / (1 - v.atraso)));
+          const local = suave(clamp01((disp - v.atraso) / (1 - v.atraso)));
           dummy.position.set(
             v.ox + v.dx * local,
             v.oy + v.dy * local,
@@ -139,18 +147,18 @@ export function Monolith({ progress, accent = '#D14D29' }) {
 
   return (
     <group ref={grupo} scale={0.95}>
-      <mesh ref={degrau1} position={[degraus[0].x, degraus[0].yBase, 0]} castShadow receiveShadow>
+      <mesh ref={degrau1} position={[degraus[0].x, degraus[0].yBase, 0]}>
         <boxGeometry args={[0.95, degraus[0].alt, 0.95]} />
         <meshStandardMaterial {...aco} />
       </mesh>
 
-      <mesh ref={degrau2} position={[degraus[1].x, degraus[1].yBase, 0]} castShadow receiveShadow>
+      <mesh ref={degrau2} position={[degraus[1].x, degraus[1].yBase, 0]}>
         <boxGeometry args={[0.95, degraus[1].alt, 0.95]} />
         <meshStandardMaterial {...aco} />
       </mesh>
 
       {/* o degrau mais alto e sempre Solda — o proximo passo, ainda quente */}
-      <mesh ref={degrau3} position={[degraus[2].x, degraus[2].yBase, 0]} castShadow receiveShadow>
+      <mesh ref={degrau3} position={[degraus[2].x, degraus[2].yBase, 0]}>
         <boxGeometry args={[0.95, degraus[2].alt, 0.95]} />
         <meshStandardMaterial
           color={accent}
