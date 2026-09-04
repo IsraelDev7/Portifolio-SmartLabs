@@ -78,19 +78,32 @@ export default function Hero() {
     tl.from('.line-1', { x: encostaEsquerda, duration: 1.4, ease: 'expo.out' }, 0);
     tl.from('.line-3', { x: encostaDireita, duration: 1.4, ease: 'expo.out' }, 0);
 
-    /* RTL vem por dentro de um funil: o translateZ com perspectiva no pai
-       da a boca do cone (longe = pequeno e convergindo para o ponto de
-       fuga), e o scaleX menor que o scaleY aperta a garganta — sem esse
-       esmagamento horizontal seria so um zoom, nao um funil. */
+    /* RTL vem em espiral: o giro sozinho seria so um pião, e o translateZ
+       sozinho so um zoom. E a soma dos dois que vira espiral — a palavra
+       roda ENQUANTO vem de longe, entao cada ponto dela descreve uma
+       helice em vez de um circulo. A perspectiva no pai e o que da o eixo
+       de profundidade; sem ela o z nao existe e sobra o pião.
+       O scaleX menor que o scaleY mantem a garganta apertada no comeco. */
     tl.from('.line-2', {
       z: -900,
+      rotation: -230,
       scaleX: 0.12,
       scaleY: 0.42,
       opacity: 0,
       transformOrigin: '50% 50%',
-      duration: 1.6,
+      duration: 1.7,
       ease: 'expo.out',
     }, 0.06);
+
+    // As letras do RTL desenrolam junto, cada uma no seu tempo: o bloco
+    // faz a espiral grande, a letra faz a pequena.
+    tl.from('.line-2 .letra', {
+      rotation: -42,
+      transformOrigin: '50% 120%',
+      duration: 1.1,
+      stagger: 0.07,
+      ease: 'expo.out',
+    }, 0.2);
 
     // As letras so carregam o fade, escalonado. O gesto de cada palavra e
     // do bloco; a letra da textura sem disputar com ele.
@@ -176,8 +189,15 @@ export default function Hero() {
     scrollTl.to('.line-1', { x: encostaEsquerda, ease: 'none' }, 0);
     scrollTl.to('.line-3', { x: encostaDireita, ease: 'none' }, 0);
 
-    // RTL recua pelo funil.
-    scrollTl.to('.line-2', { z: -900, scaleX: 0.12, scaleY: 0.42, opacity: 0, ease: 'none' }, 0);
+    // RTL some pela mesma espiral, no mesmo tempo em que SMA e ABS
+    // entram na margem — os tres saem juntos, cada um pelo seu caminho.
+    scrollTl.to('.line-2', {
+      z: -900, rotation: -230, scaleX: 0.12, scaleY: 0.42, opacity: 0,
+      transformOrigin: '50% 50%', ease: 'none',
+    }, 0);
+    scrollTl.to('.line-2 .letra', {
+      rotation: -42, transformOrigin: '50% 120%', stagger: 0.03, ease: 'none',
+    }, 0);
 
     // Bloco esquerdo: as linhas se recolhem para tras da borda...
     scrollTl.to('.services-text p', { x: -190, clipPath: 'inset(0px 100% 0px 0px)', opacity: 0, stagger: 0.05, ease: 'none' }, 0);
