@@ -4,6 +4,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import PlateButton from '../components/PlateButton';
 import { useDeriva } from '../hooks/useDeriva';
+import Letras from '../components/Letras';
 import './Hero.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -11,23 +12,29 @@ gsap.registerPlugin(ScrollTrigger);
 export default function Hero() {
   const container = useRef(null);
 
-  /* Deriva: cada peca anda uma fracao do scroll. Os tres blocos de tipo
-     sobem em velocidades diferentes e a imagem DESCE — nao e a
-     velocidade que da a sensacao de camadas, e a divergencia entre elas.
-     A grade 001-004 fica de fora de proposito: e a ancora parada que faz
-     o olho perceber que o resto se move. */
+  /* Deriva: cada peca anda uma fracao do scroll, e a divergencia entre
+     elas — nao a velocidade — e o que da a sensacao de camadas.
+
+     O TIPO GRANDE E A ANCORA (sem atributo, fator 0). Isso e o oposto do
+     que parece intuitivo, e veio da medicao da referencia: la o display
+     do heroi fica cravado em 0 no scroll inteiro enquanto o texto miudo
+     do canto corre a -0.40. A peca pesada segura a composicao; sao as
+     leves que se deslocam em volta dela. */
   useDeriva(container);
 
   useGSAP(() => {
     // Initial Load Animations (Entry)
     const tl = gsap.timeline({ delay: 0.2 });
     
-    // 1. Massive text entry
-    tl.from('.massive-line', {
-      yPercent: 100,
+    // 1. Tipo grande, letra a letra.
+    // Um unico stagger corre pelas nove letras de SMA-RTL-ABS em vez de
+    // tres tempos por bloco: a onda atravessa as tres linhas como um
+    // gesto so, e nao como tres entradas separadas.
+    tl.from('.massive-line .letra', {
+      yPercent: 110,
       opacity: 0,
-      duration: 1.2,
-      stagger: 0.15,
+      duration: 1.15,
+      stagger: { each: 0.055, from: 'start' },
       ease: 'expo.out',
     });
 
@@ -119,7 +126,7 @@ export default function Hero() {
   return (
     <section className="hero-section" ref={container}>
       {/* Background Image */}
-      <div className="hero-bg-image" data-deriva="0.18"></div>
+      <div className="hero-bg-image" data-deriva="0.20"></div>
 
       {/* Grid Lines */}
       <div className="hero-grid">
@@ -148,9 +155,9 @@ export default function Hero() {
 
       {/* Massive Typography */}
       <div className="hero-massive-text">
-        <div className="massive-line line-1" data-deriva="-0.40">SMA</div>
-        <div className="massive-line line-2" data-deriva="-0.30">RTL</div>
-        <div className="massive-line line-3" data-deriva="-0.20">ABS</div>
+        <div className="massive-line line-1" aria-label="SMA"><Letras texto="SMA" /></div>
+        <div className="massive-line line-2" aria-label="RTL"><Letras texto="RTL" /></div>
+        <div className="massive-line line-3" aria-label="ABS"><Letras texto="ABS" /></div>
       </div>
 
       {/* EXPLORE Text Sequence */}
@@ -164,17 +171,17 @@ export default function Hero() {
       <div className="hero-content">
         
         {/* Top Right Block */}
-        <div className="hero-block-top" data-deriva="-0.10">
-          <h2 className="hero-headline font-display">
+        <div className="hero-block-top">
+          <h2 className="hero-headline font-display" data-deriva="-0.40">
             <span className="text-solda">A FORMA DO SEU NEGÓCIO</span><br/>
             <span className="text-cal">NO MUNDO DIGITAL.</span>
           </h2>
-          <p className="hero-subheadline">
+          <p className="hero-subheadline" data-deriva="-0.30">
             Seu negócio pode ser excelente.<br/>
             Mas se a sua presença digital não transmite isso,<br/>
             você está deixando valor na mesa.
           </p>
-          <div className="hero-author-container" style={{ position: 'relative', display: 'flex' }}>
+          <div className="hero-author-container" data-deriva="-0.15" style={{ position: 'relative', display: 'flex' }}>
             <div className="author-border" style={{ width: '7px', backgroundColor: 'var(--solda)', marginRight: '10px' }}></div>
             <div style={{ overflow: 'hidden' }}>
               <div className="hero-author hero-author-text" style={{ paddingLeft: 0 }}>
@@ -186,7 +193,7 @@ export default function Hero() {
         </div>
 
         {/* Bottom Left Block */}
-        <div className="hero-block-bottom">
+        <div className="hero-block-bottom" data-deriva="-0.18">
           <div className="hero-services-layout">
             <div className="hero-services-index">
               <span className="index-label">SML/IP</span>

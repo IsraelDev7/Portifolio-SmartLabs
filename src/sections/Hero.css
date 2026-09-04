@@ -140,6 +140,21 @@
   will-change: transform, opacity;
 }
 
+/* Cada letra e uma caixa propria para poder receber transform.
+   inline-block e obrigatorio: span inline ignora translate. */
+.letra {
+  display: inline-block;
+  will-change: transform, opacity;
+}
+
+/* Movimento reduzido: o tipo ja nasce montado. */
+@media (prefers-reduced-motion: reduce) {
+  .letra {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
 .line-1 {
   align-self: flex-start;
   margin-left: 1vw;
