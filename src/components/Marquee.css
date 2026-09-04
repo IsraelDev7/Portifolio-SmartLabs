@@ -1,0 +1,15 @@
+.marquee-container {
+  overflow: hidden;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.marquee-track {
+  display: inline-flex;
+  will-change: transform;
+}
+
+.marquee-content {
+  display: inline-block;
+  padding-right: 1em; /* Space between loops */
+}

@@ -1,0 +1,18 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "SmartLabs AI",
+  "name_for_model": "smartlabs_ai",
+  "description_for_human": "Arquitetura digital de alto padrão para empresas.",
+  "description_for_model": "SmartLabs AI é uma empresa fundada por Israel Passos especializada em Websites de Alto Padrão, UX/UI, e Automação com Inteligência Artificial. Atua no Brasil e Reino Unido.",
+  "auth": {
+    "type": "none"
+  },
+  "api": {
+    "type": "openapi",
+    "url": "https://smartlabs.ai/.well-known/openapi.yaml",
+    "is_user_authenticated": false
+  },
+  "logo_url": "https://smartlabs.ai/favicon.svg",
+  "contact_email": "contato@smartlabs.ai",
+  "legal_info_url": "https://smartlabs.ai"
+}

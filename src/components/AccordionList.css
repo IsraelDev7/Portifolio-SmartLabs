@@ -1,0 +1,81 @@
+.accordion-list {
+  border-top: 1px solid var(--linha);
+}
+
+.accordion-item {
+  border-bottom: 1px solid var(--linha);
+}
+
+.accordion-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-4) 0;
+  text-align: left;
+}
+
+.accordion-title {
+  font-size: var(--text-xl);
+  font-family: var(--font-body);
+  font-weight: 400;
+  color: var(--cal);
+  transition: color 0.3s;
+}
+
+.accordion-item.is-open .accordion-title {
+  color: var(--solda);
+}
+
+/* Cross icon */
+.accordion-icon {
+  width: 16px;
+  height: 16px;
+  position: relative;
+}
+
+.accordion-icon-line-h,
+.accordion-icon-line-v {
+  position: absolute;
+  background: var(--cal);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: transform 0.4s var(--ease-out), background-color 0.3s;
+}
+
+.accordion-icon-line-h {
+  width: 100%;
+  height: 2px;
+}
+
+.accordion-icon-line-v {
+  width: 2px;
+  height: 100%;
+}
+
+.accordion-item.is-open .accordion-icon-line-v {
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.accordion-item.is-open .accordion-icon-line-h,
+.accordion-item.is-open .accordion-icon-line-v {
+  background: var(--solda);
+}
+
+.accordion-content {
+  padding-bottom: var(--space-4);
+  color: var(--fumaca);
+  max-width: 60ch;
+}
+
+.accordion-details {
+  margin-top: var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--cal);
+}
+
+.accordion-details li {
+  margin-bottom: var(--space-1);
+}

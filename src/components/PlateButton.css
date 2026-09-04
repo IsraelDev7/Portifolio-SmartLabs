@@ -1,0 +1,62 @@
+.plate-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 16px 24px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--cal);
+  color: var(--cal);
+  transition: color 0.3s var(--ease-out), border-color 0.3s;
+  background: transparent;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.plate-button-primary {
+  border-color: var(--solda);
+  color: var(--solda);
+}
+
+.plate-button-primary .plate-button-fill {
+  background: var(--solda);
+}
+
+.plate-button-secondary {
+  border-color: var(--fumaca);
+  color: var(--cal);
+}
+
+.plate-button-secondary .plate-button-fill {
+  background: var(--cal);
+}
+
+.plate-button-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: translateY(101%);
+  transition: transform 0.4s var(--ease-out);
+  z-index: 0;
+}
+
+.plate-button:hover .plate-button-fill {
+  transform: translateY(0);
+}
+
+.plate-button-text,
+.plate-button-arrow {
+  position: relative;
+  z-index: 1;
+  transition: color 0.3s;
+}
+
+.plate-button:hover {
+  color: var(--aco);
+}

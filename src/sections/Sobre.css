@@ -1,0 +1,229 @@
+.sobre-section {
+  background-color: var(--grafite);
+  color: var(--text-color);
+  padding: 10vh 0;
+  position: relative;
+}
+
+.sobre-intro-text {
+  max-width: 1200px;
+  margin: 0 auto 20vh;
+  padding: 0 var(--space-4);
+  font-family: var(--font-body);
+}
+
+.sobre-intro-title {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 6vw, 6rem);
+  text-transform: uppercase;
+  line-height: 1;
+  margin-bottom: var(--space-8);
+  color: var(--text-color);
+}
+
+.sobre-intro-title .highlight {
+  color: var(--solda);
+}
+
+.sobre-intro-p {
+  font-size: clamp(1.2rem, 2vw, 1.8rem);
+  line-height: 1.5;
+  margin-bottom: var(--space-4);
+  color: var(--fumaca);
+}
+
+.sobre-intro-p strong {
+  color: var(--text-color);
+  font-weight: 600;
+}
+
+/* Scroll Container */
+.sobre-scroll-container {
+  display: flex;
+  position: relative;
+  width: 100%;
+}
+
+.sobre-text-column {
+  width: 50%;
+  padding-left: 5vw;
+  padding-right: 5vw;
+}
+
+.sobre-gallery-column {
+  width: 50%;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.sobre-topic {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.sobre-topic-number {
+  font-family: var(--font-mono);
+  font-size: 1.5rem;
+  color: var(--solda);
+  margin-bottom: 1rem;
+}
+
+.sobre-topic-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 3.5vw, 4rem);
+  text-transform: uppercase;
+  line-height: 1.1;
+  margin-bottom: 2rem;
+}
+
+.sobre-topic-desc {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: var(--fumaca);
+  margin-bottom: 2rem;
+}
+
+.sobre-topic-list {
+  list-style: none;
+  padding: 0;
+  font-family: var(--font-mono);
+  color: var(--text-color);
+}
+
+.sobre-topic-list li {
+  margin-bottom: 0.5rem;
+}
+
+.sobre-topic-list li::before {
+  content: '• ';
+  color: var(--solda);
+}
+
+/* =========================================
+   GALLERY LAYOUTS (Adapted from Codrops) 
+   ========================================= */
+
+.gallery {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gallery__item {
+  background-position: 50% 50%;
+  background-size: cover;
+  border-radius: 6px;
+  position: absolute; /* Default absolute for Flip */
+  will-change: transform, width, height, filter;
+}
+
+/* LAYOUT 1: ROW (Identidade) */
+.layout-0 {
+  display: flex;
+  gap: 1rem;
+}
+.layout-0 .gallery__item {
+  position: relative;
+  width: auto;
+  aspect-ratio: 2 / 3;
+}
+.layout-0 .item-0 { height: 40vh; z-index: 10; }
+.layout-0 .item-1 { height: 25vh; }
+.layout-0 .item-2 { height: 15vh; }
+.layout-0 .item-3 { height: 10vh; }
+
+/* LAYOUT 2: GRID (Websites) */
+.layout-1 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 1vw;
+  width: 80%;
+  height: 80vh;
+}
+.layout-1 .gallery__item {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.layout-1 .item-1 { filter: brightness(1); z-index: 10; }
+.layout-1 .item-0, .layout-1 .item-2, .layout-1 .item-3 { filter: brightness(0.6); }
+
+/* LAYOUT 3: STACK (Automação) */
+.layout-2 {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  align-items: center;
+  justify-content: start;
+  gap: 0;
+}
+.layout-2 .gallery__item {
+  position: relative;
+  width: 25vw;
+  height: 35vw;
+  border-radius: 1.5vw;
+  grid-area: 1 / 1 / 2 / 2;
+  box-shadow: -10px 0 20px rgba(0,0,0,0.5);
+}
+.layout-2 .item-2 { margin-left: 0vw; z-index: 4; filter: brightness(1); }
+.layout-2 .item-1 { margin-left: 3vw; z-index: 3; filter: brightness(0.8); }
+.layout-2 .item-0 { margin-left: 6vw; z-index: 2; filter: brightness(0.6); }
+.layout-2 .item-3 { margin-left: 9vw; z-index: 1; filter: brightness(0.4); }
+
+/* LAYOUT 4: ONE LARGE (Segurança) */
+.layout-3 {
+  display: flex;
+}
+.layout-3 .gallery__item {
+  position: absolute;
+  width: 15vw;
+  height: 15vw;
+  opacity: 0;
+  filter: brightness(0);
+}
+.layout-3 .item-3 {
+  width: 90%;
+  height: 80vh;
+  opacity: 1;
+  filter: brightness(1);
+  z-index: 10;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 900px) {
+  .sobre-scroll-container {
+    flex-direction: column;
+  }
+  .sobre-gallery-column {
+    width: 100%;
+    height: 50vh;
+    position: sticky;
+    top: 0;
+    z-index: 0;
+  }
+  .sobre-text-column {
+    width: 100%;
+    z-index: 1;
+    position: relative;
+    padding-bottom: 20vh;
+  }
+  .sobre-topic {
+    background: rgba(19, 20, 23, 0.85);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 50vh;
+    padding: 2rem;
+    height: auto;
+    border-radius: 8px;
+  }
+}

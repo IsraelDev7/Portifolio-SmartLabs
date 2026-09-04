@@ -1,0 +1,16 @@
+.media-frame {
+  position: relative;
+  border: 1px solid var(--grafite);
+  overflow: hidden;
+}
+
+.media-frame::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 1px solid var(--linha);
+  pointer-events: none;
+}

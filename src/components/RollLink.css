@@ -1,0 +1,24 @@
+.roll-link {
+  overflow: hidden;
+  display: inline-block;
+  text-decoration: none;
+}
+
+.roll-stack {
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s var(--ease-out);
+}
+
+.roll-link:hover .roll-stack {
+  transform: translateY(-50%);
+}
+
+.roll-text {
+  display: block;
+  /* Equal height to prevent jumping */
+}
+
+.hover-text {
+  color: var(--solda);
+}
