@@ -14,19 +14,26 @@ import gsap from 'gsap';
  * esta no bundle; anime.js seriam 17 KB para repetir o que ja existe.
  *
  * O que veio intacto do original: a ideia de `slicesOrigin` ter valores
- * DIFERENTES para entrar e sair. As ripas sobem de baixo para cobrir e
- * continuam subindo para descobrir — a cortina atravessa a tela em vez
- * de recuar por onde veio. E o box-shadow de 1px que tapa o vao de
- * subpixel entre ripas; aqui ele ganhou a cor Solda e virou tambem o que
- * torna o movimento legivel num site inteiramente off-black.
+ * DIFERENTES para entrar e sair, e o box-shadow de 1px que tapa o vao de
+ * subpixel entre ripas — aqui ele ganhou a cor Solda e virou tambem o
+ * que torna o movimento legivel, ja que as ripas sao da mesma cor do
+ * fundo das secoes.
+ *
+ * A coreografia usa as duas metades da assimetria em eixos opostos:
+ *
+ *   FECHANDO   sobem de baixo, escalonadas da ESQUERDA para a direita
+ *   ABRINDO    descem para baixo, escalonadas da DIREITA para a esquerda
+ *
+ * A cortina recua por onde veio, mas conduzida pela ponta contraria.
+ * O movimento nao se repete: quem fechou por ultimo abre primeiro.
  */
 
-const RIPAS = 7;
-const RIPAS_COMPACTO = 5;
+const RIPAS = 5;
+const RIPAS_COMPACTO = 4;
 
-const DUR_COBRE = 0.5;
-const DUR_DESCOBRE = 0.55;
-const PASSO = 0.045;   // atraso entre ripas vizinhas
+const DUR_COBRE = 0.62;
+const DUR_DESCOBRE = 0.66;
+const PASSO = 0.065;   // atraso entre ripas vizinhas
 
 let api = null;
 
@@ -57,20 +64,26 @@ export default function SliceCurtain() {
     rearmar();
 
     const meu = {
+      // Fechando: sobem de baixo, a da esquerda na frente.
       cobrir: () => {
         el.classList.add('cortina--ativa');
-        return gsap.to(
-          ripas,
-          { yPercent: 0, duration: DUR_COBRE, ease: 'power4.inOut', stagger: PASSO }
-        );
-      },
-      descobrir: () => {
-        // Continua para CIMA: a cortina atravessa, nao volta.
         return gsap.to(ripas, {
-          yPercent: -100,
+          yPercent: 0,
+          duration: DUR_COBRE,
+          ease: 'power4.inOut',
+          stagger: { each: PASSO, from: 'start' },
+        });
+      },
+
+      // Abrindo: descem, e agora a da DIREITA lidera. Trocar a ponta
+      // condutora e o que impede a saida de parecer o replay invertido
+      // da entrada — quem fechou por ultimo e quem abre primeiro.
+      descobrir: () => {
+        return gsap.to(ripas, {
+          yPercent: 100,
           duration: DUR_DESCOBRE,
           ease: 'power4.inOut',
-          stagger: PASSO,
+          stagger: { each: PASSO, from: 'end' },
           onComplete: () => {
             el.classList.remove('cortina--ativa');
             rearmar();

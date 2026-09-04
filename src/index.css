@@ -318,11 +318,11 @@ h3 {
    PAGE TRANSITION #6 — cortina de ripas
    Acervo Vance · "Page Transitions #6" = SliceRevealer (Codrops, 2018)
 
-   Sete ripas verticais sobem de baixo, escalonadas, cobrem a tela; a
-   rota troca por tras delas e as mesmas ripas CONTINUAM subindo para
-   descobrir. A cortina atravessa a tela em vez de recuar por onde veio —
-   e o `slicesOrigin` assimetrico do original, que aceita um valor para
-   entrar e outro para sair.
+   Cinco ripas verticais sobem de baixo, escalonadas da esquerda, e
+   cobrem a tela; a rota troca por tras delas; e as ripas descem de
+   volta, agora escalonadas da DIREITA. E o `slicesOrigin` assimetrico do
+   original — um valor para entrar, outro para sair — aplicado tambem ao
+   lado condutor: quem fechou por ultimo abre primeiro.
 
    Fica em z-index 90, ABAIXO da barra (100), de proposito: assim o logo
    continua visivel por cima e da para ver ele se desfazer e se remontar
@@ -344,7 +344,10 @@ h3 {
 
 .cortina__ripa {
   flex: 1;
-  background-color: var(--grafite);
+  /* Mesma cor do fundo das secoes. A ripa nao e um objeto que aparece:
+     e a propria superficie da pagina se fechando. O que se ve nao e o
+     bloco, e a aresta de Solda e o conteudo sendo tapado por tras. */
+  background-color: var(--aco);
   will-change: transform;
 
   /* Sem transform aqui de proposito: quem posiciona as ripas e o GSAP,
@@ -355,9 +358,9 @@ h3 {
 
   /* No original este box-shadow e da propria cor da ripa e serve so para
      tapar o vao de subpixel entre elas. Em Solda ele faz as duas coisas:
-     tapa o vao E desenha o fio que torna o deslocamento legivel — sem
-     ele, ripas quase pretas correndo sobre um fundo quase preto nao
-     teriam aresta nenhuma para o olho seguir. */
+     tapa o vao E desenha o fio que torna o deslocamento legivel — sendo
+     as ripas da mesma cor do fundo, sem ele nao haveria aresta nenhuma
+     para o olho seguir. */
   box-shadow: 1px 0 0 var(--solda);
 }
 
