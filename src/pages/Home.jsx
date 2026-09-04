@@ -1,5 +1,6 @@
 import React from 'react';
 import Hero from '../sections/Hero';
+import SceneSection from '../sections/SceneSection';
 import { usePageMotion } from '../hooks/usePageMotion';
 
 export default function Home() {
@@ -53,6 +54,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* SECTION 3.5: CENA 3D — O Monolito dos Degraus (motion-system S02) */}
+      <SceneSection />
 
       {/* SECTION 4: SPLIT HERO (O QUE EU CONSTRUO) */}
       <section style={{ display: 'flex', flexWrap: 'wrap', backgroundColor: '#000', borderTop: '1px solid #222' }}>
