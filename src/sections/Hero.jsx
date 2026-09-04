@@ -78,32 +78,23 @@ export default function Hero() {
     tl.from('.line-1', { x: encostaEsquerda, duration: 1.4, ease: 'expo.out' }, 0);
     tl.from('.line-3', { x: encostaDireita, duration: 1.4, ease: 'expo.out' }, 0);
 
-    /* RTL vem em espiral: o giro sozinho seria so um pião, e o translateZ
-       sozinho so um zoom. E a soma dos dois que vira espiral — a palavra
-       roda ENQUANTO vem de longe, entao cada ponto dela descreve uma
-       helice em vez de um circulo. A perspectiva no pai e o que da o eixo
-       de profundidade; sem ela o z nao existe e sobra o pião.
-       O scaleX menor que o scaleY mantem a garganta apertada no comeco. */
+    /* RTL vem de muito longe e cresce ate chegar. Nada de giro: e um
+       objeto se aproximando no eixo de profundidade, e so.
+
+       Escala UNIFORME e ate 0, nao ate um minimo: parando em 0.12 ele
+       continuaria la, pequeno mas presente. Sumir por inteiro e a escala
+       chegar a zero.
+
+       Sem opacidade no tween de proposito. Objeto que se afasta fica
+       menor, nao transparente — o fade roubaria a leitura de distancia e
+       ele desapareceria antes de ter encolhido. */
     tl.from('.line-2', {
-      z: -900,
-      rotation: -230,
-      scaleX: 0.12,
-      scaleY: 0.42,
-      opacity: 0,
+      scale: 0,
+      z: -1400,
       transformOrigin: '50% 50%',
       duration: 1.7,
       ease: 'expo.out',
     }, 0.06);
-
-    // As letras do RTL desenrolam junto, cada uma no seu tempo: o bloco
-    // faz a espiral grande, a letra faz a pequena.
-    tl.from('.line-2 .letra', {
-      rotation: -42,
-      transformOrigin: '50% 120%',
-      duration: 1.1,
-      stagger: 0.07,
-      ease: 'expo.out',
-    }, 0.2);
 
     // As letras so carregam o fade, escalonado. O gesto de cada palavra e
     // do bloco; a letra da textura sem disputar com ele.
@@ -189,14 +180,14 @@ export default function Hero() {
     scrollTl.to('.line-1', { x: encostaEsquerda, ease: 'none' }, 0);
     scrollTl.to('.line-3', { x: encostaDireita, ease: 'none' }, 0);
 
-    // RTL some pela mesma espiral, no mesmo tempo em que SMA e ABS
-    // entram na margem — os tres saem juntos, cada um pelo seu caminho.
+    // RTL se afasta ate sumir por inteiro. Mesma posicao e mesma duracao
+    // dos tweens de SMA e ABS, entao os tres terminam no mesmo quadro:
+    // os dois entram na margem no exato momento em que este chega a zero.
     scrollTl.to('.line-2', {
-      z: -900, rotation: -230, scaleX: 0.12, scaleY: 0.42, opacity: 0,
-      transformOrigin: '50% 50%', ease: 'none',
-    }, 0);
-    scrollTl.to('.line-2 .letra', {
-      rotation: -42, transformOrigin: '50% 120%', stagger: 0.03, ease: 'none',
+      scale: 0,
+      z: -1400,
+      transformOrigin: '50% 50%',
+      ease: 'none',
     }, 0);
 
     // Bloco esquerdo: as linhas se recolhem para tras da borda...
