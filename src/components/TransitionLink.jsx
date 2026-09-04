@@ -1,27 +1,24 @@
 import React from 'react';
-import { flushSync } from 'react-dom';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { logoDesmontar } from '../lib/logoBus';
+import { cobrir, descobrir, temCortina } from './SliceCurtain';
 
 /**
  * TransitionLink — o Link do router com a coreografia da casa.
  *
- * Segura a navegacao ate o logo terminar de se desfazer e so entao troca
- * de rota, pedindo a cortina diagonal ao navegador.
+ * Sequencia do clique:
+ *   0,00s  o logo comeca a se desfazer E as ripas comecam a subir.
+ *          Os dois JUNTOS, nao em fila: o desmonte do logo dura 0,48s e
+ *          cabe inteiro dentro dos 0,77s da cobertura, entao enfileirar
+ *          so somaria meio segundo de espera sem mostrar nada a mais.
+ *   0,77s  tela coberta -> troca de rota, invisivel por tras da cortina
+ *   0,77s  as ripas seguem subindo e descobrem a pagina nova
+ *   1,03s  o logo se remonta (a barra fica acima da cortina, entao da
+ *          para ver) — quem dispara e o efeito de rota do Navbar
  *
- * Por que chamar startViewTransition na mao, e nao usar a prop
- * `viewTransition` do react-router: aquela prop so funciona no data
- * router (createBrowserRouter + RouterProvider). O App usa o
- * <BrowserRouter> classico, onde ela e um no-op SILENCIOSO — nao avisa,
- * nao quebra, so nao anima. Migrar o roteamento inteiro para arrumar uma
- * transicao seria caro; chamar a API direto custa quatro linhas.
- *
- * O flushSync e obrigatorio: a API tira a foto do "depois" assim que o
- * callback retorna, e sem ele o React ainda nao teria comitado a rota
- * nova — a transicao animaria a pagina antiga contra ela mesma.
- *
- * Continua sendo um <a href> de verdade: ctrl/cmd/meio abrem em nova aba,
- * o crawler ve o link, e navegador sem a API navega direto.
+ * Continua sendo um <a href> de verdade: ctrl/cmd/meio abrem em nova
+ * aba, o crawler ve o link, e com movimento reduzido nao ha cortina
+ * nenhuma — navega direto.
  */
 export default function TransitionLink({ to, children, ...props }) {
   const navegar = useNavigate();
@@ -34,16 +31,15 @@ export default function TransitionLink({ to, children, ...props }) {
     e.preventDefault();
     if (to === pathname) return;
 
-    await logoDesmontar();
-
-    if (!document.startViewTransition) {
+    if (!temCortina()) {
       navegar(to);
       return;
     }
 
-    document.startViewTransition(() => {
-      flushSync(() => navegar(to));
-    });
+    logoDesmontar();      // de proposito sem await: roda por baixo da cortina
+    await cobrir();
+    navegar(to);
+    await descobrir();
   };
 
   return (

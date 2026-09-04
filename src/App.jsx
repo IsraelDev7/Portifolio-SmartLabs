@@ -5,6 +5,7 @@ import { useLenis } from './hooks/useLenis'
 // Components
 import Navbar from './components/Navbar'
 import Preloader from './sections/Preloader'
+import SliceCurtain from './components/SliceCurtain'
 import Footer from './sections/Footer'
 
 // Pages
@@ -28,6 +29,9 @@ export default function App() {
         <div className="grain-overlay" />
         
         <Preloader />
+        {/* Cortina das trocas de pagina (SliceRevealer). Fica abaixo da
+            barra no z-index, para o logo continuar visivel por cima. */}
+        <SliceCurtain />
         <Navbar />
 
         <ScrollWrapper>

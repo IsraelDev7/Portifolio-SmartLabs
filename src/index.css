@@ -315,95 +315,56 @@ h3 {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   PAGE TRANSITION #9 — cortina diagonal
-   Acervo Vance · "Page Transitions #9" (vancelib)
+   PAGE TRANSITION #6 — cortina de ripas
+   Acervo Vance · "Page Transitions #6" = SliceRevealer (Codrops, 2018)
 
-   A pagina NOVA entra por tras de uma aresta inclinada que varre da
-   esquerda para a direita; a antiga fica parada embaixo. O topo da
-   aresta corre 26% da largura a frente da base — foi o angulo medido
-   nos frames da referencia.
+   Sete ripas verticais sobem de baixo, escalonadas, cobrem a tela; a
+   rota troca por tras delas e as mesmas ripas CONTINUAM subindo para
+   descobrir. A cortina atravessa a tela em vez de recuar por onde veio —
+   e o `slicesOrigin` assimetrico do original, que aceita um valor para
+   entrar e outro para sair.
 
-   Custo: zero JS e zero dependencia. Quem dispara e o proprio router
-   (`viewTransition` do react-router 7 chama document.startViewTransition).
-   Navegador sem a API navega direto e este bloco fica inerte.
+   Fica em z-index 90, ABAIXO da barra (100), de proposito: assim o logo
+   continua visivel por cima e da para ver ele se desfazer e se remontar
+   enquanto as ripas passam. Cobrir a barra jogaria fora a coreografia.
    ═══════════════════════════════════════════════════════════ */
 
-:root {
-  --dur-wipe: 0.75s;
-  --wipe-avanco: 26%;   /* o quanto o topo da aresta lidera sobre a base */
-  --wipe-fio: 3px;      /* espessura da linha de Solda na aresta */
+.cortina {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: flex;              /* as ripas dividem a largura igualmente */
+  visibility: hidden;         /* parada, nao existe para o ponteiro */
+  pointer-events: none;
 }
 
-::view-transition-old(root),
-::view-transition-new(root) {
-  mix-blend-mode: normal;   /* o padrao (plus-lighter) lava o off-black */
+.cortina--ativa {
+  visibility: visible;
 }
 
-/* O fundo da transicao e o acento. As duas camadas sao recortadas com
-   uma folga de --wipe-fio entre elas, e e por essa fresta que a Solda
-   aparece — vira uma linha acesa correndo exatamente sobre a aresta.
+.cortina__ripa {
+  flex: 1;
+  background-color: var(--grafite);
+  will-change: transform;
 
-   Por que nao um drop-shadow, que seria uma linha so: porque o clip-path
-   e aplicado DEPOIS do filtro e recorta a propria sombra junto. Testado;
-   nao ha valor que resolva. */
-::view-transition {
-  background: var(--solda);
+  /* Sem transform aqui de proposito: quem posiciona as ripas e o GSAP,
+     e so ele. Com um translateY(100%) no CSS o yPercent do GSAP somava
+     por cima e as ripas paravam um viewport inteiro abaixo do lugar —
+     a tela nunca chegava a ser coberta. A .cortina nasce
+     visibility:hidden, entao nao ha risco de piscar antes do gsap.set. */
+
+  /* No original este box-shadow e da propria cor da ripa e serve so para
+     tapar o vao de subpixel entre elas. Em Solda ele faz as duas coisas:
+     tapa o vao E desenha o fio que torna o deslocamento legivel — sem
+     ele, ripas quase pretas correndo sobre um fundo quase preto nao
+     teriam aresta nenhuma para o olho seguir. */
+  box-shadow: 1px 0 0 var(--solda);
 }
 
-/* A pagina antiga nao se mexe, so vai sendo comida pela fresta.
-   Sem clip proprio o navegador aplica o cross-fade dele por baixo. */
-::view-transition-old(root) {
-  z-index: 1;
-  animation: vt-diagonal-velha var(--dur-wipe) var(--ease-inout) forwards;
-}
-
-/* O navegador ainda aplica um morph proprio no grupo. Entre duas telas
-   do mesmo tamanho ele nao faz nada visivel, mas custa e polui a leitura
-   do que esta acontecendo — fora. */
-::view-transition-group(root) {
-  animation: none;
-}
-
-::view-transition-new(root) {
-  z-index: 2;
-  animation: vt-diagonal var(--dur-wipe) var(--ease-inout) forwards;
-}
-
-/* A camada nova cresce da esquerda. */
-@keyframes vt-diagonal {
-  from { clip-path: polygon(0 0, 0 0, calc(var(--wipe-avanco) * -1) 100%, 0 100%); }
-  to   { clip-path: polygon(0 0, calc(100% + var(--wipe-avanco)) 0, 100% 100%, 0 100%); }
-}
-
-/* A antiga e o complemento, deslocado pela espessura do fio: e a
-   diferenca entre as duas que deixa a Solda passar. */
-@keyframes vt-diagonal-velha {
-  from {
-    clip-path: polygon(var(--wipe-fio) 0, 100% 0, 100% 100%,
-                       calc(var(--wipe-avanco) * -1 + var(--wipe-fio)) 100%);
-  }
-  to {
-    clip-path: polygon(calc(100% + var(--wipe-avanco) + var(--wipe-fio)) 0, 100% 0, 100% 100%,
-                       calc(100% + var(--wipe-fio)) 100%);
-  }
-}
-
-/* Tela estreita: a mesma aresta fica visualmente mais deitada, entao
-   inclina mais e anda mais rapido — a varredura ocupa menos tempo de
-   espera num aparelho que ja e mais lento. */
-@media (max-width: 820px) {
-  :root {
-    --dur-wipe: 0.58s;
-    --wipe-avanco: 38%;
-  }
-}
-
-/* ── movimento reduzido: corte curto, sem varredura ── */
+/* ── movimento reduzido: sem cortina ──
+   O SliceCurtain nem se registra, e o TransitionLink navega direto. */
 @media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(root) { animation: vt-sai 0.18s linear forwards; }
-  ::view-transition-new(root) { animation: vt-entra 0.18s linear forwards; }
-  @keyframes vt-sai   { to   { opacity: 0; } }
-  @keyframes vt-entra { from { opacity: 0; } }
+  .cortina { display: none; }
 }
 
 /* ── celulas do monograma ──
