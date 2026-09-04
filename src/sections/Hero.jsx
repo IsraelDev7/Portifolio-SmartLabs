@@ -23,104 +23,141 @@ export default function Hero() {
   useDeriva(container);
 
   useGSAP(() => {
-    // Initial Load Animations (Entry)
+    /* Distancia ate a linha imaginaria do meio da pagina.
+       offsetLeft, nao getBoundingClientRect: o rect ja vem somado dos
+       transforms e mediria a posicao animada em vez da de layout. */
+    const centroDeLayout = (el) => {
+      let x = 0, n = el;
+      while (n) { x += n.offsetLeft; n = n.offsetParent; }
+      return x + el.offsetWidth / 2;
+    };
+    const daLinhaDoMeio = (i, el) => window.innerWidth / 2 - centroDeLayout(el);
+
+    // ============ ENTRADA ============
     const tl = gsap.timeline({ delay: 0.2 });
-    
-    // 1. Tipo grande, letra a letra.
-    // Um unico stagger corre pelas nove letras de SMA-RTL-ABS em vez de
-    // tres tempos por bloco: a onda atravessa as tres linhas como um
-    // gesto so, e nao como tres entradas separadas.
-    tl.from('.massive-line .letra', {
-      yPercent: 110,
-      opacity: 0,
-      duration: 1.15,
-      stagger: { each: 0.055, from: 'start' },
+
+    // SMA e ABS nascem na linha do meio e correm para os lados opostos.
+    // Como `x` e funcao, cada um calcula o proprio deslocamento: o de fora
+    // esta mais longe do centro e por isso percorre mais caminho no mesmo
+    // tempo — os dois chegam juntos vindo de distancias diferentes.
+    tl.from('.line-1, .line-3', {
+      x: daLinhaDoMeio,
+      duration: 1.4,
       ease: 'expo.out',
-    });
+    }, 0);
 
-    // 2. Right block entry (Slides right to left)
-    tl.from('.hero-headline, .hero-subheadline', {
-      x: 50,
+    // RTL nao corre para lado nenhum: vem do fundo para a frente.
+    tl.from('.line-2', {
+      scale: 0.18,
       opacity: 0,
-      duration: 1,
-      stagger: 0.1,
-      ease: 'power2.out',
-    }, "-=0.8");
+      transformOrigin: '50% 50%',
+      duration: 1.5,
+      ease: 'expo.out',
+    }, 0.08);
 
-    // Right block Author entry (Margin grows top-down, text slides top-down)
+    // As letras so carregam o fade, escalonado. O gesto de cada palavra e
+    // do bloco; a letra da textura sem disputar com ele.
+    tl.from('.massive-line .letra', {
+      opacity: 0,
+      duration: 0.7,
+      stagger: { each: 0.04, from: 'start' },
+      ease: 'power2.out',
+    }, 0.15);
+
+    // Bloco direito: empilhamento de cima para baixo.
+    tl.from('.empilha', {
+      y: -34,
+      opacity: 0,
+      duration: 0.85,
+      stagger: 0.13,
+      ease: 'power3.out',
+    }, 0.45);
+
+    // A barra do autor cresce, e o nome sai de tras dela — pela margem
+    // esquerda, nao de cima como o resto do bloco.
     tl.from('.author-border', {
       scaleY: 0,
       transformOrigin: 'top',
       duration: 0.8,
       ease: 'power2.out',
-    }, "-=0.6");
-    
+    }, 0.75);
+
     tl.from('.hero-author-text', {
-      yPercent: -100,
-      opacity: 0,
+      xPercent: -100,
+      duration: 0.9,
+      ease: 'expo.out',
+    }, 0.9);
+
+    // Bloco esquerdo: a borda primeiro, depois cada linha saindo de tras
+    // dela. O overflow:hidden da lista e o que faz a linha "existir"
+    // apenas depois de passar a borda.
+    tl.from('.services-border', {
+      scaleY: 0,
+      transformOrigin: 'top',
       duration: 0.8,
       ease: 'power2.out',
-    }, "-=0.6");
+    }, 0.6);
 
-    // 3. Left block entry (Text left-to-right, border top-to-bottom)
+    tl.from('.services-text p', {
+      xPercent: -105,
+      opacity: 0,
+      duration: 0.9,
+      stagger: 0.09,
+      ease: 'expo.out',
+    }, 0.72);
+
     tl.from('.hero-services-index, .hero-ctas', {
       x: -30,
       opacity: 0,
       duration: 1,
       stagger: 0.2,
       ease: 'power2.out'
-    }, "-=0.8");
-    
-    tl.from('.services-border', {
-      scaleY: 0,
-      transformOrigin: 'top',
-      duration: 0.8,
-      ease: 'power2.out'
-    }, "-=0.6");
-    
-    tl.from('.services-text', {
-      x: -30,
-      opacity: 0,
-      duration: 1,
-      ease: 'power2.out'
-    }, "-=0.6");
+    }, 0.9);
 
-
-    // SCROLL ANIMATIONS (Non-pinned, fluid scrub)
+    // ============ SCROLL: o caminho de volta ============
+    // Tudo desfaz o proprio gesto de entrada, e o EXPLORE ocupa o vazio.
+    // Como e scrub, subir de novo remonta a cena sozinho — a timeline nao
+    // guarda estado, ela e lida na posicao do scroll.
     const scrollTl = gsap.timeline({
       scrollTrigger: {
         trigger: container.current,
-        start: "top top",
-        end: "bottom top", // As the hero section scrolls out of view
+        start: 'top top',
+        end: 'bottom top',
         scrub: true,
+        // recalcula o `x` da linha do meio quando a largura muda
+        invalidateOnRefresh: true,
       }
     });
 
-    // Fade out Left Block (Moves into the left margin)
-    scrollTl.to('.hero-block-bottom', { x: -150, opacity: 0 }, 0);
-    
-    // Fade out Right Block (Moves to the right margin)
-    scrollTl.to('.hero-block-top', { x: 150, opacity: 0 }, 0);
-    
-    // Fade out Grid numbers
-    scrollTl.to('.grid-num', { opacity: 0 }, 0);
+    // SMA e ABS voltam para a linha do meio de onde nasceram.
+    scrollTl.to('.line-1, .line-3', { x: daLinhaDoMeio, opacity: 0, ease: 'none' }, 0);
 
-    // Massive Text Divides in the middle (SMARTLABS split)
-    // line-1 (SMA) and line-3 (ABS) go left, line-2 (RTL) goes right
-    scrollTl.to('.line-1, .line-3', { xPercent: -50, opacity: 0 }, 0);
-    scrollTl.to('.line-2', { xPercent: 50, opacity: 0 }, 0);
+    // RTL recua para o fundo.
+    scrollTl.to('.line-2', { scale: 0.18, opacity: 0, ease: 'none' }, 0);
 
-    // EXPLORE text emerges as you scroll down
-    scrollTl.fromTo('.hero-explore-text', {
-      y: '20vh',
-      opacity: 0,
-      scale: 0.8
-    }, {
-      y: '0vh',
-      opacity: 1,
-      scale: 1
-    }, 0);
-    
+    // Bloco esquerdo: as linhas se recolhem para tras da borda...
+    scrollTl.to('.services-text p', { xPercent: -105, opacity: 0, stagger: 0.05, ease: 'none' }, 0);
+    scrollTl.to('.hero-services-index, .hero-ctas', { x: -60, opacity: 0, ease: 'none' }, 0.05);
+    // ...e so entao a borda recolhe, ficando por ultimo. Ela e a ultima
+    // coisa a sair porque foi a primeira a entrar.
+    scrollTl.to('.services-border', { scaleY: 0, transformOrigin: 'top', ease: 'none' }, 0.3);
+
+    // Bloco direito: desempilha para cima, na ordem inversa da entrada.
+    scrollTl.to('.empilha', { y: -34, opacity: 0, stagger: { each: 0.06, from: 'end' }, ease: 'none' }, 0);
+    // O autor volta por onde veio: para tras da propria margem.
+    scrollTl.to('.hero-author-text', { xPercent: -100, opacity: 0, ease: 'none' }, 0.05);
+    scrollTl.to('.author-border', { scaleY: 0, transformOrigin: 'top', ease: 'none' }, 0.3);
+
+    scrollTl.to('.grid-num', { opacity: 0, ease: 'none' }, 0);
+
+    // EXPLORE toma o lugar deixado — cinza translucido, marca d'agua e
+    // nao manchete. Em Solda ele competiria com o tipo que acabou de sair.
+    scrollTl.fromTo('.hero-explore-text',
+      { y: '18vh', opacity: 0, scale: 0.86 },
+      { y: '0vh', opacity: 0.45, scale: 1, ease: 'none' },
+      0.12
+    );
+
   }, { scope: container });
 
   return (
@@ -173,10 +210,10 @@ export default function Hero() {
         {/* Top Right Block */}
         <div className="hero-block-top">
           <h2 className="hero-headline font-display" data-deriva="-0.40">
-            <span className="text-solda">A FORMA DO SEU NEGÓCIO</span><br/>
-            <span className="text-cal">NO MUNDO DIGITAL.</span>
+            <span className="empilha text-solda">A FORMA DO SEU NEGÓCIO</span>
+            <span className="empilha text-cal">NO MUNDO DIGITAL.</span>
           </h2>
-          <p className="hero-subheadline" data-deriva="-0.30">
+          <p className="hero-subheadline empilha" data-deriva="-0.30">
             Seu negócio pode ser excelente.<br/>
             Mas se a sua presença digital não transmite isso,<br/>
             você está deixando valor na mesa.

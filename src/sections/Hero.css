@@ -185,7 +185,10 @@
 .hero-explore-text {
   font-size: clamp(80px, 22vw, 400px);
   font-weight: 800;
-  color: var(--solda);
+  /* Cinza, nao Solda: ele entra no lugar deixado pelo tipo grande e
+     precisa ler como marca d'agua. Em acento competiria com o que
+     acabou de sair. A opacidade final quem da e a timeline (0.45). */
+  color: var(--fumaca);
   line-height: 0.75;
   letter-spacing: -0.05em;
   text-transform: uppercase;
@@ -214,6 +217,12 @@
   max-width: 700px;
   display: flex;
   flex-direction: column;
+}
+
+/* Empilhamento: cada peca precisa de caixa propria para receber
+   translate. Span inline ignora transform. */
+.empilha {
+  display: block;
 }
 
 .hero-headline {
@@ -290,7 +299,10 @@
   color: var(--solda);
 }
 
+/* A mascara que faz as linhas "nascerem" da borda: sem overflow, elas
+   apareceriam ja deslocadas para fora em vez de surgir de tras dela. */
 .hero-services-list {
+  overflow: hidden;
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.03em;
