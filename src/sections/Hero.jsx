@@ -3,12 +3,20 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import PlateButton from '../components/PlateButton';
+import { useDeriva } from '../hooks/useDeriva';
 import './Hero.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Hero() {
   const container = useRef(null);
+
+  /* Deriva: cada peca anda uma fracao do scroll. Os tres blocos de tipo
+     sobem em velocidades diferentes e a imagem DESCE — nao e a
+     velocidade que da a sensacao de camadas, e a divergencia entre elas.
+     A grade 001-004 fica de fora de proposito: e a ancora parada que faz
+     o olho perceber que o resto se move. */
+  useDeriva(container);
 
   useGSAP(() => {
     // Initial Load Animations (Entry)
@@ -111,7 +119,7 @@ export default function Hero() {
   return (
     <section className="hero-section" ref={container}>
       {/* Background Image */}
-      <div className="hero-bg-image"></div>
+      <div className="hero-bg-image" data-deriva="0.18"></div>
 
       {/* Grid Lines */}
       <div className="hero-grid">
@@ -140,9 +148,9 @@ export default function Hero() {
 
       {/* Massive Typography */}
       <div className="hero-massive-text">
-        <div className="massive-line line-1">SMA</div>
-        <div className="massive-line line-2">RTL</div>
-        <div className="massive-line line-3">ABS</div>
+        <div className="massive-line line-1" data-deriva="-0.40">SMA</div>
+        <div className="massive-line line-2" data-deriva="-0.30">RTL</div>
+        <div className="massive-line line-3" data-deriva="-0.20">ABS</div>
       </div>
 
       {/* EXPLORE Text Sequence */}
@@ -156,7 +164,7 @@ export default function Hero() {
       <div className="hero-content">
         
         {/* Top Right Block */}
-        <div className="hero-block-top">
+        <div className="hero-block-top" data-deriva="-0.10">
           <h2 className="hero-headline font-display">
             <span className="text-solda">A FORMA DO SEU NEGÓCIO</span><br/>
             <span className="text-cal">NO MUNDO DIGITAL.</span>

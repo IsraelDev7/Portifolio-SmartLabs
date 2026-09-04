@@ -11,11 +11,14 @@
 /* Background Image fading into the left */
 .hero-bg-image {
   position: absolute;
-  top: 0;
+  /* Folga para a deriva: a imagem desce ate ~18% da altura da tela, e
+     sem sobra o topo dela apareceria. Nasce acima e mais alta que a
+     caixa; a mascara em gradiente cuida do resto. */
+  top: -18%;
   right: -5%;
   width: 60%;
-  height: 100%;
-  background-image: url('/images/hero.jpg');
+  height: 130%;
+  background-image: url('/images/hero-voxel.jpg');
   background-size: cover;
   background-position: center 20%;
   z-index: 1;
