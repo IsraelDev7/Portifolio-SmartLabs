@@ -316,24 +316,23 @@ h3 {
 
 /* ═══════════════════════════════════════════════════════════
    PAGE TRANSITION #6 — cortina de ripas
-   Acervo Vance · "Page Transitions #6" = SliceRevealer (Codrops, 2018)
+   Acervo Vance · SliceRevealer (Codrops, 2018)
 
-   Cinco ripas verticais sobem de baixo, escalonadas da esquerda, e
-   cobrem a tela; a rota troca por tras delas; e as ripas descem de
-   volta, agora escalonadas da DIREITA. E o `slicesOrigin` assimetrico do
-   original — um valor para entrar, outro para sair — aplicado tambem ao
-   lado condutor: quem fechou por ultimo abre primeiro.
+   Reproduz a coreografia do preview oficial, que troca de EIXO no meio:
+   fecha em 4 COLUNAS subindo de baixo (a da esquerda na frente) e abre
+   em 7 LINHAS saindo pela direita (a de cima na frente). As duas camadas
+   existem ao mesmo tempo e passam o bastao no quadro em que a tela esta
+   coberta; sendo da mesma cor, a virada nao aparece.
 
    Fica em z-index 90, ABAIXO da barra (100), de proposito: assim o logo
    continua visivel por cima e da para ver ele se desfazer e se remontar
-   enquanto as ripas passam. Cobrir a barra jogaria fora a coreografia.
+   enquanto as ripas passam.
    ═══════════════════════════════════════════════════════════ */
 
 .cortina {
   position: fixed;
   inset: 0;
   z-index: 90;
-  display: flex;              /* as ripas dividem a largura igualmente */
   visibility: hidden;         /* parada, nao existe para o ponteiro */
   pointer-events: none;
 }
@@ -342,27 +341,35 @@ h3 {
   visibility: visible;
 }
 
+/* As linhas vem depois no DOM, entao cobrem as colunas na troca. */
+.cortina__colunas,
+.cortina__linhas {
+  position: absolute;
+  inset: 0;
+  display: flex;
+}
+
+.cortina__colunas { flex-direction: row; }
+.cortina__linhas  { flex-direction: column; }
+
 .cortina__ripa {
   flex: 1;
+  will-change: transform;
+
   /* Mesma cor do fundo das secoes. A ripa nao e um objeto que aparece:
      e a propria superficie da pagina se fechando. O que se ve nao e o
      bloco, e a aresta de Solda e o conteudo sendo tapado por tras. */
   background-color: var(--aco);
-  will-change: transform;
-
-  /* Sem transform aqui de proposito: quem posiciona as ripas e o GSAP,
-     e so ele. Com um translateY(100%) no CSS o yPercent do GSAP somava
-     por cima e as ripas paravam um viewport inteiro abaixo do lugar —
-     a tela nunca chegava a ser coberta. A .cortina nasce
-     visibility:hidden, entao nao ha risco de piscar antes do gsap.set. */
-
-  /* No original este box-shadow e da propria cor da ripa e serve so para
-     tapar o vao de subpixel entre elas. Em Solda ele faz as duas coisas:
-     tapa o vao E desenha o fio que torna o deslocamento legivel — sendo
-     as ripas da mesma cor do fundo, sem ele nao haveria aresta nenhuma
-     para o olho seguir. */
-  box-shadow: 1px 0 0 var(--solda);
 }
+
+/* No original este box-shadow e da propria cor da ripa e serve so para
+   tapar o vao de subpixel entre elas. Em Solda ele faz as duas coisas:
+   tapa o vao E desenha o fio que torna o deslocamento legivel — sendo as
+   ripas da mesma cor do fundo, sem ele nao haveria aresta nenhuma para o
+   olho seguir. A aresta acompanha o eixo de cada camada, como no CSS
+   original: lateral nas verticais, inferior nas horizontais. */
+.cortina__colunas .cortina__ripa { box-shadow: 1px 0 0 var(--solda); }
+.cortina__linhas  .cortina__ripa { box-shadow: 0 1px 0 var(--solda); }
 
 /* ── movimento reduzido: sem cortina ──
    O SliceCurtain nem se registra, e o TransitionLink navega direto. */
