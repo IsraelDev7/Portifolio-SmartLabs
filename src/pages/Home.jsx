@@ -3,6 +3,7 @@ import Hero from '../sections/Hero';
 import SceneSection from '../sections/SceneSection';
 import { usePageMotion } from '../hooks/usePageMotion';
 import { useDeriva } from '../hooks/useDeriva';
+import { useBlocos } from '../hooks/useBlocos';
 
 export default function Home() {
   const motionRef = usePageMotion();
@@ -12,6 +13,7 @@ export default function Home() {
      escreverem o mesmo `y` nos mesmos elementos. */
   const derivaRef = useRef(null);
   useDeriva(derivaRef);
+  useBlocos(derivaRef);
 
   return (
     <div ref={motionRef} className="page-home" style={{ backgroundColor: '#000' }}>
@@ -54,7 +56,10 @@ export default function Home() {
         </p>
         
         {/* Editorial Masonry Gallery */}
-        <div data-anim="stagger" style={{ marginTop: '10vw', display: 'flex', flexWrap: 'wrap', gap: '2rem' }}>
+        {/* data-bloco no lugar do stagger: a cascata subia todas as
+            colunas do mesmo jeito. Agora a do meio desce enquanto as
+            vizinhas sobem, e cada uma e revelada pelo lado de onde vem. */}
+        <div data-bloco style={{ marginTop: '10vw', display: 'flex', flexWrap: 'wrap', gap: '2rem' }}>
           <div style={{ flex: '1 1 40%', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             {/* Ancora do bloco: e a peca parada que faz o olho perceber
                 que as outras duas se movem. Sem atributo, de proposito. */}
@@ -99,7 +104,7 @@ export default function Home() {
             <h3 data-anim="rise" style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(3rem, 5vw, 6rem)', lineHeight: '0.9', color: '#fff', textTransform: 'uppercase' }}>EXPERIÊNCIA</h3>
             <h4 data-anim="rise" style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem, 3vw, 4rem)', lineHeight: '0.9', color: '#555', textTransform: 'uppercase', marginBottom: '3rem' }}>DE ALTO PADRÃO</h4>
             
-            <div data-anim="stagger" style={{ display: 'flex', gap: '2rem', fontFamily: 'var(--font-mono)', fontSize: '0.9rem', lineHeight: '1.5', color: '#aaa', textTransform: 'uppercase' }}>
+            <div data-bloco style={{ display: 'flex', gap: '2rem', fontFamily: 'var(--font-mono)', fontSize: '0.9rem', lineHeight: '1.5', color: '#aaa', textTransform: 'uppercase' }}>
               <div style={{ flex: 1 }}>
                 <div style={{ color: 'var(--cal)', marginBottom: '1rem' }}>01 — IDENTIDADE & UX</div>
                 Sua marca precisa ser percebida antes mesmo de ser explicada. Construo e organizo a identidade visual e a experiência digital para transmitir posicionamento, confiança e valor.
@@ -116,7 +121,7 @@ export default function Home() {
             <h3 data-anim="rise" style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(3rem, 5vw, 6rem)', lineHeight: '0.9', color: '#fff', textTransform: 'uppercase' }}>OPERAÇÃO</h3>
             <h4 data-anim="rise" style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem, 3vw, 4rem)', lineHeight: '0.9', color: '#555', textTransform: 'uppercase', marginBottom: '3rem' }}>INTELIGENTE</h4>
             
-            <div data-anim="stagger" style={{ display: 'flex', gap: '2rem', fontFamily: 'var(--font-mono)', fontSize: '0.9rem', lineHeight: '1.5', color: '#aaa', textTransform: 'uppercase' }}>
+            <div data-bloco style={{ display: 'flex', gap: '2rem', fontFamily: 'var(--font-mono)', fontSize: '0.9rem', lineHeight: '1.5', color: '#aaa', textTransform: 'uppercase' }}>
               <div style={{ flex: 1 }}>
                 <div style={{ color: 'var(--cal)', marginBottom: '1rem' }}>03 — AUTOMAÇÃO & IA</div>
                 A parte que o cliente vê é apenas metade do projeto. Automatizo operações para reduzir tarefas manuais, acelerar respostas e criar processos mais eficientes.
@@ -139,7 +144,7 @@ export default function Home() {
           <p style={{ fontFamily: 'var(--font-mono)', color: '#888', marginTop: '2rem', textTransform: 'uppercase' }}>SOURCE —— THE SYSTEM</p>
         </div>
         
-        <div data-anim="stagger" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '2rem', fontFamily: 'var(--font-mono)', fontSize: '0.85rem', lineHeight: '1.6', color: '#aaa', textTransform: 'uppercase' }}>
+        <div data-bloco style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '2rem', fontFamily: 'var(--font-mono)', fontSize: '0.85rem', lineHeight: '1.6', color: '#aaa', textTransform: 'uppercase' }}>
           <div>
             <div data-anim="line" style={{ color: '#fff', marginBottom: '1rem', paddingBottom: '0.5rem', borderBottom: '1px solid #333' }}>MODULE —— DESIGN</div>
             Cria percepção. Transformando a identidade em uma experiência tátil no digital.
