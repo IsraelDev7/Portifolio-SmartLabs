@@ -17,8 +17,11 @@ gsap.registerPlugin(ScrollTrigger);
  *
  *   1. A mascara acompanha o sentido. Se ela abrisse sempre do mesmo
  *      lado, metade dos cartoes pareceria entrar de re.
- *   2. O deslocamento e curto (40px). Cartao que vem de longe vira
- *      objeto voando; o que interessa e a materia surgindo no lugar.
+ *   2. O deslocamento e curto — mas nao curto demais. A primeira versao
+ *      usava 40px com expo.out e o efeito nao era percebido: medido,
+ *      expo.out entrega 82% do caminho nos primeiros 240ms, entao 40px
+ *      viravam um piscar de ~8px visiveis. Agora 90px com power3.out,
+ *      que distribui o percurso em vez de despejar tudo na largada.
  *
  * O sentido alternado veio da medicao da referencia, onde imagem e texto
  * do heroi correm em sinais opostos (+0.20 contra -0.40) — e a
@@ -28,9 +31,9 @@ gsap.registerPlugin(ScrollTrigger);
  * desmonta os blocos na ordem inversa.
  */
 
-const DESLOC = 40;        // px — curto de proposito
-const DUR = 1.0;
-const PASSO = 0.09;       // atraso entre cartoes vizinhos
+const DESLOC = 90;        // px — o bastante para o olho seguir o percurso
+const DUR = 1.15;
+const PASSO = 0.13;       // atraso entre cartoes vizinhos
 
 export function useBlocos(escopo) {
   useGSAP(() => {
@@ -65,7 +68,7 @@ export function useBlocos(escopo) {
             clipPath: 'inset(0% 0% 0% 0%)',
             opacity: 1,
             duration: DUR,
-            ease: 'expo.out',
+            ease: 'power3.out',
             delay: i * PASSO,
             scrollTrigger: {
               trigger: grupo,
