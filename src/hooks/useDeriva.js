@@ -1,5 +1,5 @@
+import { useEffect } from 'react';
 import gsap from 'gsap';
-import { useGSAP } from '@gsap/react';
 
 /**
  * useDeriva — translacao diferencial ligada ao scroll.
@@ -31,7 +31,11 @@ function escalaDaTela() {
 }
 
 export function useDeriva(escopo) {
-  useGSAP(() => {
+  /* useEffect, nao useGSAP: este hook nao cria tween nenhum — so um
+     quickSetter e um ticker, e os dois sao desfeitos a mao no cleanup.
+     O useGSAP embrulha o callback num gsap.context() que, ao reverter,
+     zera o cache de transform dos elementos por baixo dos setters. */
+  useEffect(() => {
     const raiz = escopo.current;
     if (!raiz) return;
 
@@ -88,6 +92,11 @@ export function useDeriva(escopo) {
 
     medir();
     escrever();
+
+    /* Um unico ticker compartilhado com o resto do GSAP, em vez de um
+       requestAnimationFrame por instancia do hook: o loop ja existe e
+       ja roda para o Lenis, entao entrar nele custa uma entrada de
+       array por quadro. */
     gsap.ticker.add(escrever);
 
     const aoRedimensionar = () => { medir(); escrever(); };
@@ -98,5 +107,5 @@ export function useDeriva(escopo) {
       window.removeEventListener('resize', aoRedimensionar);
       alvos.forEach((a) => a.por(0));
     };
-  }, { scope: escopo });
+  }, [escopo]);
 }

@@ -62,7 +62,9 @@ export function usePageMotion() {
           yPercent: 108,
           duration: 0.9,
           ease: 'expo.out',
-          scrollTrigger: { trigger: el, start: 'top 88%', once: true },
+          // reverse ao voltar: a referencia nao guarda estado, ela e lida
+          // na posicao do scroll — subir de novo desfaz a entrada
+          scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none reverse' },
         });
       });
 
@@ -105,7 +107,9 @@ export function usePageMotion() {
           opacity: 0,
           duration: 0.9,
           ease: 'expo.out',
-          scrollTrigger: { trigger: el, start: 'top 88%', once: true },
+          // reverse ao voltar: a referencia nao guarda estado, ela e lida
+          // na posicao do scroll — subir de novo desfaz a entrada
+          scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none reverse' },
         });
       });
 
@@ -117,7 +121,7 @@ export function usePageMotion() {
           duration: 0.8,
           ease: 'expo.out',
           stagger: 0.08,
-          scrollTrigger: { trigger: el, start: 'top 85%', once: true },
+          scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none reverse' },
         });
       });
 
@@ -130,7 +134,9 @@ export function usePageMotion() {
             clipPath: 'inset(0% 0% 0% 0%)',
             duration: 1.2,
             ease: 'expo.out',
-            scrollTrigger: { trigger: el, start: 'top 88%', once: true },
+            // reverse ao voltar: a referencia nao guarda estado, ela e lida
+          // na posicao do scroll — subir de novo desfaz a entrada
+          scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none reverse' },
           }
         );
         // deriva interna: a imagem de fundo desliza mais devagar que a pagina
@@ -152,7 +158,7 @@ export function usePageMotion() {
           transformOrigin: 'left center',
           duration: 1.1,
           ease: 'expo.out',
-          scrollTrigger: { trigger: el, start: 'top 92%', once: true },
+          scrollTrigger: { trigger: el, start: 'top 92%', toggleActions: 'play none none reverse' },
         });
       });
 

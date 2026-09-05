@@ -1,20 +1,33 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import Hero from '../sections/Hero';
 import SceneSection from '../sections/SceneSection';
 import { usePageMotion } from '../hooks/usePageMotion';
+import { useDeriva } from '../hooks/useDeriva';
 
 export default function Home() {
   const motionRef = usePageMotion();
+
+  /* Escopo proprio para a deriva, comecando DEPOIS do heroi: o Hero ja
+     tem o dele, e um escopo que englobasse os dois faria dois tickers
+     escreverem o mesmo `y` nos mesmos elementos. */
+  const derivaRef = useRef(null);
+  useDeriva(derivaRef);
+
   return (
     <div ref={motionRef} className="page-home" style={{ backgroundColor: '#000' }}>
       <Hero />
+
+      <div ref={derivaRef}>
       
       {/* SECTION 2: EDITORIAL BLOCK */}
       <section style={{ backgroundColor: '#000', color: 'var(--text-color)', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <div style={{ display: 'flex', flexWrap: 'wrap', flex: 1 }}>
           <div style={{ flex: '1 1 50%', minHeight: '50vh', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             {/* Image Placeholder */}
-            <div data-anim="frame" style={{ width: '70%', height: '80%', backgroundColor: '#111', backgroundImage: 'url(/images/sobre_identidade_ux.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', filter: 'grayscale(100%) brightness(0.8)' }}></div>
+            {/* Contramao: enquanto o texto sobe, a imagem fica para tras.
+                data-anim="frame" so anima clip-path, entao a deriva pode
+                dividir o mesmo elemento sem disputar o `y`. */}
+            <div data-anim="frame" data-deriva="0.14" style={{ width: '70%', height: '80%', backgroundColor: '#111', backgroundImage: 'url(/images/imagine-alguem.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', filter: 'grayscale(100%) brightness(0.8)' }}></div>
           </div>
           <div style={{ flex: '1 1 50%', display: 'flex', alignItems: 'center', padding: '5vw' }}>
             <h2 data-anim="words" style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(3rem, 5vw, 6rem)', lineHeight: '0.9', textTransform: 'uppercase', color: 'var(--text-color)', letterSpacing: '-0.02em' }}>
@@ -22,7 +35,9 @@ export default function Home() {
             </h2>
           </div>
         </div>
-        <div style={{ padding: '5vw', paddingBottom: '10vw' }}>
+        {/* A deriva vai no container, nao no h3: o data-anim="words" ja
+            mexe nas palavras dele. */}
+        <div data-deriva="-0.12" style={{ padding: '5vw', paddingBottom: '10vw' }}>
           <h3 data-anim="words" style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2.5rem, 4.5vw, 5rem)', lineHeight: '0.9', textTransform: 'uppercase', color: 'var(--fumaca)', letterSpacing: '-0.02em' }}>
             SEU SITE É UMA DESSAS PRIMEIRAS IMPRESSÕES. ELE NÃO DEVERIA SER APENAS UMA PÁGINA BONITA. DEVERIA REPRESENTAR O NÍVEL DO NEGÓCIO POR TRÁS.
           </h3>
@@ -41,15 +56,20 @@ export default function Home() {
         {/* Editorial Masonry Gallery */}
         <div data-anim="stagger" style={{ marginTop: '10vw', display: 'flex', flexWrap: 'wrap', gap: '2rem' }}>
           <div style={{ flex: '1 1 40%', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <img src="/images/sobre_website_perf.jpg" alt="Work" style={{ width: '100%', height: 'auto', filter: 'grayscale(100%)' }} />
+            {/* Ancora do bloco: e a peca parada que faz o olho perceber
+                que as outras duas se movem. Sem atributo, de proposito. */}
+            <img src="/images/estrutura-primeiro.jpg" alt="Maquete de concreto com malha estrutural" style={{ width: '100%', height: 'auto', filter: 'grayscale(100%)' }} />
             <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: '#666', textTransform: 'uppercase' }}>ESTRUTURA PRIMEIRO (2026)</span>
           </div>
           <div style={{ flex: '1 1 30%', display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '15vw' }}>
-            <img src="/images/sobre_ai_automation.jpg" alt="Work" style={{ width: '100%', height: 'auto', filter: 'grayscale(100%)' }} />
+            {/* A deriva vai na IMAGEM, nao na coluna: o data-anim="stagger"
+                do pai anima os filhos com `y`, e os dois brigariam. Assim a
+                imagem desliza e a legenda fica ancorada. */}
+            <img src="/images/estetica-depois.jpg" data-deriva="-0.14" alt="Silhueta dissolvendo em cubos" style={{ width: '100%', height: 'auto', filter: 'grayscale(100%)' }} />
             <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: '#666', textTransform: 'uppercase' }}>ESTÉTICA DEPOIS (2026)</span>
           </div>
           <div style={{ flex: '1 1 20%', display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '5vw' }}>
-            <img src="/images/sobre_security_infra.jpg" alt="Work" style={{ width: '100%', height: 'auto', filter: 'grayscale(100%)' }} />
+            <img src="/images/funcao-em-tudo.jpg" data-deriva="-0.26" alt="Paineis de vidro sobrepostos com luz ambar" style={{ width: '100%', height: 'auto', filter: 'grayscale(100%)' }} />
             <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: '#666', textTransform: 'uppercase' }}>FUNÇÃO EM TUDO (2026)</span>
           </div>
         </div>
@@ -138,6 +158,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+      </div>
     </div>
   );
 }
