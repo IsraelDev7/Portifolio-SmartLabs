@@ -99,7 +99,9 @@
 
 .level-dot.active {
   background-color: var(--solda);
-  opacity: 12;
+  /* era `opacity: 12` — valor invalido, o navegador descartava a linha
+     inteira e o ponto ficava com a opacidade 0.2 herdada. */
+  opacity: 1;
   width: 7px;
 }
 

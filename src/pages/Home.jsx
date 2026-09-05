@@ -5,6 +5,8 @@ import { usePageMotion } from '../hooks/usePageMotion';
 import { useDeriva } from '../hooks/useDeriva';
 import { useBlocos } from '../hooks/useBlocos';
 import Mosaico from '../components/Mosaico';
+import Moldura from '../components/Moldura';
+import Modulo from '../components/Modulo';
 
 export default function Home() {
   const motionRef = usePageMotion();
@@ -95,7 +97,11 @@ export default function Home() {
       {/* SECTION 4: SPLIT HERO (O QUE EU CONSTRUO) */}
       <section style={{ display: 'flex', flexWrap: 'wrap', backgroundColor: '#000', borderTop: '1px solid #222' }}>
         {/* Left Half */}
-        <div style={{ flex: '1 1 50%', padding: '5vw', position: 'relative', borderRight: '1px solid #222' }}>
+        {/* A metade da imagem gruda no topo; a coluna de texto sobe por
+            cima dela. E o "travar a tela": a foto para, o conteudo passa.
+            alignSelf flex-start e obrigatorio — em flex o padrao estica o
+            item para a altura toda e sticky nunca chega a grudar. */}
+        <div style={{ flex: '1 1 50%', padding: '5vw', position: 'sticky', top: 0, alignSelf: 'flex-start', borderRight: '1px solid #222' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: '#888', marginBottom: '2rem' }}>
             <span>SMARTLABS —— // BUILD</span>
             <span>REVISION —— NEUE 1.0</span>
@@ -108,8 +114,8 @@ export default function Home() {
           </Mosaico>
         </div>
         
-        {/* Right Half */}
-        <div style={{ flex: '1 1 50%', display: 'flex', flexDirection: 'column' }}>
+        {/* Right Half — sobe POR CIMA da imagem grudada */}
+        <div style={{ flex: '1 1 50%', display: 'flex', flexDirection: 'column', position: 'relative', zIndex: 2 }}>
           {/* Top Grey Box */}
           <div style={{ backgroundColor: '#111', padding: '5vw', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
             <h3 data-anim="rise" style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(3rem, 5vw, 6rem)', lineHeight: '0.9', color: '#fff', textTransform: 'uppercase' }}>EXPERIÊNCIA</h3>
@@ -148,30 +154,34 @@ export default function Home() {
       
       {/* SECTION 5: MODULES ROW (THE SYSTEM) */}
       <section style={{ backgroundColor: '#000', color: '#fff', padding: '10vw 5vw', borderTop: '1px solid #222' }}>
-        <div style={{ textAlign: 'center', marginBottom: '5vw' }}>
-          <h2 data-anim="rise" style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(3rem, 6vw, 8rem)', lineHeight: '0.9', textTransform: 'uppercase', color: '#fff' }}>
+        <Moldura style={{ padding: 'clamp(2.5rem, 6vw, 6rem) clamp(1.5rem, 4vw, 4rem)', marginBottom: '6vw' }}>
+          <h2 data-anim="rise" style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(3rem, 6vw, 8rem)', lineHeight: '0.9', textTransform: 'uppercase', color: '#fff', margin: 0, textAlign: 'left' }}>
             O SISTEMA ESTÁ CONECTADO.
           </h2>
-          <p style={{ fontFamily: 'var(--font-mono)', color: '#888', marginTop: '2rem', textTransform: 'uppercase' }}>SOURCE —— THE SYSTEM</p>
-        </div>
+          <div className="moldura__rodape">
+            <span className="moldura__pasta">
+              <svg width="13" height="11" viewBox="0 0 13 11" fill="none" aria-hidden="true">
+                <path d="M0.75 10.25V0.75H4.5L5.75 2.25H12.25V10.25H0.75Z" stroke="var(--solda)" strokeWidth="1" />
+              </svg>
+              SML/IP —— 2026
+            </span>
+            <span>SOURCE —— THE SYSTEM</span>
+          </div>
+        </Moldura>
         
-        <div data-bloco style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '2rem', fontFamily: 'var(--font-mono)', fontSize: '0.85rem', lineHeight: '1.6', color: '#aaa', textTransform: 'uppercase' }}>
-          <div>
-            <div data-anim="line" style={{ color: '#fff', marginBottom: '1rem', paddingBottom: '0.5rem', borderBottom: '1px solid #333' }}>MODULE —— DESIGN</div>
+        <div data-bloco>
+          <Modulo codigo="I" titulo="Design" indice="001">
             Cria percepção. Transformando a identidade em uma experiência tátil no digital.
-          </div>
-          <div>
-            <div data-anim="line" style={{ color: '#fff', marginBottom: '1rem', paddingBottom: '0.5rem', borderBottom: '1px solid #333' }}>MODULE —— WEBSITE</div>
+          </Modulo>
+          <Modulo codigo="II" titulo="Website" indice="002">
             Transforma percepção em experiência. Onde o usuário interage e consome a narrativa.
-          </div>
-          <div>
-            <div data-anim="line" style={{ color: '#fff', marginBottom: '1rem', paddingBottom: '0.5rem', borderBottom: '1px solid #333' }}>MODULE —— TRACKING</div>
+          </Modulo>
+          <Modulo codigo="III" titulo="Tracking" indice="003">
             Transforma comportamento em informação. Registrando cada passo de forma silenciosa.
-          </div>
-          <div>
-            <div data-anim="line" style={{ color: '#fff', marginBottom: '1rem', paddingBottom: '0.5rem', borderBottom: '1px solid #333' }}>MODULE —— AUTOMAÇÃO & AI</div>
+          </Modulo>
+          <Modulo codigo="IV" titulo="Automação & AI" indice="004">
             Transforma informação em ação. Aumentando a capacidade da operação sem esforço braçal.
-          </div>
+          </Modulo>
         </div>
       </section>
       </div>
