@@ -384,3 +384,25 @@ h3 {
 .pm-cell {
   will-change: transform, opacity;
 }
+
+/* ═══════════════════════════════════════════════════════════
+   MOSAICO — a foto se constroi em ladrilhos com o scroll
+   ═══════════════════════════════════════════════════════════ */
+
+.mosaico {
+  position: relative;
+  display: block;
+  line-height: 0;      /* sem isto a <img> deixa a folga do descender */
+}
+
+/* A cobertura fica por cima da foto e vai sendo apagada. Nao intercepta
+   ponteiro nenhum: e pintura, nao interface. */
+.mosaico__cobertura {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mosaico__cobertura { display: none; }
+}

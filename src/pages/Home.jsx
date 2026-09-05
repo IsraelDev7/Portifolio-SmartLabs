@@ -4,6 +4,7 @@ import SceneSection from '../sections/SceneSection';
 import { usePageMotion } from '../hooks/usePageMotion';
 import { useDeriva } from '../hooks/useDeriva';
 import { useBlocos } from '../hooks/useBlocos';
+import Mosaico from '../components/Mosaico';
 
 export default function Home() {
   const motionRef = usePageMotion();
@@ -26,10 +27,12 @@ export default function Home() {
         <div style={{ display: 'flex', flexWrap: 'wrap', flex: 1 }}>
           <div style={{ flex: '1 1 50%', minHeight: '50vh', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             {/* Image Placeholder */}
-            {/* Contramao: enquanto o texto sobe, a imagem fica para tras.
-                data-anim="frame" so anima clip-path, entao a deriva pode
-                dividir o mesmo elemento sem disputar o `y`. */}
-            <div data-anim="frame" data-deriva="0.14" style={{ width: '70%', height: '80%', backgroundColor: '#111', backgroundImage: 'url(/images/imagine-alguem.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', filter: 'grayscale(100%) brightness(0.8)' }}></div>
+            {/* Contramao na deriva (+0.14) e revelacao em ladrilhos pelo
+                scroll. Saiu o data-anim="frame": o clip e o mosaico
+                seriam duas revelacoes disputando a mesma imagem. */}
+            <Mosaico deriva="0.14" semente={3} style={{ width: '70%', height: '80%' }}>
+              <div style={{ width: '100%', height: '100%', backgroundColor: '#111', backgroundImage: 'url(/images/imagine-alguem.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', filter: 'grayscale(100%) brightness(0.8)' }}></div>
+            </Mosaico>
           </div>
           <div style={{ flex: '1 1 50%', display: 'flex', alignItems: 'center', padding: '5vw' }}>
             <h2 data-anim="words" style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(3rem, 5vw, 6rem)', lineHeight: '0.9', textTransform: 'uppercase', color: 'var(--text-color)', letterSpacing: '-0.02em' }}>
@@ -63,18 +66,24 @@ export default function Home() {
           <div style={{ flex: '1 1 40%', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             {/* Ancora do bloco: e a peca parada que faz o olho perceber
                 que as outras duas se movem. Sem atributo, de proposito. */}
-            <img src="/images/estrutura-primeiro.jpg" alt="Maquete de concreto com malha estrutural" style={{ width: '100%', height: 'auto', filter: 'grayscale(100%)' }} />
+            <Mosaico semente={11}>
+              <img src="/images/estrutura-primeiro.jpg" alt="Maquete de concreto com malha estrutural" style={{ width: '100%', height: 'auto', filter: 'grayscale(100%)' }} />
+            </Mosaico>
             <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: '#666', textTransform: 'uppercase' }}>ESTRUTURA PRIMEIRO (2026)</span>
           </div>
           <div style={{ flex: '1 1 30%', display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '15vw' }}>
-            {/* A deriva vai na IMAGEM, nao na coluna: o data-anim="stagger"
-                do pai anima os filhos com `y`, e os dois brigariam. Assim a
-                imagem desliza e a legenda fica ancorada. */}
-            <img src="/images/estetica-depois.jpg" data-deriva="-0.14" alt="Silhueta dissolvendo em cubos" style={{ width: '100%', height: 'auto', filter: 'grayscale(100%)' }} />
+            {/* A deriva vai no MOSAICO, nao na coluna: o data-bloco do pai
+                anima os filhos com `y` e os dois brigariam. Assim a foto e
+                a cobertura deslizam juntas e a legenda fica ancorada. */}
+            <Mosaico deriva="-0.14" semente={23}>
+              <img src="/images/estetica-depois.jpg" alt="Silhueta dissolvendo em cubos" style={{ width: '100%', height: 'auto', filter: 'grayscale(100%)' }} />
+            </Mosaico>
             <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: '#666', textTransform: 'uppercase' }}>ESTÉTICA DEPOIS (2026)</span>
           </div>
           <div style={{ flex: '1 1 20%', display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '5vw' }}>
-            <img src="/images/funcao-em-tudo.jpg" data-deriva="-0.26" alt="Paineis de vidro sobrepostos com luz ambar" style={{ width: '100%', height: 'auto', filter: 'grayscale(100%)' }} />
+            <Mosaico deriva="-0.26" semente={41}>
+              <img src="/images/funcao-em-tudo.jpg" alt="Paineis de vidro sobrepostos com luz ambar" style={{ width: '100%', height: 'auto', filter: 'grayscale(100%)' }} />
+            </Mosaico>
             <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: '#666', textTransform: 'uppercase' }}>FUNÇÃO EM TUDO (2026)</span>
           </div>
         </div>
@@ -94,7 +103,9 @@ export default function Home() {
           <h2 data-anim="rise" style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(5rem, 8vw, 10rem)', lineHeight: '0.85', color: '#fff', textTransform: 'uppercase', marginBottom: '5vw' }}>
             O QUE EU<br/>CONSTRUO
           </h2>
-          <div data-anim="frame" style={{ width: '100%', height: '60vh', backgroundImage: 'url(/images/sobre_identidade_ux.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', filter: 'grayscale(100%) brightness(0.9)' }}></div>
+          <Mosaico semente={17} style={{ width: '100%', height: '60vh' }}>
+            <div style={{ width: '100%', height: '100%', backgroundImage: 'url(/images/o-que-construo.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', filter: 'grayscale(100%) brightness(0.9)' }}></div>
+          </Mosaico>
         </div>
         
         {/* Right Half */}
