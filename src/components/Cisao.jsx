@@ -1,9 +1,4 @@
-import React, { useRef } from 'react';
-import gsap from 'gsap';
-import { useGSAP } from '@gsap/react';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-gsap.registerPlugin(ScrollTrigger);
+import React from 'react';
 
 /**
  * Cisao — a secao dividida 52/48, em dois atos com a imagem travada.
@@ -19,8 +14,11 @@ gsap.registerPlugin(ScrollTrigger);
  * calibrar. Sticky tambem nao cria pin-spacer, entao nao ha altura
  * fantasma nem refresh encadeado com os outros gatilhos da pagina.
  *
- * A imagem NUNCA se move. O que se move e o que esta na frente dela: as
- * declaracoes trocam por fade cruzado no meio do percurso.
+ * A imagem NUNCA se move — ela e a unica peca sticky. Tudo o que esta na
+ * frente dela ROLA: o selo, as duas declaracoes, e a coluna da direita.
+ * Nao ha fade cruzado nenhum; os textos sobem e saem, que e o que
+ * acontece na referencia. A camada de texto sobe -100vh para ocupar a
+ * mesma faixa da imagem sem somar altura.
  *
  * O painel da direita e Grafite, nao branco. Sobre o Aco da pagina, dez
  * pontos de luminancia ja separam os planos sem sair do territorio.
@@ -37,66 +35,39 @@ export default function Cisao({
   rodape,
   cartao,
 }) {
-  const alvo = useRef(null);
-
-  useGSAP(() => {
-    const el = alvo.current;
-    if (!el) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-    const um = el.querySelector('.cisao__declaracao--um');
-    const dois = el.querySelector('.cisao__declaracao--dois');
-    if (!um || !dois) return;
-
-    // A troca acontece no meio do curso: enquanto o primeiro ato sai da
-    // tela, a declaracao dele cede lugar a do segundo.
-    gsap.fromTo([um, dois],
-      { opacity: (i) => (i === 0 ? 1 : 0) },
-      {
-        opacity: (i) => (i === 0 ? 0 : 1),
-        ease: 'none',
-        scrollTrigger: {
-          trigger: el,
-          start: 'top top-=40%',
-          end: 'top top-=90%',
-          scrub: true,
-        },
-      }
-    );
-  }, { scope: alvo });
-
   return (
-    <section className="cisao" ref={alvo}>
+    <section className="cisao">
       <div className="cisao__esq">
+        {/* a unica peca que gruda */}
         <div
           className="cisao__imagem"
           style={{ backgroundImage: `url(${imagem})` }}
           role="presentation"
         />
 
-        {/* Fios verticais colados na emenda — no original sao uma coluna
-            de 100px que costura as duas metades. */}
         <div className="cisao__fios" aria-hidden="true">
           {Array.from({ length: 7 }, (_, i) => <i key={i} />)}
         </div>
 
-        {selo && (
-          <div className="cisao__selo">
-            {selo}
-            <i className="cisao__ponto" aria-hidden="true" />
+        {/* camadas de texto: rolam por cima da imagem parada */}
+        <div className="cisao__textos">
+          <div className="cisao__camada">
+            {selo && (
+              <div className="cisao__selo">
+                {selo}
+                <i className="cisao__ponto" aria-hidden="true" />
+              </div>
+            )}
+            {declaracao && <p className="cisao__declaracao">{declaracao}</p>}
           </div>
-        )}
 
-        {declaracao && (
-          <p className="cisao__declaracao cisao__declaracao--um">{declaracao}</p>
-        )}
-        {declaracaoDois && (
-          <p className="cisao__declaracao cisao__declaracao--dois">{declaracaoDois}</p>
-        )}
+          <div className="cisao__camada">
+            {declaracaoDois && <p className="cisao__declaracao">{declaracaoDois}</p>}
+          </div>
+        </div>
       </div>
 
       <div className="cisao__dir">
-        {/* ── ato 1 ── */}
         <div className="cisao__ato">
           <header>
             {kicker && <span className="cisao__kicker">{kicker}</span>}
@@ -109,7 +80,8 @@ export default function Cisao({
           {rodape && <div className="cisao__rodape">{rodape}</div>}
         </div>
 
-        {/* ── ato 2 — o cartao que aparece com a tela travada ── */}
+        {/* O cartao para no topo do segundo ato. Abaixo dele fica vazio
+            de proposito: e o fecho limpo da secao. */}
         {cartao && <div className="cisao__ato cisao__ato--dois">{cartao}</div>}
       </div>
     </section>
