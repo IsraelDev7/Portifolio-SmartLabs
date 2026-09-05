@@ -158,6 +158,9 @@ export default function Home() {
           <h2 data-anim="rise" style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(3rem, 6vw, 8rem)', lineHeight: '0.9', textTransform: 'uppercase', color: '#fff', margin: 0, textAlign: 'left' }}>
             O SISTEMA ESTÁ CONECTADO.
           </h2>
+          <p data-anim="rise" style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.4rem, 3vw, 3rem)', lineHeight: '1', textTransform: 'uppercase', color: 'var(--fumaca)', margin: 'var(--space-3) 0 0', letterSpacing: '-0.01em' }}>
+            Cada camada tem uma função.
+          </p>
           <div className="moldura__rodape">
             <span className="moldura__pasta">
               <svg width="13" height="11" viewBox="0 0 13 11" fill="none" aria-hidden="true">
@@ -170,17 +173,52 @@ export default function Home() {
         </Moldura>
         
         <div data-bloco>
-          <Modulo codigo="I" titulo="Design" indice="001">
-            Cria percepção. Transformando a identidade em uma experiência tátil no digital.
+          <Modulo
+            codigo="01" titulo="Design" indice="001"
+            destaque="A primeira impressão importa."
+            tags="Interface. Experiência. Posicionamento."
+          >
+            Criamos interfaces que traduzem posicionamento, elevam percepção de valor e tornam a experiência digital coerente com o nível do negócio.
           </Modulo>
-          <Modulo codigo="II" titulo="Website" indice="002">
-            Transforma percepção em experiência. Onde o usuário interage e consome a narrativa.
+
+          <Modulo
+            codigo="02" titulo="Development" indice="002"
+            destaque="Por trás de uma boa experiência existe uma estrutura sólida."
+            tags="Front-end. Back-end. APIs. Sistemas."
+          >
+            Desenvolvemos aplicações e sistemas com arquitetura full-stack, integrações e tecnologia adequada ao problema.
           </Modulo>
-          <Modulo codigo="III" titulo="Tracking" indice="003">
-            Transforma comportamento em informação. Registrando cada passo de forma silenciosa.
+
+          <Modulo
+            codigo="03" titulo="Automation" indice="003"
+            destaque="Tudo que depende de trabalho manual repetitivo merece ser questionado."
+            tags="Menos tarefas manuais. Mais velocidade."
+          >
+            Conectamos processos para que informações avancem pelo sistema sem depender de alguém movimentando cada etapa.
           </Modulo>
-          <Modulo codigo="IV" titulo="Automação & AI" indice="004">
-            Transforma informação em ação. Aumentando a capacidade da operação sem esforço braçal.
+
+          <Modulo
+            codigo="04" titulo="Data" indice="004"
+            destaque="Cada interação pode gerar informação."
+            tags="Captura. Organização. Tracking. Informação."
+          >
+            Estruturamos a captura e organização desses dados para que o negócio consiga entender melhor o que acontece depois que alguém chega.
+          </Modulo>
+
+          <Modulo
+            codigo="05" titulo="AI" indice="005"
+            destaque="Inteligência artificial não precisa ser um efeito. Ela precisa ter uma função."
+            tags="IA aplicada. Agentes. Processos inteligentes."
+          >
+            Criamos e integramos agentes e sistemas inteligentes para atuar dentro de processos reais do negócio.
+          </Modulo>
+
+          <Modulo
+            codigo="06" titulo="Security" indice="006"
+            destaque="Uma estrutura só é realmente boa quando pode ser confiada."
+            tags="Segurança não é uma camada adicional. É parte da construção."
+          >
+            Segurança faz parte da arquitetura desde o início — da proteção de dados às integrações e aos acessos.
           </Modulo>
         </div>
       </section>
