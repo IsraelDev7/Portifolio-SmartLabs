@@ -1,5 +1,6 @@
 import React from 'react';
 import Fichario, { Ficha, Legenda } from '../components/Fichario';
+import Cisao, { Item, Cartao } from '../components/Cisao';
 
 /**
  * Camadas — os cinco blocos que abrem os modulos, cada um com o seu
@@ -13,28 +14,51 @@ import Fichario, { Ficha, Legenda } from '../components/Fichario';
 export default function Camadas() {
   return (
     <>
-      {/* ── 1 · DEVELOPMENT — grade dispersa vira fileira ── */}
-      <Fichario variante="dev">
-        <Legenda
-          rotulo="Development"
-          fecho={
-            <>
-              Não existe experiência premium quando a tecnologia por trás dela não
-              acompanha. Por isso, o desenvolvimento faz parte da arquitetura desde o começo.
-              <span className="fichario__sequencia">Interface → Código → Sistema → Operação</span>
-            </>
-          }
-        >
-          A fachada é bonita.<br />A estrutura precisa funcionar.
-        </Legenda>
+      {/* ── 1 · DEVELOPMENT — cisao 52/48
+             O mapa de cores do print: o cabecalho vai para o painel da
+             direita, Front-end/Back-end viram a declaracao sobre a
+             imagem, Banco de dados/Integracoes viram o selo, e
+             APIs/Sistemas viram a nota do rodape. ── */}
+      <Cisao
+        imagem="/images/estrutura-primeiro.jpg"
 
-        <Ficha rotulo="01" titulo="Front-end">Experiência e interface.</Ficha>
-        <Ficha rotulo="02" titulo="Back-end">Lógica e funcionamento.</Ficha>
-        <Ficha rotulo="03" titulo="APIs">Conexão entre sistemas.</Ficha>
-        <Ficha rotulo="04" titulo="Banco de dados">Informação organizada.</Ficha>
-        <Ficha rotulo="05" titulo="Integrações">Ferramentas trabalhando juntas.</Ficha>
-        <Ficha rotulo="06" titulo="Sistemas personalizados">Tecnologia construída para o problema.</Ficha>
-      </Fichario>
+        /* verde — selo emoldurado no topo-esquerda */
+        selo={<>
+          <Item rotulo="Banco de dados">Informação organizada.</Item>
+          <Item rotulo="Integrações">Ferramentas trabalhando juntas.</Item>
+        </>}
+
+        /* amarelo — a declaracao grande sobre a imagem */
+        declaracao={<>Experiência e interface.<br />Lógica e funcionamento.</>}
+
+        /* vermelho — o cabecalho no painel da direita */
+        kicker="Development"
+        linhaMenor="A fachada é bonita."
+        linhaMaior={<>A estrutura precisa funcionar.</>}
+        prosa="Não existe experiência premium quando a tecnologia por trás dela não acompanha. Por isso, o desenvolvimento faz parte da arquitetura desde o começo."
+
+        /* azul — a nota mono no pe do painel */
+        rodape={<>
+          <Item rotulo="APIs">Conexão entre sistemas.</Item>
+          <Item rotulo="Sistemas personalizados">Tecnologia construída para o problema.</Item>
+          <Item rotulo="Sequência">Interface → Código → Sistema → Operação</Item>
+        </>}
+
+        /* segundo ato: a declaracao troca por fade enquanto a imagem
+           continua parada, e o cartao sobe do lado direito */
+        declaracaoDois={<>Front-end. Back-end.<br />APIs. Sistemas.</>}
+
+        cartao={
+          <Cartao
+            imagem="/images/funcao-em-tudo.jpg"
+            kicker="Development"
+            titulo={<>Por trás de uma boa experiência existe uma estrutura sólida.</>}
+          >
+            <span>Desenvolvemos aplicações e sistemas com arquitetura full-stack, integrações e tecnologia adequada ao problema.</span>
+            <span>Front-end. Back-end. APIs. Sistemas.</span>
+          </Cartao>
+        }
+      />
 
       {/* ── 2 · AUTOMATION — espalhadas viram a cadeia do fluxo ── */}
       <Fichario variante="auto" stagger={0.03}>
