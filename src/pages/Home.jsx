@@ -7,6 +7,7 @@ import { useBlocos } from '../hooks/useBlocos';
 import Mosaico from '../components/Mosaico';
 import Moldura from '../components/Moldura';
 import Modulo from '../components/Modulo';
+import Camadas from '../sections/Camadas';
 
 export default function Home() {
   const motionRef = usePageMotion();
@@ -222,6 +223,9 @@ export default function Home() {
           </Modulo>
         </div>
       </section>
+
+      {/* SECTION 6: AS CAMADAS — cinco blocos com rearranjo por Flip */}
+      <Camadas />
       </div>
     </div>
   );

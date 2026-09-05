@@ -578,3 +578,165 @@ h3 {
   .modulo { grid-template-columns: 1fr; gap: var(--space-2); }
   .modulo__seta { display: none; }
 }
+
+/* ═══════════════════════════════════════════════════════════
+   FICHARIO — as fichas se rearranjam com o scroll
+   Acervo Vance · Scroll Animation #21 (ScrollBasedLayoutAnimations)
+
+   Todo o comportamento vive AQUI, em pares de layout. O JavaScript nao
+   conhece coordenada nenhuma: ele mede a diferenca entre a regra normal
+   e a regra .fichario--troca e percorre o caminho com o scroll.
+   ═══════════════════════════════════════════════════════════ */
+
+.fichario-caixa {
+  position: relative;      /* alvo do pin */
+  background-color: var(--aco);
+}
+
+.fichario {
+  position: relative;
+  height: 100vh;
+  display: grid;
+  /* A grade ancora embaixo e a legenda mora em cima: sao faixas
+     separadas. Centralizar a grade em 100vh fazia ela subir por cima do
+     texto — as duas disputavam o mesmo espaco e o paragrafo cobria as
+     fichas.
+
+     Nada de align-items aqui: isso impediria a ficha de preencher a
+     trilha e a altura viraria altura-de-conteudo, ignorando o
+     grid-auto-rows que define cada layout. */
+  align-content: end;
+  justify-content: center;
+  padding: 0 var(--content-padding) 7vh;
+}
+
+.fichario__ficha {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: clamp(0.9rem, 1.4vw, 1.6rem);
+  background-color: var(--chapa);
+  border: 1px solid var(--linha);
+  overflow: hidden;
+  will-change: width, height;
+}
+
+/* No layout final a borda acende: e a peca que terminou de se encaixar. */
+.fichario--troca .fichario__ficha { border-color: rgba(209, 77, 41, 0.55); }
+
+.fichario__rotulo {
+  font-family: var(--font-mono);
+  font-size: clamp(0.56rem, 0.68vw, 0.7rem);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--solda);
+}
+
+.fichario__titulo {
+  font-family: var(--font-display);
+  font-size: clamp(0.85rem, 1.25vw, 1.3rem);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--cal);
+}
+
+.fichario__corpo {
+  font-family: var(--font-body);
+  font-size: clamp(0.7rem, 0.85vw, 0.9rem);
+  line-height: 1.35;
+  color: var(--fumaca);
+}
+
+/* A legenda tambem entra no Flip: ela viaja do topo para a base
+   enquanto as fichas se reorganizam. */
+.fichario__legenda {
+  position: absolute;
+  left: var(--content-padding);
+  right: var(--content-padding);
+  top: 7vh;
+  max-width: 40ch;
+  z-index: 3;
+}
+
+/* Ao final a legenda respira: mesma posicao, mais largura. Antes ela
+   descia para a base e reencontrava a grade la embaixo. */
+.fichario--troca .fichario__legenda {
+  max-width: 68ch;
+}
+
+.fichario__manchete {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 3.2vw, 3.4rem);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--cal);
+  margin: 0.6rem 0 0;
+}
+
+.fichario__fecho {
+  font-family: var(--font-body);
+  font-size: clamp(0.85rem, 1.05vw, 1.05rem);
+  line-height: 1.45;
+  color: var(--fumaca);
+  margin: var(--space-2) 0 0;
+  max-width: 56ch;
+}
+
+/* ── 1 · DEVELOPMENT — grade 3x2 dispersa vira fileira encostada ── */
+.fichario--dev { grid-template-columns: repeat(3, 21vw); grid-auto-rows: 23vh; gap: 3vh 2.5vw; }
+.fichario--troca.fichario--dev { grid-template-columns: repeat(6, 12vw); grid-auto-rows: 46vh; gap: 0; }
+
+/* ── 2 · AUTOMATION — espalhadas viram cadeia vertical, o fluxo ── */
+.fichario--auto { grid-template-columns: repeat(4, 15vw); grid-auto-rows: 19vh; gap: 3vh 2vw; }
+.fichario--troca.fichario--auto { grid-template-columns: 44vw; grid-auto-rows: 7vh; gap: 0; }
+
+/* ── 3 · ACQUISITION — das bordas convergem para um nucleo ── */
+.fichario--acq { grid-template-columns: repeat(4, 14vw); grid-auto-rows: 17vh; gap: 9vh 6vw; }
+.fichario--troca.fichario--acq { grid-template-columns: repeat(4, 13vw); grid-auto-rows: 15vh; gap: 0; }
+
+/* ── 4 · AI — pilha sobreposta abre em leque ── */
+.fichario--ai { grid-template-columns: 34vw; grid-auto-rows: 13vh; gap: 0; }
+.fichario--ai .fichario__ficha + .fichario__ficha { margin-top: -8vh; }
+.fichario--troca.fichario--ai { grid-template-columns: repeat(5, 14vw); grid-auto-rows: 42vh; gap: 0; }
+.fichario--troca.fichario--ai .fichario__ficha + .fichario__ficha { margin-top: 0; }
+
+/* ── 5 · SECURITY — leque desalinhado encaixa em bloco ── */
+.fichario--sec { grid-template-columns: repeat(5, 14vw); grid-auto-rows: 44vh; gap: 2.5vw; }
+.fichario--sec .fichario__ficha:nth-child(2n) { align-self: end; height: 32vh; }
+.fichario--troca.fichario--sec { gap: 0; }
+.fichario--troca.fichario--sec .fichario__ficha:nth-child(2n) { align-self: stretch; height: 44vh; }
+
+/* ── tela estreita: sem pin, sem Flip. As fichas viram lista. ──
+   Pin em celular briga com a barra de endereco que aparece e some, e
+   ela recalcula a altura no meio da animacao. */
+@media (max-width: 820px) {
+  .fichario {
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-12) var(--content-padding);
+  }
+  .fichario__ficha { width: 100%; height: auto; }
+  .fichario__legenda { position: static; max-width: none; margin-bottom: var(--space-6); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fichario { height: auto; display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-12) var(--content-padding); }
+  .fichario__ficha { width: 100%; height: auto; }
+  .fichario__legenda { position: static; max-width: none; margin-bottom: var(--space-6); }
+}
+
+/* A sequencia do bloco DEVELOPMENT — a mesma leitura que o layout final
+   desenha com as fichas em fileira, dita em uma linha. */
+.fichario__sequencia {
+  display: block;
+  margin-top: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--solda);
+}
