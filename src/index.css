@@ -1097,3 +1097,148 @@ h3 {
   .cisao__ato { min-height: 0; padding: var(--space-12) var(--content-padding); }
   .cartao__imagem { width: 60%; }
 }
+
+/* ═══════════════════════════════════════════════════════════
+   ASSINATURA — a marca em corpo maximo, o simbolo, a regua, o nome
+   Reconstrucao do bloco de fecho: duas colunas ladeando um selo
+   circular, a marca em tipo gigante, e a regua ate o nome.
+   ═══════════════════════════════════════════════════════════ */
+
+.assinatura {
+  background-color: var(--aco);
+  padding: var(--space-20) var(--content-padding) var(--space-12);
+  overflow: hidden;
+}
+
+.assinatura__topo {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: var(--space-6);
+  align-items: center;
+  margin-bottom: var(--space-16);
+}
+
+.assinatura__coluna {
+  font-family: var(--font-display);
+  font-size: clamp(0.9rem, 1.35vw, 1.2rem);
+  line-height: 1.35;
+  text-transform: uppercase;
+  color: var(--fumaca);
+  margin: 0;
+  max-width: 34ch;
+}
+
+/* A coluna da direita e alinhada a direita, espelhando a da esquerda —
+   as duas convergem para o selo no meio. */
+.assinatura__coluna--dir {
+  text-align: right;
+  justify-self: end;
+}
+
+/* A ultima frase de cada coluna e a conclusao: fica em Cal para se
+   destacar do corpo em Fumaca, sem mudar de corpo nem de familia. */
+.assinatura__coluna b {
+  display: block;
+  margin-top: 0.6rem;
+  color: var(--cal);
+  font-weight: inherit;
+}
+
+.assinatura__kicker {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  color: var(--solda);
+  margin-bottom: 0.7rem;
+}
+
+/* ── selo circular ── */
+.assinatura__selo {
+  position: relative;
+  width: clamp(180px, 22vw, 300px);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+}
+
+.assinatura__giro {
+  position: absolute;
+  inset: 0;
+  animation: gira-selo 26s linear infinite;
+}
+
+.assinatura__trilha {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  fill: var(--fumaca);
+  text-transform: uppercase;
+}
+
+@keyframes gira-selo {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .assinatura__giro { animation: none; }
+}
+
+.assinatura__monograma { position: relative; z-index: 1; }
+
+/* ── a marca em corpo maximo ──
+   A referencia usa 241px numa viewport de 1265, ou 19vw. Aqui o mesmo
+   19vw, mas SMART LABS tem dez caracteres contra oito, entao o corpo cai
+   para caber na largura sem quebrar a palavra. */
+.assinatura__marca {
+  font-family: var(--font-display);
+  font-size: clamp(2.6rem, 15.5vw, 13rem);
+  line-height: 0.82;
+  letter-spacing: -0.045em;
+  text-transform: uppercase;
+  color: var(--cal);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;   /* a mascara do sobe-letra */
+}
+
+.assinatura__marca .letra { display: inline-block; }
+
+/* ── simbolo, regua, nome ── */
+.assinatura__rodape {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+.assinatura__nivel { flex: none; }
+
+/* Traco unico crescendo da esquerda. Borda de CSS existe inteira ou nao
+   existe; para desenhar e preciso escalar a partir de uma origem. */
+.assinatura__regua {
+  flex: 1;
+  height: 2px;
+  background-color: var(--cal);
+}
+
+.assinatura__nome {
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: clamp(0.68rem, 0.85vw, 0.82rem);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--cal);
+}
+
+@media (max-width: 820px) {
+  .assinatura__topo {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+    gap: var(--space-8);
+  }
+  .assinatura__coluna--dir { text-align: center; justify-self: center; }
+  .assinatura__coluna { max-width: none; }
+  .assinatura__marca { white-space: normal; font-size: clamp(2.2rem, 13vw, 5rem); }
+}

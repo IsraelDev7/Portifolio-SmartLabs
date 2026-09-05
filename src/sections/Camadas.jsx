@@ -1,6 +1,8 @@
 import React from 'react';
 import Fichario, { Ficha, Legenda } from '../components/Fichario';
 import Cisao, { Item, Cartao } from '../components/Cisao';
+import Assinatura from './Assinatura';
+import Faixa, { Coluna } from '../components/Faixa';
 
 /**
  * Camadas — os cinco blocos que abrem os modulos, cada um com o seu
@@ -78,6 +80,33 @@ export default function Camadas() {
         <Ficha rotulo="07" titulo="Follow-up" />
         <Ficha rotulo="08" titulo="Venda" />
       </Fichario>
+
+      {/* ── fecho do bloco Automation: a marca em corpo maximo, o
+             simbolo dos Degraus, a regua desenhada e o nome ── */}
+      <Assinatura />
+
+      {/* Tira de tres colunas com o mesmo tratamento da referencia —
+          glifo, rotulo, regua e prosa em mono. Os topicos sao os da
+          marca: VISUAL/FORM/MOTION descreve portfolio de arte em
+          movimento, seria conteudo errado aqui. */}
+      <Faixa
+        kicker="Estrutura"
+        titulo={<>Três camadas sustentam<br />qualquer operação digital.</>}
+        colunas={3}
+      >
+        <Coluna rotulo="Sistema">
+          Estrutura, integrações e banco de dados. O que sustenta a operação
+          quando o volume cresce e nada pode cair.
+        </Coluna>
+        <Coluna rotulo="Operação">
+          Processos conectados para que a informação avance sozinha. Menos
+          etapa manual, menos espera, menos erro de repasse.
+        </Coluna>
+        <Coluna rotulo="Inteligência">
+          Agentes e sistemas atuando dentro de fluxos reais. Tecnologia
+          aplicada ao problema, não ao discurso.
+        </Coluna>
+      </Faixa>
 
       {/* ── 3 · ACQUISITION / DATA — das bordas para o nucleo ── */}
       <Fichario variante="acq" stagger={0.04}>
