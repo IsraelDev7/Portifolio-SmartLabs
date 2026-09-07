@@ -62,27 +62,16 @@ export default function Camadas() {
         }
       />
 
-      {/* ── 2 · AUTOMATION — espalhadas viram a cadeia do fluxo ── */}
-      <Fichario variante="auto" stagger={0.03}>
-        <Legenda
-          rotulo="Automation"
-          fecho="Automação não existe para tornar o negócio mais complicado. Existe para tornar a operação mais simples, rápida e consistente."
-        >
-          Se uma tarefa se repete,<br />ela pode ser repensada.
-        </Legenda>
+      {/* ── 2 · AUTOMATION — a marca em corpo maximo, o simbolo dos
+             Degraus, a regua desenhada e o nome.
 
-        <Ficha rotulo="01" titulo="Lead" />
-        <Ficha rotulo="02" titulo="Formulário" />
-        <Ficha rotulo="03" titulo="Captura" />
-        <Ficha rotulo="04" titulo="Dados" />
-        <Ficha rotulo="05" titulo="Automação" />
-        <Ficha rotulo="06" titulo="Mensagem" />
-        <Ficha rotulo="07" titulo="Follow-up" />
-        <Ficha rotulo="08" titulo="Venda" />
-      </Fichario>
-
-      {/* ── fecho do bloco Automation: a marca em corpo maximo, o
-             simbolo dos Degraus, a regua desenhada e o nome ── */}
+             O fichario da cadeia Lead->Venda que ficava aqui saiu: a
+             Assinatura ja carrega a copy de Automation inteira, entao os
+             dois diziam a mesma coisa em sequencia. E ele custava caro —
+             o pin de +=300% empilhava tres alturas de tela de scroll
+             travado logo acima, e recarregar dentro dessa faixa devolvia
+             o leitor para dentro do pin, onde os gatilhos de baixo ja
+             nascem ultrapassados. ── */}
       <Assinatura />
 
       {/* Tira de tres colunas com o mesmo tratamento da referencia —
