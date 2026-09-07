@@ -17,7 +17,9 @@ export function Monogram({ color = 'currentColor', accent = SOLDA, size = 48, ..
       <title>Israel Passos — monograma</title>
       <rect x="8" y="64" width="24" height="28" fill={color} />
       <rect x="38" y="44" width="24" height="48" fill={color} />
-      <rect x="68" y="24" width="24" height="68" fill={accent} />
+      {/* classe no degrau alto: e o unico ponto de acento da marca,
+          e ha telas que precisam anima-lo sozinho (pulso, pisca-pisca). */}
+      <rect className="logo__degrau-alto" x="68" y="24" width="24" height="68" fill={accent} />
     </svg>
   );
 }

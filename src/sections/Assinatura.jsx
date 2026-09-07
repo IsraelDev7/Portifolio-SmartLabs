@@ -18,48 +18,89 @@ gsap.registerPlugin(ScrollTrigger);
  * ha razao para inventar um simbolo aqui: a marca ja tem o seu, e e ele
  * que fecha a pagina.
  *
+ * A COREOGRAFIA DO RODAPE tem tres tempos, nessa ordem:
+ *   1. o Nivel se levanta bloco a bloco (degrau curto -> degrau alto)
+ *   2. a regua e desenhada da esquerda para a direita
+ *   3. o nome e digitalizado — cada letra passa por ruido antes de fixar
+ *
  * A regua e um traco unico crescendo da esquerda, nao uma borda que
  * aparece pronta. Borda de CSS existe inteira ou nao existe; para
  * desenhar e preciso escalar a partir de uma origem.
  */
+
+/* Alfabeto do ruido. So caixa alta, digitos e sinais de terminal: o nome
+   e mono e caixa alta, e glifo de largura diferente faria a linha tremer
+   enquanto embaralha. */
+const CAOS = '01<>[]{}#*+=/\\ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
 export default function Assinatura() {
   const alvo = useRef(null);
 
   useGSAP(() => {
+    const raiz = alvo.current;
+    const nomeSpans = gsap.utils.toArray(raiz.querySelectorAll('.assinatura__nome .letra'));
+
+    /* O texto final vive no dataset, nao na leitura do DOM: se o efeito
+       remontar no meio de um embaralho, ler textContent congelaria o
+       ruido como se fosse o nome. */
+    nomeSpans.forEach((el) => {
+      if (el.dataset.fim === undefined) el.dataset.fim = el.textContent;
+    });
+    const restaurar = () => nomeSpans.forEach((el) => { el.textContent = el.dataset.fim; });
+
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-    const gatilho = {
-      trigger: alvo.current.querySelector('.assinatura__marca'),
-      start: 'top 80%',
-      toggleActions: 'play none none reverse',
-    };
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: raiz.querySelector('.assinatura__marca'),
+        start: 'top 80%',
+        toggleActions: 'play none none reverse',
+      },
+    });
 
     // as letras da marca sobem uma a uma
-    gsap.from(alvo.current.querySelectorAll('.assinatura__marca .letra'), {
+    tl.from(raiz.querySelectorAll('.assinatura__marca .letra'), {
       yPercent: 108,
       opacity: 0,
       duration: 1.1,
       stagger: 0.045,
       ease: 'expo.out',
-      scrollTrigger: gatilho,
     });
 
-    // a regua se desenha da esquerda, depois das letras
-    gsap.from(alvo.current.querySelector('.assinatura__regua'), {
+    // 1 · o Nivel sobe bloco a bloco, do degrau curto ao alto
+    tl.from(raiz.querySelectorAll('.assinatura__nivel rect'), {
+      scaleY: 0,
+      duration: 0.42,
+      stagger: 0.14,
+      ease: 'power3.out',
+    }, '-=0.35');
+
+    // 2 · a regua e desenhada da esquerda
+    tl.from(raiz.querySelector('.assinatura__regua'), {
       scaleX: 0,
-      transformOrigin: 'left center',
-      duration: 1.1,
+      duration: 1.0,
       ease: 'power2.inOut',
-      delay: 0.45,
-      scrollTrigger: gatilho,
+    }, '>-0.05');
+
+    // 3 · o nome e digitalizado, letra a letra
+    const abre = tl.duration() - 0.2;
+    tl.to(raiz.querySelector('.assinatura__nome'), { opacity: 1, duration: 0.2 }, abre);
+
+    nomeSpans.forEach((el, i) => {
+      const fim = el.dataset.fim;
+      if (!fim.trim()) return;  // o espaco nao embaralha
+      const passo = { p: 0 };
+      tl.to(passo, {
+        p: 1,
+        duration: 0.4,
+        ease: 'none',
+        onUpdate() { el.textContent = CAOS[(Math.random() * CAOS.length) | 0]; },
+        onComplete() { el.textContent = fim; },
+        onReverseComplete() { el.textContent = fim; },
+      }, abre + i * 0.045);
     });
 
-    gsap.from(alvo.current.querySelector('.assinatura__nome'), {
-      opacity: 0,
-      duration: 0.6,
-      delay: 1.3,
-      scrollTrigger: gatilho,
-    });
+    return restaurar;
   }, { scope: alvo });
 
   return (
@@ -82,17 +123,18 @@ export default function Assinatura() {
                 fill="none"
               />
             </defs>
-            {/* Uma volta so. A circunferencia e 2*pi*74 = 465px e, a 11px
-                com 0.24em de espacejamento, cabem ~50 caracteres. Duas
-                repeticoes transbordavam e o texto colidia consigo mesmo
-                na emenda. */}
+            {/* Uma volta so. A circunferencia e 2*pi*74 = 465 unidades e, a
+                11 unidades com 0.24em de espacejamento, cabem ~50
+                caracteres. Duas repeticoes transbordavam e o texto colidia
+                consigo mesmo na emenda. O selo cresce por CSS, e o texto
+                cresce junto: a conta continua valendo em qualquer tamanho. */}
             <text className="assinatura__trilha">
               <textPath href="#trilha-selo" startOffset="0%">
                 SMARTLABS ✳ ARQUITETURA DIGITAL DE ALTO PADRÃO ✳
               </textPath>
             </text>
           </svg>
-          <Monogram className="assinatura__monograma" color="var(--cal)" size={54} />
+          <Monogram className="assinatura__monograma" color="var(--cal)" size={76} />
         </div>
 
         <p className="assinatura__coluna assinatura__coluna--dir">
@@ -109,11 +151,13 @@ export default function Assinatura() {
         <Letras texto="SMART LABS" />
       </h2>
 
-      {/* simbolo, regua desenhada, nome */}
+      {/* simbolo, regua desenhada, nome digitalizado */}
       <div className="assinatura__rodape">
         <Monogram className="assinatura__nivel" color="var(--cal)" size={38} />
         <i className="assinatura__regua" aria-hidden="true" />
-        <span className="assinatura__nome">Israel Passos</span>
+        <span className="assinatura__nome" aria-label="Israel Passos">
+          <Letras texto="Israel Passos" />
+        </span>
       </div>
     </section>
   );

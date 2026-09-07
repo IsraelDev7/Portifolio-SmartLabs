@@ -88,21 +88,21 @@ export default function Camadas() {
       {/* Tira de tres colunas com o mesmo tratamento da referencia —
           glifo, rotulo, regua e prosa em mono. Os topicos sao os da
           marca: VISUAL/FORM/MOTION descreve portfolio de arte em
-          movimento, seria conteudo errado aqui. */}
-      <Faixa
-        kicker="Estrutura"
-        titulo={<>Três camadas sustentam<br />qualquer operação digital.</>}
-        colunas={3}
-      >
-        <Coluna rotulo="Sistema">
+          movimento, seria conteudo errado aqui.
+
+          `colada`: sem cabecalho e sem padding de topo. A regua da
+          Assinatura, logo acima, ja e o titulo desta tira — um segundo
+          titulo entre as duas so abria um vao. */}
+      <Faixa colada colunas={3}>
+        <Coluna rotulo="Sistema" icone="sistema">
           Estrutura, integrações e banco de dados. O que sustenta a operação
           quando o volume cresce e nada pode cair.
         </Coluna>
-        <Coluna rotulo="Operação">
+        <Coluna rotulo="Operação" icone="operacao">
           Processos conectados para que a informação avance sozinha. Menos
           etapa manual, menos espera, menos erro de repasse.
         </Coluna>
-        <Coluna rotulo="Inteligência">
+        <Coluna rotulo="Inteligência" icone="inteligencia">
           Agentes e sistemas atuando dentro de fluxos reais. Tecnologia
           aplicada ao problema, não ao discurso.
         </Coluna>

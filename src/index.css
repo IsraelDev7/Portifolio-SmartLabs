@@ -821,12 +821,22 @@ h3 {
   border-bottom: 1px solid var(--linha);
 }
 
-/* Quadrado, nao icone: o vocabulario da marca e o degrau, e um
-   quadradinho aceso e a menor peca desse vocabulario. */
+/* O glifo carrega um icone de traco em Solda. Sem icone declarado ele
+   volta a ser o quadradinho aceso — :empty faz o fallback sozinho, sem
+   precisar de uma segunda classe. */
 .faixa__glifo {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  display: block;
+  color: var(--solda);
+}
+
+.faixa__glifo svg { display: block; width: 100%; height: 100%; }
+
+.faixa__glifo:empty {
   width: 8px;
   height: 8px;
-  flex: none;
   background-color: var(--solda);
 }
 
@@ -839,6 +849,11 @@ h3 {
   color: var(--fumaca);
   margin: var(--space-2) 0 0;
 }
+
+/* Colada: a tira encosta no que vem acima. Quem separa e o
+   padding-bottom da Assinatura, e mais nada. */
+.faixa--colada { padding-top: 0; }
+.faixa--colada .faixa__tira { margin-top: 0; }
 
 @media (max-width: 820px) {
   .faixa__tira { grid-template-columns: 1fr; gap: var(--space-6); }
@@ -1106,7 +1121,7 @@ h3 {
 
 .assinatura {
   background-color: var(--aco);
-  padding: var(--space-20) var(--content-padding) var(--space-12);
+  padding: var(--space-20) var(--content-padding) var(--space-8);
   overflow: hidden;
 }
 
@@ -1156,7 +1171,7 @@ h3 {
 /* ── selo circular ── */
 .assinatura__selo {
   position: relative;
-  width: clamp(180px, 22vw, 300px);
+  width: clamp(230px, 29vw, 400px);
   aspect-ratio: 1;
   display: grid;
   place-items: center;
@@ -1186,6 +1201,25 @@ h3 {
 
 .assinatura__monograma { position: relative; z-index: 1; }
 
+/* O degrau alto pisca como indicador de nivel: corte seco, nao fade.
+   steps(1, end) segura o valor de cada trecho ate o proximo — e o que
+   separa um LED de uma respiracao. */
+.assinatura__selo .logo__degrau-alto {
+  animation: pisca-degrau 2.4s steps(1, end) infinite;
+}
+
+@keyframes pisca-degrau {
+  0%,   46%  { opacity: 1; }
+  50%,  58%  { opacity: 0.14; }
+  62%,  70%  { opacity: 1; }
+  74%,  82%  { opacity: 0.14; }
+  86%, 100%  { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .assinatura__selo .logo__degrau-alto { animation: none; }
+}
+
 /* ── a marca em corpo maximo ──
    A referencia usa 241px numa viewport de 1265, ou 19vw. Aqui o mesmo
    19vw, mas SMART LABS tem dez caracteres contra oito, entao o corpo cai
@@ -1214,22 +1248,40 @@ h3 {
 
 .assinatura__nivel { flex: none; }
 
+/* fill-box: sem isso a origem de um <rect> e o canto do SVG inteiro, e
+   o degrau cresceria fora do lugar. */
+.assinatura__nivel rect {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+}
+
 /* Traco unico crescendo da esquerda. Borda de CSS existe inteira ou nao
    existe; para desenhar e preciso escalar a partir de uma origem. */
 .assinatura__regua {
   flex: 1;
-  height: 2px;
+  height: 6px;
   background-color: var(--cal);
+  transform-origin: left center;
 }
 
 .assinatura__nome {
   flex: none;
+  opacity: 0;
   font-family: var(--font-mono);
   font-size: clamp(0.68rem, 0.85vw, 0.82rem);
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--cal);
+  white-space: nowrap;
 }
+
+/* O nome nasce visivel quando nao ha animacao — senao o caminho estatico
+   entrega uma linha vazia. */
+@media (prefers-reduced-motion: reduce) {
+  .assinatura__nome { opacity: 1; }
+}
+
+.assinatura__nome .letra { display: inline-block; }
 
 @media (max-width: 820px) {
   .assinatura__topo {
