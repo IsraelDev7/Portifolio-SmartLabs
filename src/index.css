@@ -1294,3 +1294,331 @@ h3 {
   .assinatura__coluna { max-width: none; }
   .assinatura__marca { white-space: normal; font-size: clamp(2.2rem, 13vw, 5rem); }
 }
+
+/* ═══════════════════════════════════════════════════════════
+   VITRINE — duas secoes encaixadas, com a tela travada
+
+   Medido na referencia (vertical.framer.media), viewport 1280x720:
+     ato 1  sticky top:0 · 1265x648 (90vh) · foto 657 | painel 609
+     ato 2  1265x720 (100vh) · rgba(255,255,255,0.6) · z-index 2
+   La o painel e #F2F2F2; aqui e Grafite. La o veu e branco a 60%;
+   aqui e Aco em gradiente, porque a pagina e escura e a foto tambem —
+   um veu chapado apagaria o vazamento que e o efeito inteiro.
+
+   Nenhuma linha de JavaScript: sticky + z-index fazem tudo.
+   ═══════════════════════════════════════════════════════════ */
+
+.vitrine {
+  position: relative;
+  background-color: var(--aco);
+  /* overflow: hidden mataria o sticky. Nao colocar. */
+}
+
+/* ── ATO 1 ── */
+.vitrine__trava {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  height: 90vh;
+  display: grid;
+  grid-template-columns: 52% 48%;   /* 657/609 medidos na referencia */
+}
+
+.vitrine__foto {
+  background-size: cover;
+  background-position: center 22%;
+  position: relative;
+}
+
+.vitrine__selo-foto {
+  position: absolute;
+  top: var(--space-4);
+  left: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--cal);
+  mix-blend-mode: difference;   /* legivel sobre claro e sobre escuro */
+}
+
+.vitrine__painel {
+  background-color: var(--grafite);
+  padding: var(--space-6) clamp(20px, 3vw, 48px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+.vitrine__kicker,
+.vitrine__kicker-dois {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--solda);
+  margin-bottom: var(--space-3);
+}
+
+/* 70px numa viewport de 1280 = 5.47vw */
+.vitrine__titulo {
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 5.2vw, 4.3rem);
+  line-height: 0.96;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: var(--cal);
+  margin: 0;
+}
+
+/* 24px = 1.875vw */
+.vitrine__descricao {
+  font-family: var(--font-body);
+  font-size: clamp(0.95rem, 1.8vw, 1.5rem);
+  line-height: 1.32;
+  letter-spacing: -0.01em;
+  color: var(--fumaca);
+  margin: var(--space-4) 0 0;
+  max-width: 34ch;
+}
+
+/* ── a ficha do pe do painel ── */
+.vitrine__ficha-nota {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fumaca);
+  margin: 0;
+}
+
+.vitrine__ficha-titulo {
+  font-family: var(--font-display);
+  font-size: clamp(1.05rem, 1.85vw, 1.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: var(--cal);
+  margin: 0.35rem 0 0;
+}
+
+.vitrine__ficha-mono {
+  font-family: var(--font-mono);
+  font-size: clamp(0.72rem, 1.05vw, 0.92rem);
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--fumaca);
+  margin: 0.5rem 0 0;
+}
+
+/* o equivalente do botao verde da referencia, em Solda */
+.vitrine__botao {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  align-self: flex-start;
+  margin-top: var(--space-4);
+  min-height: 44px;             /* WCAG 2.5.5 */
+  padding: 0.55rem 0.9rem;
+  background-color: var(--solda);
+  color: var(--aco);
+  font-family: var(--font-display);
+  font-size: clamp(0.92rem, 1.5vw, 1.25rem);
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
+.vitrine__botao i { font-style: normal; font-size: 0.8em; }
+
+/* ── ATO 2 — o veu ──
+   Gradiente, nao cor chapada: entra a 72% para a foto vazar com forca no
+   encontro dos dois atos, fecha em Aco solido na metade. */
+.vitrine__veu {
+  position: relative;
+  z-index: 2;
+  min-height: 100vh;
+  padding: var(--space-16) var(--content-padding) var(--space-8);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-12);
+  background-image: linear-gradient(
+    180deg,
+    rgba(10, 10, 10, 0.70) 0%,
+    rgba(10, 10, 10, 0.92) 24%,
+    var(--aco) 58%
+  );
+}
+
+/* coluna 1 = a calha dos fios (x=332 de 1280 = 26%) */
+.vitrine__conceito {
+  display: grid;
+  grid-template-columns: 26% 1fr;
+  align-items: start;
+}
+
+.vitrine__fios {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  width: 88px;
+  padding-top: 0.4rem;
+}
+
+.vitrine__fios i {
+  height: 1px;
+  background-color: var(--linha);
+}
+
+/* 58px numa viewport de 1280 = 4.53vw */
+.vitrine__manchete {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 4.4vw, 3.6rem);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  text-transform: uppercase;
+  color: var(--cal);
+  margin: 0;
+}
+
+/* a segunda linha comeca em cinza e fecha em Cal — e o mesmo contraste
+   de "MOTION CONCEPT" na referencia, onde so a primeira palavra recua */
+.vitrine__manchete em {
+  font-style: normal;
+  color: var(--fumaca);
+}
+
+.vitrine__prosa {
+  font-family: var(--font-body);
+  font-size: clamp(0.86rem, 1.15vw, 1rem);
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  color: var(--fumaca);
+  margin: var(--space-4) 0 0;
+  max-width: 62ch;
+  text-indent: 2.2em;           /* a referencia recua a primeira linha */
+}
+
+.vitrine__periodo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  font-family: var(--font-display);
+  font-size: clamp(1.05rem, 2.15vw, 1.75rem);
+  letter-spacing: -0.045em;
+  color: var(--cal);
+}
+
+.vitrine__periodo i {
+  width: clamp(60px, 9vw, 128px);
+  height: 1px;
+  background-color: var(--fumaca);
+}
+
+/* ── a ficha do projeto ── */
+.vitrine__projeto {
+  display: grid;
+  grid-template-columns: 26% minmax(0, 300px) 1fr;
+  gap: 0 var(--space-4);
+  align-items: end;
+}
+
+.vitrine__thumb {
+  grid-column: 2;
+  aspect-ratio: 1;
+  background-size: cover;
+  background-position: center;
+}
+
+.vitrine__projeto-dir {
+  grid-column: 3;
+  display: flex;
+  flex-direction: column;
+}
+
+.vitrine__projeto-nome {
+  font-family: var(--font-display);
+  font-size: clamp(0.95rem, 1.55vw, 1.25rem);
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--fumaca);
+}
+
+/* 200px numa viewport de 1280 = 15.6vw. nowrap porque o codigo e uma
+   marca, nao um texto: quebrado em duas linhas ele deixa de ler como
+   carimbo. O corpo desce para 13.4vw para caber inteiro na coluna. */
+.vitrine__codigo {
+  font-family: var(--font-display);
+  font-size: clamp(2.6rem, 13.4vw, 11rem);
+  line-height: 0.86;
+  letter-spacing: -0.05em;
+  color: var(--cal);
+  margin: 0.1em 0 0;
+  white-space: nowrap;
+}
+
+.vitrine__disciplinas {
+  list-style: none;
+  margin: var(--space-4) 0 0;
+  padding: 0;
+  font-family: var(--font-mono);
+  font-size: clamp(0.72rem, 0.95vw, 0.86rem);
+  line-height: 1.55;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--cal);
+}
+
+.vitrine__marcas {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fumaca);
+}
+
+/* ── estreito: sem trava, sem colunas ──
+   Sticky de 90vh em celular briga com a barra de endereco, que aparece e
+   some e recalcula a altura no meio do percurso. */
+@media (max-width: 820px) {
+  .vitrine__trava {
+    position: static;
+    height: auto;
+    grid-template-columns: 1fr;
+  }
+
+  .vitrine__foto { aspect-ratio: 4 / 5; }
+
+  .vitrine__painel { padding: var(--space-6) var(--content-padding); gap: var(--space-8); }
+
+  .vitrine__veu {
+    min-height: 0;
+    padding: var(--space-8) var(--content-padding) var(--space-8);
+    background-image: none;
+    background-color: var(--aco);
+  }
+
+  .vitrine__conceito,
+  .vitrine__projeto {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+
+  .vitrine__fios { display: none; }
+
+  .vitrine__thumb,
+  .vitrine__projeto-dir { grid-column: 1; }
+
+  .vitrine__thumb { max-width: 220px; }
+
+  .vitrine__marcas { gap: var(--space-4); }
+}

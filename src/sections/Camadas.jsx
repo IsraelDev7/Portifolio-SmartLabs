@@ -3,6 +3,7 @@ import Fichario, { Ficha, Legenda } from '../components/Fichario';
 import Cisao, { Item, Cartao } from '../components/Cisao';
 import Assinatura from './Assinatura';
 import Faixa, { Coluna } from '../components/Faixa';
+import Vitrine from '../components/Vitrine';
 
 /**
  * Camadas — os cinco blocos que abrem os modulos, cada um com o seu
@@ -97,42 +98,50 @@ export default function Camadas() {
         </Coluna>
       </Faixa>
 
-      {/* ── 3 · ACQUISITION / DATA — das bordas para o nucleo ── */}
-      <Fichario variante="acq" stagger={0.04}>
-        <Legenda
-          rotulo="Acquisition / Data"
-          fecho="Tráfego sem estrutura vaza. Por isso, pensamos aquisição e tecnologia como partes do mesmo sistema."
-        >
-          Se o tráfego chega,<br />o sistema precisa estar pronto.
-        </Legenda>
+      {/* ── 3 · ACQUISITION / DATA + AI — duas secoes encaixadas
+             Reconstrucao do bloco "Modus Vivendi" da referencia: o ato 1
+             trava na tela e o ato 2 sobe por cima com veu semitransparente,
+             deixando a foto vazar. Substituiu os dois ficharios de Flip,
+             que animavam bem mas nao conversavam com o resto da pagina.
 
-        <Ficha rotulo="ADS" titulo="Meta Ads" />
-        <Ficha rotulo="ADS" titulo="Google Ads" />
-        <Ficha rotulo="ADS" titulo="LLM Ads" />
-        <Ficha rotulo="WEB" titulo="Landing pages" />
-        <Ficha rotulo="DATA" titulo="Tracking" />
-        <Ficha rotulo="DATA" titulo="Lead capture" />
-        <Ficha rotulo="DATA" titulo="Database" />
-        <Ficha rotulo="CRM" titulo="Follow-up" />
-      </Fichario>
+             As linhas marcadas com PROVISORIO sao completacoes minhas —
+             a copy original nao cobria esses campos. ── */}
+      <Vitrine
+        /* ─── ato 1 · a copy circulada, no lugar circulado ─── */
+        foto="/images/faixa-luz.jpg"
+        fotoMarca="Estudo — 03.05"          /* PROVISORIO */
+        fotoSecao="Aquisicao"               /* PROVISORIO */
+        kicker="Acquisition / Data"
+        titulo={<>Se o tráfego chega,<br />o sistema precisa estar pronto.</>}
+        descricao="Tráfego sem estrutura vaza. Por isso, pensamos aquisição e tecnologia como partes do mesmo sistema."
+        fichaNota="Camada de aquisição"     /* PROVISORIO */
+        fichaTitulo="Meta Ads · Google Ads · LLM Ads"
+        fichaMono="Landing pages · Tracking · Lead capture · Database · Follow-up"
+        botao="Ver o fluxo"                 /* PROVISORIO */
 
-      {/* ── 4 · AI — pilha sobreposta abre em leque ── */}
-      <Fichario variante="ai" absoluto>
-        <Legenda
-          rotulo="Artificial Intelligence"
-          fecho="A tecnologia deve se adaptar ao negócio. Não o contrário."
-        >
-          IA não é o produto.<br />É parte da infraestrutura.
-        </Legenda>
+        /* ─── ato 2 · a secao de IA, que era o fichario seguinte ─── */
+        kickerDois={<>Inteligência <span style={{ color: 'var(--fumaca)' }}>/ Infraestrutura</span></>}
+        mancheteUm="IA não é o produto."
+        mancheteCinza="É parte da"
+        mancheteDois="infraestrutura."
+        prosa="A tecnologia deve se adaptar ao negócio. Não o contrário. Por isso a IA entra como camada dentro de fluxos que já existem — atendimento, processos, informação — e não como um produto separado que alguém precisa aprender a operar."   /* segunda metade PROVISORIA */
+        periodoDe="2024"
+        periodoAte="2026"
+        thumb="/images/nucleo.jpg"
+        projetoNome="Agentes em fluxo"      /* PROVISORIO */
+        codigo="IA 05"                     /* PROVISORIO */
+        disciplinas={[
+          'Atendimento',
+          'Processos',
+          'Informação',
+          'Agentes',
+          'Integrações',
+        ]}
+        marcaEsq="||| SMLB 05.14.A.002"     /* PROVISORIO */
+        marcaDir="IDX — 05"                 /* PROVISORIO */
+      />
 
-        <Ficha rotulo="01" titulo="Atendimento">Respostas e interação com clientes.</Ficha>
-        <Ficha rotulo="02" titulo="Processos">Execução inteligente de tarefas.</Ficha>
-        <Ficha rotulo="03" titulo="Informação">Organização e processamento de dados.</Ficha>
-        <Ficha rotulo="04" titulo="Agentes">Sistemas capazes de atuar dentro de fluxos definidos.</Ficha>
-        <Ficha rotulo="05" titulo="Integrações">IA conectada às ferramentas que o negócio já utiliza.</Ficha>
-      </Fichario>
-
-      {/* ── 5 · SECURITY — leque desalinhado encaixa em bloco ── */}
+      {/* ── 4 · SECURITY — leque desalinhado encaixa em bloco ── */}
       <Fichario variante="sec">
         <Legenda
           rotulo="Security"
