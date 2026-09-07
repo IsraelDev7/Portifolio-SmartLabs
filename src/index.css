@@ -1913,3 +1913,10 @@ h3 {
   .sobre__citacao { max-width: none; }
   .sobre__cadeia { font-size: clamp(0.95rem, 5vw, 1.4rem); gap: var(--space-2); }
 }
+
+/* A variante de secao: dentro da home o bloco nao abre a pagina, entao
+   troca o respiro de topo de pagina pelo de secao. */
+.sobre--secao {
+  padding-top: var(--space-20);
+  border-top: 1px solid var(--linha);
+}

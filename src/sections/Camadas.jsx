@@ -1,9 +1,9 @@
 import React from 'react';
-import Fichario, { Ficha, Legenda } from '../components/Fichario';
 import Cisao, { Item, Cartao } from '../components/Cisao';
 import Assinatura from './Assinatura';
 import Faixa, { Coluna } from '../components/Faixa';
 import Vitrine from '../components/Vitrine';
+import Sobre from './Sobre';
 
 /**
  * Camadas — os cinco blocos que abrem os modulos, cada um com o seu
@@ -141,21 +141,18 @@ export default function Camadas() {
         marcaDir="IDX — 05"                 /* PROVISORIO */
       />
 
-      {/* ── 4 · SECURITY — leque desalinhado encaixa em bloco ── */}
-      <Fichario variante="sec">
-        <Legenda
-          rotulo="Security"
-          fecho="Construir bem também é saber o que proteger."
-        >
-          Tecnologia sem segurança<br />não é estrutura.
-        </Legenda>
+      {/* ── 4 · SOBRE — o mesmo bloco da rota /about, aqui como fecho.
+             O MESMO componente, nao uma copia: duplicar a marcacao seria
+             garantir que as duas divergissem na primeira correcao feita
+             so em um dos lados. `variante="secao"` troca o respiro de
+             topo de pagina pelo de secao e o <h1> por <h2>: aqui o
+             bloco e o fecho da home, nao o assunto dela.
 
-        <Ficha rotulo="01" titulo="Proteção de dados" />
-        <Ficha rotulo="02" titulo="Controle de acesso" />
-        <Ficha rotulo="03" titulo="Arquitetura segura" />
-        <Ficha rotulo="04" titulo="Boas práticas" />
-        <Ficha rotulo="05" titulo="Proteção das integrações" />
-      </Fichario>
+             Saiu daqui o fichario de Security. A copy nao se perdeu: o
+             modulo 06 da lista, logo acima nesta mesma pagina, ja diz
+             tudo o que ele dizia — os dois eram a mesma coisa contada
+             duas vezes. ── */}
+      <Sobre variante="secao" />
     </>
   );
 }

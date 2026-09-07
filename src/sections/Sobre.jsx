@@ -1,205 +1,162 @@
-import React, { useRef } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Flip } from 'gsap/Flip';
-import { useGSAP } from '@gsap/react';
-import './Sobre.css';
+import React from 'react';
+import Firma from '../components/Firma';
+import Letras from '../components/Letras';
 
-gsap.registerPlugin(ScrollTrigger, Flip);
-
-export default function Sobre() {
-  const container = useRef(null);
-  const galleryRef = useRef(null);
-
-  const images = [
-    '/images/sobre_identidade_ux.jpg',
-    '/images/sobre_website_perf.jpg',
-    '/images/sobre_ai_automation.jpg',
-    '/images/sobre_security_infra.jpg'
-  ];
-
-  useGSAP(() => {
-    const topics = gsap.utils.toArray('.sobre-topic');
-    const galleryEl = galleryRef.current;
-    let currentLayout = 0;
-
-    topics.forEach((topic, i) => {
-      ScrollTrigger.create({
-        trigger: topic,
-        start: 'center center',
-        onEnter: () => changeLayout(i),
-        onEnterBack: () => changeLayout(i),
-      });
-    });
-
-    function changeLayout(newLayoutIndex) {
-      if (newLayoutIndex === currentLayout) return;
-      
-      const items = galleryEl.querySelectorAll('.gallery__item');
-      
-      // 1. Capture current state before changing classes
-      const state = Flip.getState(items, { props: 'filter, opacity' });
-      
-      // 2. Apply new layout class
-      galleryEl.classList.remove(`layout-${currentLayout}`);
-      galleryEl.classList.add(`layout-${newLayoutIndex}`);
-      
-      // 3. Animate using Flip
-      Flip.from(state, {
-        duration: 1.2,
-        ease: 'power3.inOut',
-        scale: true,
-        absolute: true,
-        stagger: 0.05, // Slight stagger for a more organic feel
-      });
-      
-      currentLayout = newLayoutIndex;
-    }
-  }, { scope: container });
+/**
+ * Sobre — o bloco "quem eu sou", reconstruido sobre o "I'AM" da
+ * referencia (vertical.framer.media), medido no DOM em 1280x800.
+ *
+ * Ordem de leitura: identidade em corpo maximo (cinza + acento), regua,
+ * linha em mono, assinatura de punho, citacao grande, retrato |
+ * manifesto, prosa | oficio. Fecha com a narrativa em cadeia — pessoas,
+ * negocios, tecnologia, sistemas, SmartLABS — que nao existe na
+ * referencia e e a espinha desta secao.
+ *
+ * Um componente para os DOIS lugares: a rota /about e o corpo da home.
+ * Duplicar a marcacao seria garantir que as duas versoes divergissem na
+ * primeira correcao feita so em uma delas.
+ *
+ * `variante`:
+ *   pagina  — a rota /about, com respiro de topo de pagina e <h1>
+ *   secao   — dentro da home, respiro de secao e <h2>: este bloco nao e
+ *             o assunto da home, e sim o fecho dela
+ *
+ * Quem anima e o usePageMotion da PAGINA, pelos atributos data-anim: as
+ * duas paginas ja o chamam, entao o bloco nao carrega hook proprio.
+ */
+export default function Sobre({ variante = 'pagina' }) {
+  const Cabeca = variante === 'pagina' ? 'h1' : 'h2';
 
   return (
-    <section className="sobre-section" id="sobre" ref={container}>
-      
-      {/* INTRO COPY */}
-      <div className="sobre-intro-text">
-        <h2 className="sobre-intro-title">
-          Não é apenas um site.<br/>
-          <span className="highlight">É a sede digital da sua empresa.</span>
-        </h2>
-        <div style={{ maxWidth: '800px' }}>
-          <p className="sobre-intro-p">
-            Imagine alguém chegando pela primeira vez ao seu negócio.<br/>
-            Essa pessoa não conhece você. Ela não sabe quanto você investiu para construir sua empresa. Ela não conhece sua experiência.
-          </p>
-          <p className="sobre-intro-p">
-            Ela só consegue julgar aquilo que consegue ver.<br/>
-            <strong>Seu site é uma dessas primeiras impressões.</strong>
-          </p>
-          <p className="sobre-intro-p">
-            Por isso, ele não deveria ser apenas uma página bonita.<br/>
-            Ele deveria representar o nível do negócio que existe por trás dela.
-          </p>
-          <p className="sobre-intro-p">
-            Na SmartLabs, eu penso o digital como um arquiteto pensa um projeto:<br/>
-            <strong>estrutura primeiro. estética depois. função em tudo.</strong>
-          </p>
-          <p className="sobre-intro-p" style={{ color: 'var(--text-color)' }}>
-            O resultado é uma presença digital sofisticada, estratégica e preparada para crescer.
-          </p>
-        </div>
-      </div>
+    <div className={`sobre sobre--${variante}`}>
+      {/* ── 1 · identidade ── */}
+      <header className="sobre__topo">
+        <Cabeca className="sobre__eu" aria-label="Eu sou Israel Passos">
+          <span className="sobre__eu-cinza" aria-hidden="true">
+            <Letras texto="EU SOU" />
+          </span>
+          <span className="sobre__eu-nome" aria-hidden="true">
+            <Letras texto="ISRAEL PASSOS" />
+          </span>
+        </Cabeca>
 
-      {/* SCROLLING SECTIONS WITH GALLERY */}
-      <div className="sobre-scroll-container">
-        
-        {/* Left Column: Text (Scrolls) */}
-        <div className="sobre-text-column">
-          <div style={{ marginBottom: '20vh' }}>
-            <h2 className="sobre-intro-title" style={{ fontSize: 'clamp(2rem, 4vw, 4rem)' }}>
-              O QUE EU CONSTRUO
-            </h2>
-            <p className="sobre-intro-p">
-              Uma experiência de alto padrão por fora.<br/>
-              Uma operação inteligente por dentro.
-            </p>
-          </div>
+        <i className="sobre__regua" data-anim="line" aria-hidden="true" />
 
-          <div className="sobre-topic">
-            <div className="sobre-topic-number">01</div>
-            <h3 className="sobre-topic-title">Identidade & Experiência</h3>
-            <p className="sobre-topic-desc">
-              Sua marca precisa ser percebida antes mesmo de ser explicada.
-              Construo e organizo a identidade visual e a experiência digital para transmitir posicionamento, confiança e valor.
-            </p>
-            <ul className="sobre-topic-list">
-              <li>Identidade visual</li>
-              <li>Direção estética</li>
-              <li>UI/UX</li>
-              <li>Design de interfaces</li>
-              <li>Experiência do usuário</li>
-              <li>Design de alto padrão</li>
-            </ul>
-          </div>
+        <p className="sobre__linha-mono">
+          Construindo sistemas na fronteira entre pessoas e tecnologia.
+        </p>
 
-          <div className="sobre-topic">
-            <div className="sobre-topic-number">02</div>
-            <h3 className="sobre-topic-title">Websites de Alto Padrão</h3>
-            <p className="sobre-topic-desc">
-              Não trabalho para simplesmente colocar sua empresa na internet.
-              Construo uma presença digital pensada para apresentar seu negócio, conduzir o visitante e transformar atenção em ação.
-            </p>
-            <ul className="sobre-topic-list">
-              <li>Websites personalizados</li>
-              <li>Landing pages</li>
-              <li>Arquitetura de informação</li>
-              <li>Desenvolvimento Full Stack</li>
-              <li>Performance</li>
-              <li>Responsividade</li>
-              <li>Experiência premium</li>
-            </ul>
-            <p className="sobre-topic-desc" style={{ marginTop: '1rem', color: 'var(--text-color)' }}>
-              Seu site deixa de ser um cartão de visitas. <strong>Ele passa a trabalhar pelo seu negócio.</strong>
-            </p>
-          </div>
-
-          <div className="sobre-topic">
-            <div className="sobre-topic-number">03</div>
-            <h3 className="sobre-topic-title">Automação & Inteligência Artificial</h3>
-            <p className="sobre-topic-desc">
-              A parte que o cliente vê é apenas metade do projeto. Por trás dela podem existir processos inteligentes trabalhando continuamente.
-              Automatizo operações para reduzir tarefas manuais, acelerar respostas e criar processos mais eficientes.
-            </p>
-            <ul className="sobre-topic-list">
-              <li>Atendimento e Follow-up</li>
-              <li>Captação e qualificação de leads</li>
-              <li>CRM e Processos internos</li>
-              <li>Gestão, Marketing e Vendas</li>
-              <li>Integrações</li>
-              <li>Agentes e sistemas com IA</li>
-            </ul>
-            <p className="sobre-topic-desc" style={{ marginTop: '1rem', color: 'var(--text-color)' }}>
-              A tecnologia deixa de ser apenas uma ferramenta. <strong>Ela passa a fazer parte da operação.</strong>
-            </p>
-          </div>
-
-          <div className="sobre-topic">
-            <div className="sobre-topic-number">04</div>
-            <h3 className="sobre-topic-title">Segurança & Infraestrutura</h3>
-            <p className="sobre-topic-desc">
-              Um negócio de alto nível precisa de uma fundação à altura. Por isso, segurança não é um detalhe colocado no final do projeto. É considerada desde a arquitetura.
-            </p>
-            <ul className="sobre-topic-list">
-              <li>Segurança da aplicação</li>
-              <li>Boas práticas de desenvolvimento</li>
-              <li>Proteção de dados</li>
-              <li>Controle de acessos</li>
-              <li>Estrutura técnica</li>
-              <li>Monitoramento e manutenção</li>
-            </ul>
-            <p className="sobre-topic-desc" style={{ marginTop: '1rem', color: 'var(--text-color)' }}>
-              Porque não adianta construir uma casa bonita se a porta da frente fica aberta.
-            </p>
-          </div>
-
-          {/* Spacer to allow scrolling past the last item comfortably */}
-          <div style={{ height: '30vh' }}></div>
+        {/* ── 2 · a assinatura, escrita traco a traco ── */}
+        <div className="sobre__firma">
+          <Firma largura={260} />
+          <span className="sobre__cargo">Arquiteto digital · SmartLABS</span>
         </div>
 
-        {/* Right Column: Gallery (Pinned/Sticky) */}
-        <div className="sobre-gallery-column">
-          {/* Initial layout is layout-0 */}
-          <div className="gallery layout-0" ref={galleryRef}>
-            {images.map((src, index) => (
-              <div 
-                key={index} 
-                className={`gallery__item item-${index}`} 
-                style={{ backgroundImage: `url(${src})` }}
-              ></div>
-            ))}
+        {/* ── 3 · a frase que abre a secao ── */}
+        <blockquote className="sobre__citacao">
+          <p>Eu não cheguei à tecnologia por um único caminho.</p>
+          <cite>— Israel Passos</cite>
+        </blockquote>
+      </header>
+
+      {/* ── 4 · retrato | manifesto ── */}
+      <section className="sobre__par">
+        <figure className="sobre__retrato" data-anim="frame">
+          <div
+            className="sobre__retrato-foto"
+            style={{ backgroundImage: 'url(/images/retrato.jpg)' }}
+            role="presentation"
+          />
+          <div className="sobre__linhas" aria-hidden="true" />
+        </figure>
+
+        <div className="sobre__manifesto">
+          <p className="sobre__manifesto-frase" data-anim="rise">
+            Eu trabalho entre <b>pessoas</b>, <b>negócios</b>, <b>tecnologia</b> e{' '}
+            <b>sistemas</b>.
+          </p>
+
+          <p className="sobre__manifesto-nota">
+            Todo projeto começa por uma pergunta.
+            <br />
+            A experiência decide o passo seguinte.
+          </p>
+
+          <i className="sobre__regua sobre__regua--fina" aria-hidden="true" />
+
+          <div className="sobre__redes">
+            <span className="sobre__rotulo">Redes</span>
+            <ul>
+              <li><a href="https://github.com/IsraelDev7" target="_blank" rel="noreferrer">GitHub</a></li>
+              <li><a href="https://www.linkedin.com/" target="_blank" rel="noreferrer">LinkedIn</a></li>
+              <li><a href="https://www.instagram.com/" target="_blank" rel="noreferrer">Instagram</a></li>
+              <li><a href="/contact">E-mail</a></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 5 · a trajetoria | o que eu faco ── */}
+      <section className="sobre__par sobre__par--baixo">
+        <div className="sobre__prosa">
+          <h2 className="sobre__prosa-manchete" data-anim="rise">
+            Minha formação é técnica.
+            <br />
+            <em>Minha experiência é humana.</em>
+          </h2>
+
+          <div className="sobre__prosa-corpo" data-anim="stagger">
+            <p>
+              Antes da SmartLABS, minha trajetória passou por ambientes que não
+              se parecem entre si — gestão de equipes, consultoria de tecnologia
+              no mercado de investimentos, palestras e projetos de impacto
+              social.
+            </p>
+            <p>
+              Experiências diferentes, com uma coisa em comum: <b>pessoas</b>.
+            </p>
+            <p>
+              Estar perto delas me ensinou algo que nenhum software ensina. Por
+              trás de cada decisão existe uma motivação. Por trás de cada compra
+              existe uma emoção. Por trás de cada negócio existe alguém tentando
+              resolver alguma coisa.
+            </p>
+            <p className="sobre__prosa-fecho">
+              A SmartLABS existe porque entender isso mudou a forma como eu
+              construo tecnologia.
+            </p>
           </div>
         </div>
 
-      </div>
-    </section>
+        <div className="sobre__oficio">
+          <span className="sobre__rotulo">O que eu faço</span>
+          <ul className="sobre__lista" data-anim="stagger">
+            <li>Gestão de equipes</li>
+            <li>Consultoria de tecnologia em investimentos</li>
+            <li>Palestras</li>
+            <li>Projetos sociais</li>
+            <li>Desenvolvimento full-stack</li>
+            <li>Prompt engineering</li>
+            <li>Inteligência artificial</li>
+            <li>Tráfego pago</li>
+            <li>Automação de processos</li>
+            <li>Agentes de atendimento</li>
+          </ul>
+        </div>
+      </section>
+
+      {/* ── 6 · a narrativa em cadeia ── */}
+      <section className="sobre__cadeia" data-anim="stagger">
+        <span>Pessoas</span>
+        <i aria-hidden="true">→</i>
+        <span>Negócios</span>
+        <i aria-hidden="true">→</i>
+        <span>Tecnologia</span>
+        <i aria-hidden="true">→</i>
+        <span>Sistemas</span>
+        <i aria-hidden="true">→</i>
+        <span className="sobre__cadeia-fim">SmartLABS</span>
+      </section>
+    </div>
   );
 }
