@@ -1637,21 +1637,35 @@ h3 {
 }
 
 /* ── identidade ── */
+/* Duas colunas, nao uma linha que quebra. Medido no print da
+   referencia: o bloco grande ocupa ~577px e o nome ~527px comecando em
+   659, numa largura util de 1280 — os mesmos 52/48 do resto da pagina.
+   Os dois ficam CENTRADOS entre si na vertical: la o centro do nome cai
+   em 115 e o do bloco grande em 106. */
 .sobre__eu {
   font-family: var(--font-display);
-  font-size: clamp(2.6rem, 11.5vw, 10rem);
-  line-height: 0.88;
+  line-height: 0.86;
   letter-spacing: -0.04em;
   text-transform: uppercase;
   margin: 0;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0 0.28em;
+  display: grid;
+  grid-template-columns: 52% 48%;
+  align-items: center;
 }
 
-.sobre__eu-cinza { color: var(--fumaca); }
-.sobre__eu-nome { color: var(--solda); }
+/* 175px de corpo numa viewport de 1280 = 13.7vw; o nome, 74px = 5.8vw.
+   A razao entre os dois (2.4x) e o que faz a leitura funcionar. */
+.sobre__eu-cinza {
+  color: var(--fumaca);
+  font-size: clamp(2.4rem, 13.7vw, 12rem);
+  white-space: nowrap;
+}
+
+.sobre__eu-nome {
+  color: var(--solda);
+  font-size: clamp(1.3rem, 5.8vw, 5rem);
+  letter-spacing: -0.03em;
+}
 .sobre__eu .letra { display: inline-block; }
 
 .sobre__regua {
@@ -1674,11 +1688,16 @@ h3 {
 }
 
 /* ── assinatura ── */
+/* A caixa vem da referencia: la a assinatura e o cargo vivem dentro de
+   um retangulo de 1px que os separa do resto da coluna. */
 .sobre__firma {
-  display: flex;
+  display: inline-flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 0.3rem;
+  align-items: flex-start;
   margin-top: var(--space-8);
+  padding: var(--space-2) var(--space-3) var(--space-2);
+  border: 1px solid var(--linha);
   color: var(--cal);
 }
 
@@ -1739,22 +1758,27 @@ h3 {
   overflow: hidden;      /* a foto amplia por dentro, sem transbordar */
 }
 
-.sobre__retrato-foto {
+/* ── FALHA — a foto em faixas que escorregam ──
+   Sem camada de base: quando uma faixa desliza, o que aparece na borda e
+   o Aco do container, e e esse bloco escuro que le como dado corrompido.
+   Com a foto inteira por baixo o efeito viraria borrao. */
+.falha {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background-color: var(--aco);
+}
+
+.falha__tira {
   position: absolute;
   inset: 0;
   background-size: cover;
-  background-position: center 18%;
-  /* neutros em repouso: sao eles que a interacao move */
-  filter: brightness(1) grayscale(0);
-  transform: scale(1);
-  transition: filter 900ms cubic-bezier(.22,1,.36,1),
-              transform 1400ms cubic-bezier(.22,1,.36,1);
+  will-change: transform;
 }
 
-/* As linhas de varredura. Na referencia elas estao gravadas no arquivo
-   da foto; aqui sao uma camada de CSS, que custa zero byte e continua
-   ajustavel depois. 3px de passo: a linha some antes de virar textura. */
-.sobre__linhas {
+/* linhas de varredura por cima de tudo — 3px de passo: o fio some antes
+   de virar textura */
+.falha__linhas {
   position: absolute;
   inset: 0;
   pointer-events: none;
@@ -1762,25 +1786,14 @@ h3 {
     180deg,
     rgba(10, 10, 10, 0) 0px,
     rgba(10, 10, 10, 0) 2px,
-    rgba(10, 10, 10, 0.42) 2px,
-    rgba(10, 10, 10, 0.42) 3px
+    rgba(10, 10, 10, 0.38) 2px,
+    rgba(10, 10, 10, 0.38) 3px
   );
-  transition: opacity 900ms ease;
-}
-
-.sobre__retrato:hover .sobre__retrato-foto {
-  filter: brightness(1.12) grayscale(0.55);
-  transform: scale(1.045);
-}
-
-.sobre__retrato:hover .sobre__linhas { opacity: 0.45; }
-
-@media (prefers-reduced-motion: reduce) {
-  .sobre__retrato-foto { transition: none; }
-  .sobre__retrato:hover .sobre__retrato-foto { transform: none; }
 }
 
 /* ── manifesto ── */
+.sobre__manifesto { align-self: center; }
+
 .sobre__manifesto-frase {
   font-family: var(--font-display);
   font-size: clamp(1.15rem, 2.1vw, 1.75rem);
@@ -1910,6 +1923,10 @@ h3 {
 @media (max-width: 820px) {
   .sobre { padding-top: 16vh; }
   .sobre__par { grid-template-columns: 1fr; align-items: start; }
+  .sobre__manifesto { align-self: start; }
+  .sobre__eu { grid-template-columns: 1fr; align-items: start; gap: var(--space-2); }
+  .sobre__eu-cinza { white-space: normal; font-size: clamp(2.4rem, 15vw, 5rem); }
+  .sobre__eu-nome { font-size: clamp(1.3rem, 8.5vw, 2.6rem); }
   .sobre__citacao { max-width: none; }
   .sobre__cadeia { font-size: clamp(0.95rem, 5vw, 1.4rem); gap: var(--space-2); }
 }

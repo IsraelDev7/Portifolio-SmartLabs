@@ -1,6 +1,7 @@
 import React from 'react';
 import Firma from '../components/Firma';
 import Letras from '../components/Letras';
+import Falha from '../components/Falha';
 
 /**
  * Sobre — o bloco "quem eu sou", reconstruido sobre o "I'AM" da
@@ -61,13 +62,8 @@ export default function Sobre({ variante = 'pagina' }) {
 
       {/* ── 4 · retrato | manifesto ── */}
       <section className="sobre__par">
-        <figure className="sobre__retrato" data-anim="frame">
-          <div
-            className="sobre__retrato-foto"
-            style={{ backgroundImage: 'url(/images/retrato.jpg)' }}
-            role="presentation"
-          />
-          <div className="sobre__linhas" aria-hidden="true" />
+        <figure className="sobre__retrato">
+          <Falha imagem="/images/retrato.jpg" faixas={14} posicao="center 18%" />
         </figure>
 
         <div className="sobre__manifesto">

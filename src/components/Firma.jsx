@@ -70,12 +70,16 @@ export default function Firma({ className = '', largura = 260 }) {
       height={Math.round((largura * 170) / 640)}
       fill="none"
       stroke="currentColor"
-      strokeWidth="4"
+      strokeWidth="2.6"
       strokeLinecap="round"
       strokeLinejoin="round"
       role="img"
       aria-label="Assinatura de Israel Passos"
     >
+      {/* A inclinacao vive no <g>, nao nos caminhos: getTotalLength()
+          mede o caminho no sistema dele, antes de qualquer transform do
+          pai, entao a conta do stroke-dasharray continua valendo. */}
+      <g transform="skewX(-16) translate(40 -8) scale(1 1.12)">
       {/* I — laco alto */}
       <path d="M46 126 C42 96 54 46 74 40 C86 37 86 54 74 70 C62 86 54 104 60 118 C65 129 78 128 88 116" />
       {/* s */}
@@ -104,9 +108,10 @@ export default function Firma({ className = '', largura = 260 }) {
       {/* floreio — o ultimo traco, mais fino */}
       <path
         d="M50 146 C146 158 302 160 422 150 C482 145 522 138 548 130"
-        strokeWidth="2.4"
-        opacity="0.75"
+        strokeWidth="1.7"
+        opacity="0.7"
       />
+      </g>
     </svg>
   );
 }
