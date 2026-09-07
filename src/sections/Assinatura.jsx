@@ -50,7 +50,13 @@ export default function Assinatura() {
 
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-    const tl = gsap.timeline({
+    // as letras da marca sobem uma a uma, no gatilho da propria marca
+    gsap.from(raiz.querySelectorAll('.assinatura__marca .letra'), {
+      yPercent: 108,
+      opacity: 0,
+      duration: 1.1,
+      stagger: 0.045,
+      ease: 'expo.out',
       scrollTrigger: {
         trigger: raiz.querySelector('.assinatura__marca'),
         start: 'top 80%',
@@ -58,13 +64,16 @@ export default function Assinatura() {
       },
     });
 
-    // as letras da marca sobem uma a uma
-    tl.from(raiz.querySelectorAll('.assinatura__marca .letra'), {
-      yPercent: 108,
-      opacity: 0,
-      duration: 1.1,
-      stagger: 0.045,
-      ease: 'expo.out',
+    /* O rodape tem GATILHO PROPRIO. Pendurado no da marca, a coreografia
+       inteira acontecia enquanto o rodape ainda estava fora da tela: ao
+       chegar nele o leitor so via o estado final. O que precisa entrar na
+       viewport para a animacao comecar e a linha que anima. */
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: raiz.querySelector('.assinatura__rodape'),
+        start: 'top 88%',
+        toggleActions: 'play none none reverse',
+      },
     });
 
     // 1 · o Nivel sobe bloco a bloco, do degrau curto ao alto
@@ -73,7 +82,7 @@ export default function Assinatura() {
       duration: 0.42,
       stagger: 0.14,
       ease: 'power3.out',
-    }, '-=0.35');
+    });
 
     // 2 · a regua e desenhada da esquerda
     tl.from(raiz.querySelector('.assinatura__regua'), {
@@ -153,7 +162,7 @@ export default function Assinatura() {
 
       {/* simbolo, regua desenhada, nome digitalizado */}
       <div className="assinatura__rodape">
-        <Monogram className="assinatura__nivel" color="var(--cal)" size={38} />
+        <Monogram className="assinatura__nivel" color="var(--cal)" size={56} />
         <i className="assinatura__regua" aria-hidden="true" />
         <span className="assinatura__nome" aria-label="Israel Passos">
           <Letras texto="Israel Passos" />
