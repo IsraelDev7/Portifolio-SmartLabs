@@ -71,16 +71,24 @@ export default function Assinatura() {
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: raiz.querySelector('.assinatura__rodape'),
-        start: 'top 88%',
-        toggleActions: 'play none none reverse',
+        /* 80%, nao 88%: a 88% a linha esta encostada na borda de baixo e
+           o Nivel — que e o PRIMEIRO tempo, e dura menos de um segundo —
+           terminava de subir antes de entrar de fato no campo de visao.
+           So a regua, que vem depois, sobrava para ser vista. */
+        start: 'top 80%',
+        /* restart, nao play: `play` num tempo ja completo nao faz nada, e
+           a coreografia so voltava a acontecer quando o leitor subisse
+           acima do gatilho. Com `restart` toda passagem para baixo
+           recomeca do zero. */
+        toggleActions: 'restart none none reverse',
       },
     });
 
     // 1 · o Nivel sobe bloco a bloco, do degrau curto ao alto
     tl.from(raiz.querySelectorAll('.assinatura__nivel rect'), {
       scaleY: 0,
-      duration: 0.42,
-      stagger: 0.14,
+      duration: 0.5,
+      stagger: 0.16,
       ease: 'power3.out',
     });
 
