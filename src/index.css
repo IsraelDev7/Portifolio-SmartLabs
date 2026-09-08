@@ -3088,3 +3088,234 @@ h3 {
   .ideias__figura { min-height: 0; aspect-ratio: 16 / 10; }
   .ideias__titulo { font-size: clamp(2.2rem, 16vw, 5rem); }
 }
+
+/* ═══════════════════════════════════════════════════════════
+   PERSIANA — a imagem se monta em ripas verticais
+   Mecanica do "Page Transitions #17": grade de ripas cobrindo a foto,
+   cada uma recolhendo sozinha em ordem espalhada.
+   ═══════════════════════════════════════════════════════════ */
+
+.persiana {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background-color: var(--aco);
+}
+
+.persiana__foto {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+}
+
+/* A grade cobre a foto inteira. Aco, do mesmo tom do fundo: enquanto a
+   ripa nao recolheu, o lugar dela le como pagina e nao como buraco. */
+.persiana__grade {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  pointer-events: none;
+}
+
+.persiana__ripa {
+  display: block;
+  background-color: var(--aco);
+  /* meio pixel de sangria: a grade corta no subpixel e ripas vizinhas
+     exatas deixam um fio da foto piscando entre elas */
+  margin: -0.5px;
+  will-change: transform;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   OBRAS — a pagina Work, sobre a referencia
+   Medido em 1280x800: bloco a cada 640px · rotulo 12px em x=24 ·
+   titulo 90px em duas linhas · ficha indentada 20px · data 12px.
+   ═══════════════════════════════════════════════════════════ */
+
+.obras {
+  background-color: var(--aco);
+  color: var(--cal);
+}
+
+.obras__capa { padding: 16vh var(--content-padding) var(--space-8); }
+
+.obras__titulo {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 11.5vw, 9rem);
+  line-height: 0.88;
+  letter-spacing: -0.05em;
+  text-transform: uppercase;
+  color: var(--cal);
+  margin: 0;
+}
+
+.obras__titulo .letra { display: inline-block; }
+
+.obras__intro {
+  margin: var(--space-4) 0 0;
+  max-width: 46ch;
+  font-family: var(--font-mono);
+  font-size: clamp(0.74rem, 0.95vw, 0.88rem);
+  line-height: 1.7;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--fumaca);
+}
+
+/* texto 39% · fios 5% · imagem 56% — as proporcoes do print */
+.obra {
+  display: grid;
+  grid-template-columns: 39% 5% 1fr;
+  align-items: stretch;
+  border-top: 1px solid var(--linha);
+}
+
+.obra__texto { padding: var(--space-8) var(--space-4) var(--space-8) var(--content-padding); }
+
+.obra__rotulo {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fumaca);
+}
+
+/* 90px numa viewport de 1280 = 7vw, entrelinha 1.0 */
+.obra__nome {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 5.6vw, 4.6rem);
+  line-height: 1.0;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  color: var(--cal);
+  margin: var(--space-3) 0 0;
+}
+
+.obra__sub {
+  margin: var(--space-3) 0 0;
+  max-width: 34ch;
+  font-family: var(--font-display);
+  font-size: clamp(0.88rem, 1.25vw, 1.05rem);
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--cal);
+}
+
+/* a barra a esquerda da ficha — os 20px de indentacao da referencia */
+.obra__ficha {
+  margin-top: var(--space-6);
+  padding-left: var(--space-2);
+  border-left: 2px solid var(--solda);
+}
+
+.obra__cliente {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(0.85rem, 1.15vw, 1rem);
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  color: var(--cal);
+}
+
+.obra__data {
+  margin: 0.4rem 0 0;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fumaca);
+}
+
+/* ── a coluna de fios ──
+   Eles se abrem a partir do lado da imagem e param no texto: e o que
+   costura as duas metades em vez de deixar duas colunas soltas. */
+.obra__fios {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 2px;
+  padding: var(--space-8) 0;
+}
+
+.obra__fios i {
+  flex: 1 1 0;
+  max-width: 1px;
+  background-color: var(--linha);
+  transform-origin: center top;
+}
+
+/* ── a peca clicavel ── */
+.obra__peca {
+  position: relative;
+  display: block;
+  min-height: 26rem;
+  overflow: hidden;
+  text-decoration: none;
+  cursor: none;                 /* a legenda vira o cursor */
+}
+
+.obra__peca:focus-visible { outline: 2px solid var(--solda); outline-offset: -2px; cursor: auto; }
+
+/* A legenda SEGUE o cursor e so existe sob ele: e informacao de apoio,
+   nao concorrente da foto. Sem pointer-events para nao roubar o
+   pointermove que a posiciona. */
+.obra__legenda {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  width: min(24rem, 62%);
+  padding: var(--space-3);
+  pointer-events: none;
+  background-color: rgba(10, 10, 10, 0.72);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  font-family: var(--font-display);
+  font-size: clamp(0.85rem, 1.15vw, 1rem);
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--cal);
+  opacity: 0;
+  transition: opacity 260ms ease;
+}
+
+.obra__legenda b {
+  display: block;
+  margin-top: 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--solda);
+}
+
+.obra__peca:hover .obra__legenda { opacity: 1; }
+
+/* Sem cursor nao ha o que seguir: a legenda ancora no canto e fica
+   visivel, porque no toque ela e a unica pista do que a peca conta. */
+@media (hover: none) {
+  .obra__peca { cursor: auto; }
+  .obra__legenda {
+    opacity: 1;
+    transform: none !important;
+    top: auto;
+    bottom: 0;
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .obra__legenda { transition: none; }
+}
+
+@media (max-width: 900px) {
+  .obras__capa { padding-top: 13vh; }
+  .obra { grid-template-columns: 1fr; }
+  .obra__texto { padding: var(--space-6) var(--content-padding); }
+  .obra__fios { display: none; }
+  .obra__peca { min-height: 0; aspect-ratio: 16 / 10; }
+}

@@ -1,85 +1,146 @@
-import React from 'react';
+import React, { useRef } from 'react';
+import { Link } from 'react-router-dom';
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { usePageMotion } from '../hooks/usePageMotion';
+import Letras from '../components/Letras';
+import Persiana from '../components/Persiana';
+
+gsap.registerPlugin(ScrollTrigger);
+
+/**
+ * Work — reconstruida sobre a /work da referencia, medida no DOM em
+ * 1280x800:
+ *
+ *   bloco de projeto a cada 640px · rotulo "(Project)" 12px em x=24
+ *   titulo 90px em duas linhas (entrelinha 1.0) · ficha indentada 20px
+ *   com barra a esquerda · data 12px · legenda sobre a imagem em x=581
+ *
+ * Entre o texto e a imagem corre a COLUNA DE FIOS: hairlines verticais
+ * que se abrem a partir do lado da imagem quando o bloco entra. Nao e
+ * enfeite — e ela que costura as duas metades, que de outro jeito seriam
+ * duas colunas soltas lado a lado.
+ *
+ * A imagem se monta em ripas (ver <Persiana>), e a legenda so aparece sob
+ * o cursor: e a informacao de apoio, nao concorrente da foto.
+ *
+ * Nomes, clientes e datas ficam como PLACEHOLDER ate o portfolio chegar.
+ */
+
+const OBRAS = [
+  { n: '01', titulo: ['[ nome do', 'projeto ]'], sub: '[ uma linha dizendo o que o projeto e ]',
+    cliente: '[ cliente ]', tipo: '[ tipo de projeto ]', data: '[ mês e ano ]',
+    legenda: '[ o problema que existia, e o que a estrutura nova resolveu. duas ou tres linhas. ]',
+    imagem: '/images/estrutura-primeiro.jpg', para: '/contact' },
+  { n: '02', titulo: ['[ nome do', 'projeto ]'], sub: '[ uma linha dizendo o que o projeto e ]',
+    cliente: '[ cliente ]', tipo: '[ tipo de projeto ]', data: '[ mês e ano ]',
+    legenda: '[ o problema que existia, e o que a estrutura nova resolveu. duas ou tres linhas. ]',
+    imagem: '/images/funcao-em-tudo.jpg', para: '/contact' },
+  { n: '03', titulo: ['[ nome do', 'projeto ]'], sub: '[ uma linha dizendo o que o projeto e ]',
+    cliente: '[ cliente ]', tipo: '[ tipo de projeto ]', data: '[ mês e ano ]',
+    legenda: '[ o problema que existia, e o que a estrutura nova resolveu. duas ou tres linhas. ]',
+    imagem: '/images/o-que-construo.jpg', para: '/contact' },
+  { n: '04', titulo: ['[ nome do', 'projeto ]'], sub: '[ uma linha dizendo o que o projeto e ]',
+    cliente: '[ cliente ]', tipo: '[ tipo de projeto ]', data: '[ mês e ano ]',
+    legenda: '[ o problema que existia, e o que a estrutura nova resolveu. duas ou tres linhas. ]',
+    imagem: '/images/nucleo.jpg', para: '/contact' },
+];
 
 export default function Work() {
   const motionRef = usePageMotion();
-  const projects = [
-    {
-      id: '01',
-      name: '[ NOME DO PROJETO ]',
-      challenge: '[Qual era o problema do negócio?]',
-      approach: '[Como a estratégia, design e tecnologia foram utilizados.]',
-      system: '[Site + automações + integrações + IA + dados.]',
-      result: '[Resultado mensurável ou transformação percebida.]'
-    },
-    {
-      id: '02',
-      name: '[ NOME DO PROJETO ]',
-      challenge: '[Problema.]',
-      approach: '[Solução.]',
-      system: '[Arquitetura.]',
-      result: '[Resultado.]'
-    },
-    {
-      id: '03',
-      name: '[ NOME DO PROJETO ]',
-      challenge: '[Problema.]',
-      approach: '[Solução.]',
-      system: '[Arquitetura.]',
-      result: '[Resultado.]'
+  const alvo = useRef(null);
+
+  useGSAP(() => {
+    const raiz = alvo.current;
+    const reduz = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (reduz) {
+      gsap.set(raiz.querySelectorAll('.obra__fios i'), { scaleY: 1 });
+      return;
     }
-  ];
+
+    /* Os fios se abrem A PARTIR DO LADO DA IMAGEM: o stagger vem de
+       'end', entao o ultimo fio — o encostado na foto — sai primeiro e a
+       leva se propaga em direcao ao texto. */
+    gsap.utils.toArray(raiz.querySelectorAll('.obra__fios')).forEach((col) => {
+      gsap.fromTo(col.querySelectorAll('i'),
+        { scaleY: 0 },
+        {
+          scaleY: 1,
+          duration: 0.7,
+          ease: 'power3.out',
+          stagger: { each: 0.028, from: 'end' },
+          scrollTrigger: { trigger: col, start: 'top 88%', toggleActions: 'restart none none reverse' },
+        });
+    });
+
+    /* A legenda segue o cursor. quickSetter no lugar de gsap.to a cada
+       pointermove: escrita direta, sem criar um tween por evento — sao
+       dezenas por segundo. */
+    gsap.utils.toArray(raiz.querySelectorAll('.obra__peca')).forEach((peca) => {
+      const leg = peca.querySelector('.obra__legenda');
+      if (!leg) return;
+      const porX = gsap.quickSetter(leg, 'x', 'px');
+      const porY = gsap.quickSetter(leg, 'y', 'px');
+
+      const mover = (e) => {
+        const r = peca.getBoundingClientRect();
+        porX(e.clientX - r.left);
+        porY(e.clientY - r.top);
+      };
+      peca.addEventListener('pointermove', mover);
+      return () => peca.removeEventListener('pointermove', mover);
+    });
+  }, { scope: alvo });
 
   return (
-    <div ref={motionRef} style={{ paddingTop: '15vh', backgroundColor: '#000', minHeight: '100vh', color: '#fff' }}>
-      <div style={{ padding: '5vw' }}>
-        <h1 data-anim="rise" style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(4rem, 8vw, 10rem)', lineHeight: '0.9', textTransform: 'uppercase', letterSpacing: '-0.02em' }}>
-          SELECTED WORK
-        </h1>
-        <h2 style={{ fontFamily: 'var(--font-mono)', fontSize: '1.2rem', color: 'var(--cal)', marginTop: '2rem', maxWidth: '600px', lineHeight: '1.5', textTransform: 'uppercase' }}>
-          PROJETOS NÃO SÃO APENAS O QUE EU CONSTRUÍ. SÃO PROBLEMAS QUE EU RESOLVI.
-        </h2>
-      </div>
+    <div ref={motionRef}>
+      <div className="obras" ref={alvo}>
+        <header className="obras__capa">
+          <h1 className="obras__titulo" aria-label="Selected Work">
+            <Letras texto="SELECTED WORK" />
+          </h1>
+          <p className="obras__intro">
+            Projetos não são apenas o que eu construí. São problemas que eu resolvi.
+          </p>
+        </header>
 
-      <div data-anim="stagger" style={{ padding: '5vw', display: 'flex', flexDirection: 'column', gap: '10vw' }}>
-        {projects.map((proj) => (
-          <div key={proj.id} style={{ display: 'flex', flexWrap: 'wrap', borderTop: '1px solid #333', paddingTop: '3vw' }}>
-            {/* Left: Metadata */}
-            <div style={{ flex: '1 1 30%', marginBottom: '2rem' }}>
-              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1rem', color: 'var(--cal)', marginBottom: '1rem' }}>
-                [ PROJECT {proj.id} ]
-              </div>
-              <h3 data-anim="rise" style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem, 4vw, 4rem)', lineHeight: '1', textTransform: 'uppercase' }}>
-                {proj.name}
-              </h3>
-            </div>
-            
-            {/* Right: Details */}
-            <div data-anim="stagger" style={{ flex: '1 1 70%', display: 'flex', flexWrap: 'wrap', gap: '3rem', fontFamily: 'var(--font-mono)', fontSize: '0.9rem', color: '#aaa', textTransform: 'uppercase', lineHeight: '1.6' }}>
-              <div style={{ flex: '1 1 45%' }}>
-                <strong style={{ color: '#fff', display: 'block', marginBottom: '0.5rem' }}>THE CHALLENGE</strong>
-                {proj.challenge}
-              </div>
-              <div style={{ flex: '1 1 45%' }}>
-                <strong style={{ color: '#fff', display: 'block', marginBottom: '0.5rem' }}>THE APPROACH</strong>
-                {proj.approach}
-              </div>
-              <div style={{ flex: '1 1 45%' }}>
-                <strong style={{ color: '#fff', display: 'block', marginBottom: '0.5rem' }}>THE SYSTEM</strong>
-                {proj.system}
-              </div>
-              <div style={{ flex: '1 1 45%' }}>
-                <strong style={{ color: '#fff', display: 'block', marginBottom: '0.5rem' }}>THE RESULT</strong>
-                {proj.result}
-              </div>
-              
-              <div style={{ width: '100%', marginTop: '2rem' }}>
-                <button style={{ background: 'transparent', border: '1px solid var(--cal)', color: 'var(--cal)', padding: '1rem 2rem', fontFamily: 'var(--font-mono)', textTransform: 'uppercase', cursor: 'pointer', transition: 'all 0.3s' }}>
-                  [ VIEW CASE ]
-                </button>
+        {OBRAS.map((o) => (
+          <article className="obra" key={o.n}>
+            <div className="obra__texto">
+              <span className="obra__rotulo">(Projeto {o.n})</span>
+              <h2 className="obra__nome">
+                {o.titulo[0]}
+                <br />
+                {o.titulo[1]}
+              </h2>
+              <p className="obra__sub">{o.sub}</p>
+
+              <div className="obra__ficha">
+                <p className="obra__cliente">
+                  {o.cliente}
+                  <br />
+                  {o.tipo}
+                </p>
+                <p className="obra__data">{o.data}</p>
               </div>
             </div>
-          </div>
+
+            {/* a coluna de fios que costura as duas metades */}
+            <div className="obra__fios" aria-hidden="true">
+              {Array.from({ length: 9 }, (_, i) => <i key={i} />)}
+            </div>
+
+            <Link className="obra__peca" to={o.para} aria-label={`Ver o projeto ${o.n}`}>
+              <Persiana imagem={o.imagem} className="obra__persiana" />
+
+              <span className="obra__legenda">
+                {o.legenda}
+                <b>Inspiração</b>
+              </span>
+            </Link>
+          </article>
         ))}
       </div>
     </div>
