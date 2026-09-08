@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { aposCortina } from '../lib/cortina';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -48,17 +49,40 @@ export default function Firma({ className = '', largura = 260 }) {
       return;
     }
 
-    gsap.to(tracos, {
-      strokeDashoffset: 0,
-      duration: DUR,
-      stagger: PASSO,
-      ease: 'power1.inOut',
-      scrollTrigger: {
-        trigger: alvo.current,
-        start: 'top 85%',
-        toggleActions: 'restart none none reverse',
-      },
-    });
+    /* A escrita espera a cortina sair. Na rota /about a assinatura ja
+       nasce dentro do gatilho `top 85%`, entao ela era escrita atras do
+       preloader e quem chegava so encontrava o traco pronto. Na home ela
+       esta la embaixo e o adiamento nao muda nada — o mesmo codigo serve
+       aos dois casos. */
+    let st = null;
+    let vivo = true;
+
+    const montar = () => {
+      if (!vivo) return;
+      st = gsap.to(tracos, {
+        strokeDashoffset: 0,
+        duration: DUR,
+        stagger: PASSO,
+        ease: 'power1.inOut',
+        scrollTrigger: {
+          trigger: alvo.current,
+          start: 'top 85%',
+          /* restart: `play` num tempo ja completo nao faz nada, e a
+             assinatura so voltaria a ser escrita se o leitor subisse
+             acima do gatilho. Com restart, toda passagem para baixo
+             escreve de novo. */
+          toggleActions: 'restart none none reverse',
+        },
+      }).scrollTrigger;
+    };
+
+    const cancelar = aposCortina(montar);
+
+    return () => {
+      vivo = false;
+      cancelar();
+      if (st) st.kill();
+    };
   }, { scope: alvo });
 
   return (

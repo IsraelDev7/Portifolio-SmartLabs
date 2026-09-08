@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { aposCortina } from '../lib/cortina';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -30,12 +31,6 @@ gsap.registerPlugin(ScrollTrigger);
 const COLUNAS = 12;
 const BANDAS = 4;
 
-/* Quando a cortina do preloader termina de subir: 1s de texto + 0,5s de
-   pausa + 1,2s de cortina. O gatilho e `top 85%`, entao a peca que ja
-   nasce visivel dispara na montagem — atras da cortina, e quem chega
-   depois so encontra a foto pronta. Montar so depois disso e o que faz a
-   primeira persiana da pagina ser vista. */
-const ALVO_PRIMEIRA = 2700;
 
 /** A grade de ripas, para quem ja tem a propria foto montada. */
 export function GradeRipas() {
@@ -89,11 +84,11 @@ export function animarRipas(raiz, gatilho = raiz) {
       }).scrollTrigger;
   };
 
-  const t = window.setTimeout(montar, Math.max(0, ALVO_PRIMEIRA - performance.now()));
+  const cancelar = aposCortina(montar);
 
   return () => {
     vivo = false;
-    window.clearTimeout(t);
+    cancelar();
     if (st) st.kill();
   };
 }

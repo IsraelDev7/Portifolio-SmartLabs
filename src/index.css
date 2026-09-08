@@ -1633,9 +1633,10 @@ h3 {
 .sobre {
   background-color: var(--aco);
   color: var(--cal);
-  /* 64 no pe, nao 128: a cadeia ja fecha a secao, e o rodape comeca
-     logo em seguida — dois respiros grandes somados viravam um vazio. */
-  padding: 22vh var(--content-padding) var(--space-8);
+  /* 10vh no topo, nao 22: a barra de navegacao ocupa ~90px e o resto era
+     vazio puro. E 64 no pe — a cadeia ja fecha a secao e o rodape comeca
+     logo em seguida. */
+  padding: 10vh var(--content-padding) var(--space-8);
 }
 
 /* ── identidade ── */
@@ -1690,16 +1691,14 @@ h3 {
 }
 
 /* ── assinatura ── */
-/* A caixa vem da referencia: la a assinatura e o cargo vivem dentro de
-   um retangulo de 1px que os separa do resto da coluna. */
+/* Sem moldura: o traco da assinatura ja e a peca, e um retangulo em
+   volta so competia com ele. */
 .sobre__firma {
   display: inline-flex;
   flex-direction: column;
   gap: 0.3rem;
   align-items: flex-start;
-  margin-top: var(--space-8);
-  padding: var(--space-2) var(--space-3) var(--space-2);
-  border: 1px solid var(--linha);
+  margin-top: var(--space-4);
   color: var(--cal);
 }
 
@@ -1715,7 +1714,7 @@ h3 {
 /* ── citacao ──
    40px numa viewport de 1280 na referencia = 3.1vw, em duas linhas */
 .sobre__citacao {
-  margin: var(--space-8) 0 0;
+  margin: var(--space-4) 0 0;
 }
 
 /* O limite vai no <p>, nao no <blockquote>: `ch` mede pelo font-size do
@@ -1747,7 +1746,7 @@ h3 {
   display: grid;
   grid-template-columns: 48% 1fr;
   gap: var(--space-8) var(--space-8);
-  margin-top: var(--space-16);
+  margin-top: var(--space-8);
   align-items: end;
 }
 
