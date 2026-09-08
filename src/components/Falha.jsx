@@ -18,20 +18,33 @@ import { useGSAP } from '@gsap/react';
  * As faixas se sobrepoem em SANGRIA: clip-path corta no subpixel e duas
  * fatias vizinhas exatas deixam um fio do fundo aparecendo o tempo todo.
  *
- * So x anima — nunca largura, posicao ou filtro. Transform vai para a
- * GPU e o resto obriga o navegador a redesenhar a imagem inteira a cada
+ * Nas FAIXAS so x anima — nunca largura nem posicao. Transform vai para
+ * a GPU; largura e posicao obrigam o navegador a refazer o layout a cada
  * quadro, o que num loop continuo custaria caro sem aparecer.
+ *
+ * O filtro anima em outro lugar: e o negativo, aplicado na peca INTEIRA
+ * em dois toques secos a cada ~3s. Um filtro por faixa, sessenta vezes
+ * por segundo, seria caro; um filtro na peca, duas vezes a cada tres
+ * segundos, nao e.
  */
 
 const SANGRIA = 0.35;   // % de sobreposicao entre faixas vizinhas
 
-/* Ritmo: o defeito precisa ser raro. Um piscar a cada 0.9-2.6s le como
-   bug; a cada 200ms le como animacao, e ai vira enfeite. */
-const PARADA = [0.9, 2.6];
-const DESLOC = [6, 26];   // px
-const CHANCE = 0.3;       // fracao das faixas que escorrega por vez
+/* Ritmo do defeito. Mais curto e mais denso que a primeira versao: a
+   pausa caiu de 0.9-2.6s para 0.35-1.1s, quase metade das faixas
+   escorrega por vez, e o deslocamento subiu. Continua sendo um PISCAR —
+   a faixa volta em 130ms — porque defeito que fica ligado deixa de ser
+   defeito e vira textura. */
+const PARADA = [0.35, 1.1];
+const DESLOC = [8, 34];   // px
+const CHANCE = 0.45;      // fracao das faixas que escorrega por vez
 
-export default function Falha({ imagem, faixas = 14, className = '', posicao = 'center 18%' }) {
+/* O negativo. A cada ~3s a peca inteira inverte em dois toques curtos e
+   volta. `set` no lugar de `to`: inversao interpolada passa por cinza e
+   le como fade; o que se ve num sinal com defeito e um corte seco. */
+const NEGATIVO_A_CADA = 3;
+
+export default function Falha({ imagem, faixas = 20, className = '', posicao = 'center 18%' }) {
   const alvo = useRef(null);
 
   useGSAP(() => {
@@ -56,7 +69,20 @@ export default function Falha({ imagem, faixas = 14, className = '', posicao = '
       .to(tiras, { x: 0, duration: 0.06, ease: 'none' }, '+=0.07')
       .to({}, { duration: () => gsap.utils.random(...PARADA) });
 
-    return () => tl.kill();
+    /* Timeline separada, nao um passo da primeira: o negativo tem
+       periodo proprio (~3s) e nao deve ficar preso ao sorteio da pausa
+       das faixas. Sendo dois relogios independentes, as vezes coincidem
+       — e e justamente a coincidencia ocasional que parece falha real. */
+    const neg = gsap.timeline({ repeat: -1, repeatDelay: NEGATIVO_A_CADA });
+    neg.set(alvo.current, { filter: 'invert(1)' })
+      .to({}, { duration: 0.07 })
+      .set(alvo.current, { filter: 'none' })
+      .to({}, { duration: 0.05 })
+      .set(alvo.current, { filter: 'invert(1)' })
+      .to({}, { duration: 0.05 })
+      .set(alvo.current, { filter: 'none' });
+
+    return () => { tl.kill(); neg.kill(); };
   }, { scope: alvo });
 
   const fundo = { backgroundImage: `url(${imagem})`, backgroundPosition: posicao };

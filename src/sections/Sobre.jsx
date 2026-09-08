@@ -64,7 +64,7 @@ export default function Sobre({ variante = 'pagina' }) {
       {/* ── 4 · retrato | manifesto ── */}
       <section className="sobre__par">
         <figure className="sobre__retrato">
-          <Falha imagem="/images/retrato.jpg" faixas={14} posicao="center 18%" />
+          <Falha imagem="/images/retrato.jpg" faixas={20} posicao="center 18%" />
         </figure>
 
         <div className="sobre__manifesto">
