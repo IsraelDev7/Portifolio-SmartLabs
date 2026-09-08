@@ -1652,21 +1652,30 @@ h3 {
   text-transform: uppercase;
   margin: 0;
   display: grid;
-  grid-template-columns: 52% 48%;
+  /* 58/42, nao os 52/48 do resto do site: "EU SOU" cresceu e precisa da
+     largura. O nome cabe em 42% porque desceu junto, de 5.8 para 5.4vw. */
+  grid-template-columns: 58% 42%;
   align-items: center;
 }
 
-/* 175px de corpo numa viewport de 1280 = 13.7vw; o nome, 74px = 5.8vw.
-   A razao entre os dois (2.4x) e o que faz a leitura funcionar. */
+/* Medido com Range: a 15.9vw o texto da 663px numa caixa de 679 — encosta
+   na largura sem estourar.
+
+   O peso 700 ja e o teto da Space Grotesk, entao a fonte nao tem para
+   onde engrossar. O corpo vem de -webkit-text-stroke: 1.5px do MESMO tom
+   do preenchimento, que espessa cada haste por fora sem deformar o
+   desenho da letra. Falsear negrito com sombra ou com dupla renderizacao
+   borraria as bordas; contorno da cor exata nao. */
 .sobre__eu-cinza {
-  color: var(--fumaca);
-  font-size: clamp(2.4rem, 13.7vw, 12rem);
+  color: var(--cal);
+  -webkit-text-stroke: 1.5px var(--cal);
+  font-size: clamp(2.4rem, 15.9vw, 14rem);
   white-space: nowrap;
 }
 
 .sobre__eu-nome {
   color: var(--solda);
-  font-size: clamp(1.3rem, 5.8vw, 5rem);
+  font-size: clamp(1.3rem, 5.4vw, 4.6rem);
   letter-spacing: -0.03em;
 }
 .sobre__eu .letra { display: inline-block; }
@@ -1929,7 +1938,11 @@ h3 {
   .sobre__par { grid-template-columns: 1fr; align-items: start; }
   .sobre__manifesto { align-self: start; }
   .sobre__eu { grid-template-columns: 1fr; align-items: start; gap: var(--space-2); }
-  .sobre__eu-cinza { white-space: normal; font-size: clamp(2.4rem, 15vw, 5rem); }
+  .sobre__eu-cinza {
+    white-space: normal;
+    font-size: clamp(2.4rem, 17vw, 5.6rem);
+    -webkit-text-stroke-width: 1px;   /* o contorno acompanha o corpo */
+  }
   .sobre__eu-nome { font-size: clamp(1.3rem, 8.5vw, 2.6rem); }
   .sobre__citacao { max-width: none; }
   .sobre__cadeia { font-size: clamp(0.95rem, 5vw, 1.4rem); gap: var(--space-2); }
