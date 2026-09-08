@@ -2493,7 +2493,12 @@ h3 {
    O escurecimento vive no ARQUIVO (-0.09 de brilho, 1.06 de contraste),
    nao so na opacidade: baixar opacidade lava a imagem contra o fundo e
    achata o contraste junto. Escurecer na fonte preserva a modelagem do
-   capuz, e ai a opacidade so precisa recuar um pouco. */
+   capuz, e ai a opacidade so precisa recuar um pouco.
+
+   SEM faixa de folga no topo. Uma tentei, de 105px em Aco, e ela virou
+   uma barra chapada atravessando a secao inteira: o fundo de estudio da
+   foto e um preto ACINZENTADO, entao Aco puro ao lado dele nao some, faz
+   emenda. Na referencia o capuz encosta no topo do mesmo jeito. */
 .contato__foto {
   position: absolute;
   inset: 0;
