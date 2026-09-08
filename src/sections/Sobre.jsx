@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Firma from '../components/Firma';
 import Letras from '../components/Letras';
 import Falha from '../components/Falha';
@@ -138,6 +139,14 @@ export default function Sobre({ variante = 'pagina' }) {
             <li>Automação de processos</li>
             <li>Agentes de atendimento</li>
           </ul>
+
+          {/* O pedido de acao fecha a lista, como no modelo: o leitor
+              acabou de ler o que eu faco, e o botao vem na sequencia.
+              Antes ele morava no rodape, uma tela inteira depois. */}
+          <Link className="sobre__acao" to="/contact" data-anim="rise">
+            <span>Falar com a SmartLABS</span>
+            <i aria-hidden="true">▶▶</i>
+          </Link>
         </div>
       </section>
 

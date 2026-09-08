@@ -6,8 +6,13 @@ import { registrarLogo } from '../lib/logoBus';
  * useLogoPixel — monta e desmonta o monograma nivel a nivel.
  *
  * MONTAGEM  ~0,95s  degrau 1 -> degrau 2 -> degrau 3 (Solda pousa por
- *                   ultimo), e o nome limpa da esquerda logo em seguida.
+ *                   ultimo), e as letras do nome pousam em pixel logo
+ *                   depois — cada uma abrindo do seu proprio lado.
  * DESMONTE  ~0,48s  a ordem inversa: o degrau mais alto cai primeiro.
+ *
+ * As letras usam ease em `steps`: interpolacao continua faria a letra
+ * deslizar, e deslizar nao le como pixel. Em degraus ela SALTA de um
+ * estado a outro, que e como bloco de imagem se resolve.
  *
  * Cada celula guarda o SEU proprio caos (deslocamento, giro), sorteado
  * uma unica vez. Assim a peca sempre sai e volta pelo mesmo caminho — o
@@ -25,9 +30,11 @@ export function useLogoPixel(svgRef, nomeRef) {
 
     // Movimento reduzido: o logo ja nasce pronto e as duas acoes viram
     // no-ops. Caminho estatico de verdade, nao animacao pela metade.
+    const letras = gsap.utils.toArray(nome.querySelectorAll('.pxl'));
+
     if (reduz) {
       gsap.set(celulas, { clearProps: 'all', opacity: 1 });
-      gsap.set(nome, { clearProps: 'all', opacity: 1 });
+      gsap.set([nome, ...letras], { clearProps: 'all', opacity: 1 });
       return registrarLogo({ montar: () => {}, desmontar: () => {} });
     }
 
@@ -53,9 +60,40 @@ export function useLogoPixel(svgRef, nomeRef) {
       rotation: (i, el) => el._caos.rot,
     };
 
+    /* Cada letra guarda o seu proprio caos e o SEU LADO de abertura,
+       sorteados uma vez so. E o que faz a peca sair e voltar sempre pelo
+       mesmo caminho, em vez de virar ruido novo a cada troca de rota. */
+    const LADOS = [
+      'inset(0% 0% 100% 0%)',
+      'inset(100% 0% 0% 0%)',
+      'inset(0% 100% 0% 0%)',
+      'inset(0% 0% 0% 100%)',
+    ];
+
+    letras.forEach((el) => {
+      el._caos = {
+        x: gsap.utils.random(-9, 9),
+        y: gsap.utils.random(-11, 11),
+        lado: gsap.utils.random(LADOS),
+      };
+    });
+
+    const letraFechada = {
+      x: (i, el) => el._caos.x,
+      y: (i, el) => el._caos.y,
+      clipPath: (i, el) => el._caos.lado,
+      opacity: 0,
+      scale: 0.55,
+    };
+
+    const letraAberta = {
+      x: 0, y: 0, scale: 1, opacity: 1,
+      clipPath: 'inset(0% 0% 0% 0%)',
+    };
+
     const limpar = () => {
       gsap.killTweensOf(celulas);
-      gsap.killTweensOf(nome);
+      gsap.killTweensOf(letras);
     };
 
     // Estado inicial: desfeito. O logo so aparece quando mandarem montar.
@@ -63,7 +101,7 @@ export function useLogoPixel(svgRef, nomeRef) {
     // Todos os quatro valores em % de proposito: o GSAP interpola
     // clip-path numero a numero e nao converte px<->%, entao misturar
     // unidades faz o tween ser engolido em silencio.
-    gsap.set(nome, { clipPath: 'inset(0% 100% 0% 0%)' });
+    gsap.set(letras, { ...letraFechada, transformOrigin: '50% 50%' });
 
     const montar = () => {
       limpar();
@@ -82,13 +120,18 @@ export function useLogoPixel(svgRef, nomeRef) {
         );
       });
 
-      // O nome entra com o nivel 3 ja subindo — parece empurrado pelo monograma.
-      // fromTo, nao to: sai comido pela esquerda e volta pela esquerda,
-      // sempre no mesmo sentido, venha de onde vier.
+      // As letras entram com o degrau 3 ja subindo — parecem empurradas
+      // pelo monograma. fromTo, nao to: cada uma volta pelo mesmo lado
+      // por onde saiu, venha de onde vier.
       tl.fromTo(
-        nome,
-        { clipPath: 'inset(0% 100% 0% 0%)' },
-        { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.7 * esc, ease: 'expo.out' },
+        letras,
+        letraFechada,
+        {
+          ...letraAberta,
+          duration: 0.42 * esc,
+          ease: 'steps(5)',
+          stagger: { each: 0.035 * esc, from: 'random' },
+        },
         0.5 * esc
       );
 
@@ -99,7 +142,12 @@ export function useLogoPixel(svgRef, nomeRef) {
       limpar();
       const tl = gsap.timeline();
 
-      tl.to(nome, { clipPath: 'inset(0% 0% 0% 100%)', duration: 0.26, ease: 'power2.in' }, 0);
+      tl.to(letras, {
+        ...letraFechada,
+        duration: 0.24,
+        ease: 'steps(4)',
+        stagger: { each: 0.02, from: 'random' },
+      }, 0);
 
       // Ordem inversa da montagem: o degrau alto e o primeiro a se soltar.
       [2, 1, 0].forEach((n, ordem) => {

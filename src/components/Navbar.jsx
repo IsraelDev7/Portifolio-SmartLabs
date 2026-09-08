@@ -67,7 +67,14 @@ export default function Navbar() {
 
       <TransitionLink to="/" aria-label="SmartLabs Home" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
         <PixelMonogram ref={svgRef} color="var(--cal)" size={24} />
-        <span ref={nomeRef} style={{ color: 'var(--cal)', fontFamily: 'var(--font-display)', fontWeight: '800', letterSpacing: '1px' }}>SMARTLABS</span>
+        {/* Letra a letra: e o que permite cada uma se montar e se
+            desfazer sozinha, em pixel. Como <span> unico so dava para
+            varrer o conjunto com uma cortina. */}
+        <span ref={nomeRef} className="marca-nome" aria-label="SmartLabs">
+          {[...'SMARTLABS'].map((c, i) => (
+            <span key={i} className="pxl" aria-hidden="true">{c}</span>
+          ))}
+        </span>
       </TransitionLink>
 
       <div style={{ display: 'flex', gap: 'var(--space-6)', alignItems: 'center' }}>

@@ -1948,52 +1948,6 @@ h3 {
 
 .pe { background-color: var(--aco); }
 
-/* ── faixa de chamada ── */
-.pe__chamada {
-  text-align: center;
-  padding: var(--space-20) var(--content-padding) var(--space-16);
-}
-
-.pe__kicker {
-  display: inline-block;
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--solda);
-  border: 1px solid var(--linha);
-  padding: 0.55rem 0.9rem;
-  margin-bottom: var(--space-6);
-}
-
-.pe__convite {
-  font-family: var(--font-display);
-  font-size: clamp(2rem, 6vw, 5rem);
-  line-height: 0.96;
-  letter-spacing: -0.035em;
-  color: var(--cal);
-  margin: 0 0 var(--space-8);
-}
-
-.pe__botao {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.55rem;
-  min-height: 44px;
-  padding: 0.7rem 1.2rem;
-  background-color: var(--solda);
-  color: var(--aco);
-  font-family: var(--font-display);
-  font-size: clamp(0.92rem, 1.5vw, 1.2rem);
-  letter-spacing: -0.02em;
-  text-transform: uppercase;
-  text-decoration: none;
-  transition: filter 200ms ease;
-}
-
-.pe__botao:hover { filter: brightness(1.12); }
-.pe__botao i { font-style: normal; font-size: 0.78em; }
-
 /* ── o painel ── */
 .pe__painel {
   position: relative;
@@ -2375,3 +2329,84 @@ h3 {
 
 .erro__botao:hover { filter: brightness(1.12); }
 .erro__botao i { font-style: normal; font-size: 0.78em; }
+
+/* ── as letras da marca na barra ──
+   inline-block porque transform nao pega em caixa inline; e o
+   will-change avisa o compositor antes do primeiro salto, senao o
+   primeiro degrau do steps chega tarde. */
+/* nowrap e flex:none nao sao enfeite. Como <span> unico o nome era uma
+   palavra so, e palavra nao quebra no meio; picado em nove inline-block
+   cada letra virou uma caixa que PODE quebrar, e num item flex apertado
+   elas empilhavam na vertical — 15px de largura por 238 de altura em
+   375px. O texto continuava certo, so ilegivel. */
+.marca-nome {
+  flex: none;
+  white-space: nowrap;
+  color: var(--cal);
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.marca-nome .pxl {
+  display: inline-block;
+  will-change: transform, clip-path, opacity;
+}
+
+/* ── o pedido de acao dentro do bloco Sobre ──
+   Modelo do segundo print: bloco solido logo abaixo da lista, com as
+   duas setas. O preenchimento entra por baixo do texto, nao por cima —
+   assim a legenda nunca some no meio da transicao. */
+.sobre__acao {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-top: var(--space-6);
+  min-height: 44px;                 /* WCAG 2.5.5 */
+  padding: 0.72rem 1.15rem;
+  background-color: var(--solda);
+  color: var(--aco);
+  font-family: var(--font-display);
+  font-size: clamp(0.95rem, 1.6vw, 1.3rem);
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  text-decoration: none;
+  overflow: hidden;
+}
+
+/* a camada que varre no hover, atras do texto */
+.sobre__acao::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-color: var(--cal);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 420ms cubic-bezier(.22, 1, .36, 1);
+}
+
+.sobre__acao:hover::before { transform: scaleX(1); }
+.sobre__acao span,
+.sobre__acao i { position: relative; }
+.sobre__acao i { font-style: normal; font-size: 0.78em; transition: transform 300ms ease; }
+.sobre__acao:hover i { transform: translateX(4px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .sobre__acao::before { transition: none; }
+  .sobre__acao:hover i { transform: none; }
+}
+
+/* ── a lista do oficio ganha a barra contínua do modelo ──
+   Uma barra só, correndo ao lado da pilha inteira, no lugar de um tique
+   por linha: e o que o print mostra, e visualmente amarra os dez itens
+   como um bloco em vez de dez marcadores soltos. */
+.sobre__lista {
+  padding-left: var(--space-3);
+  border-left: 2px solid var(--linha);
+}
+
+.sobre__lista li { padding-left: 0; }
+.sobre__lista li::before { content: none; }

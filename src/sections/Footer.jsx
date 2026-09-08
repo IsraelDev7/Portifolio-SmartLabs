@@ -67,19 +67,10 @@ export default function Footer() {
 
   return (
     <footer className="pe">
-      {/* Faixa de chamada, acima do painel. Na referencia ela e so um
-          botao; aqui ela leva junto a chamada que ja existia no rodape
-          antigo — apagar copy de conversao que ninguem pediu para tirar
-          seria perder o unico pedido de acao da pagina. */}
-      <div className="pe__chamada">
-        <span className="pe__kicker">Inicie seu projeto</span>
-        <h2 className="pe__convite">Pronto para elevar<br />sua operação?</h2>
-        <Link className="pe__botao" to="/contact">
-          Falar com a SmartLABS
-          <i aria-hidden="true">▶▶</i>
-        </Link>
-      </div>
-
+      {/* A faixa de chamada saiu daqui: o pedido de acao agora fica no
+          bloco Sobre, logo abaixo da lista do oficio, onde o leitor
+          acabou de ler o que eu faco. Aqui embaixo ela abria um vao de
+          uma tela inteira antes do painel. */}
       <div className="pe__painel">
         {/* o pente costura o painel ao corpo da pagina */}
         <div className="pe__pente" aria-hidden="true">
