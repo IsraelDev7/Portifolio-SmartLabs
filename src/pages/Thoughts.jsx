@@ -35,22 +35,46 @@ gsap.registerPlugin(ScrollTrigger);
    CONAR trata review fabricada como publicidade ilicita). A estrutura
    fica pronta; o conteudo entra quando o Israel mandar o real. */
 const CASOS = [
-  { area: 'Psicanálise', cliente: '[ nome do cliente ]', foto: null,
-    titulo: '[ o que o cliente disse sobre o trabalho ]',
-    resumo: '[ duas ou tres linhas contando o problema que existia antes e o que mudou depois. ]',
-    imagem: '/images/estrutura-primeiro.jpg', para: '/work' },
-  { area: 'Fitness', cliente: '[ nome do cliente ]', foto: null,
-    titulo: '[ o que o cliente disse sobre o trabalho ]',
-    resumo: '[ duas ou tres linhas contando o problema que existia antes e o que mudou depois. ]',
-    imagem: '/images/funcao-em-tudo.jpg', para: '/work' },
-  { area: 'Arquitetura', cliente: '[ nome do cliente ]', foto: null,
-    titulo: '[ o que o cliente disse sobre o trabalho ]',
-    resumo: '[ duas ou tres linhas contando o problema que existia antes e o que mudou depois. ]',
-    imagem: '/images/o-que-construo.jpg', para: '/work' },
-  { area: '[ quarto segmento ]', cliente: '[ nome do cliente ]', foto: null,
-    titulo: '[ o que o cliente disse sobre o trabalho ]',
-    resumo: '[ duas ou tres linhas contando o problema que existia antes e o que mudou depois. ]',
-    imagem: '/images/nucleo.jpg', para: '/work' },
+  {
+    area: 'Psicanálise',
+    cliente: '[ nome do cliente ]',
+    foto: null,
+    titulo: 'A estrutura vem antes da estética.',
+    resumo:
+      'Interface bonita sobre arquitetura frágil não sobrevive ao primeiro pico de volume. O que sustenta a experiência premium é o que ninguém vê.',
+    imagem: '/images/estrutura-primeiro.jpg',
+    para: '/work',
+  },
+  {
+    area: 'Fitness',
+    cliente: '[ nome do cliente ]',
+    foto: null,
+    titulo: 'Automação não é economizar tempo. É remover dependência.',
+    resumo:
+      'O ganho real não está nos minutos poupados. Está em o processo continuar quando a pessoa que sempre fazia aquela etapa não está.',
+    imagem: '/images/funcao-em-tudo.jpg',
+    para: '/work',
+  },
+  {
+    area: 'Arquitetura',
+    cliente: '[ nome do cliente ]',
+    foto: null,
+    titulo: 'IA não é o produto. É a camada.',
+    resumo:
+      'Quando a inteligência entra como produto separado, alguém precisa aprender a operá-la. Quando entra como camada, ela some dentro do fluxo que já existia.',
+    imagem: '/images/nucleo.jpg',
+    para: '/work',
+  },
+  {
+    area: '[ quarto segmento ]',
+    cliente: '[ nome do cliente ]',
+    foto: null,
+    titulo: 'Tráfego sem estrutura vaza.',
+    resumo:
+      'Investir em aquisição antes de a operação aguentar o volume é pagar para descobrir onde o sistema quebra. Aquisição e tecnologia são o mesmo projeto.',
+    imagem: '/images/o-que-construo.jpg',
+    para: '/work',
+  },
 ];
 
 export default function Thoughts() {
@@ -64,6 +88,9 @@ export default function Thoughts() {
     if (reduz) {
       gsap.set(raiz.querySelectorAll('[data-regua]'), { scaleX: 1 });
       gsap.set(raiz.querySelectorAll('[data-sobe]'), { y: 0, opacity: 1 });
+      gsap.set(raiz.querySelectorAll('.ideias__post, .ideias__peca'), {
+        y: 0, opacity: 1, clipPath: 'inset(0% 0% 0% 0%)',
+      });
       return;
     }
 
@@ -92,10 +119,70 @@ export default function Thoughts() {
           opacity: 1,
           duration: 1,
           ease: 'expo.out',
-          delay: (i % 4) * 0.06,
+          delay: (i % 3) * 0.06,
           scrollTrigger: { trigger: el, start: 'top 90%', toggleActions: 'restart none none reverse' },
         });
     });
+
+    /* ── a entrada do cartao ──
+       Os dois lados chegam em SENTIDOS OPOSTOS: o texto desce de cima, a
+       imagem sobe de baixo. Cada um e revelado por uma mascara que abre
+       do lado de onde veio — sem isso metade do cartao pareceria entrar
+       de re. E a divergencia, nao a velocidade, que da a sensacao de
+       duas camadas se encaixando. */
+    gsap.utils.toArray(raiz.querySelectorAll('.ideias__linha')).forEach((linha) => {
+      const lados = [
+        { el: linha.querySelector('.ideias__post'), de: -1 },
+        { el: linha.querySelector('.ideias__peca'), de: 1 },
+      ].filter((l) => l.el);
+
+      lados.forEach(({ el, de }) => {
+        gsap.fromTo(el,
+          {
+            y: de * 90,
+            clipPath: de < 0 ? 'inset(0% 0% 100% 0%)' : 'inset(100% 0% 0% 0%)',
+            opacity: 0,
+          },
+          {
+            y: 0,
+            clipPath: 'inset(0% 0% 0% 0%)',
+            opacity: 1,
+            duration: 1.15,
+            ease: 'power3.out',
+            scrollTrigger: { trigger: linha, start: 'top 82%', toggleActions: 'restart none none reverse' },
+          });
+      });
+    });
+
+    /* ── a deriva dentro da janela ──
+       Na referencia a foto tem 791x1040 dentro de uma janela de 609x800,
+       com scale(1.3): a sobra existe para ela poder correr. Aqui a foto
+       sangra 12% para fora em cima e embaixo e desliza no scroll — o que
+       o olho le e a imagem indo por dentro enquanto a moldura sobe. */
+    gsap.utils.toArray(raiz.querySelectorAll('.ideias__figura')).forEach((fig) => {
+      /* y em px medido na hora, nao yPercent. yPercent converte usando a
+         altura que o GSAP tinha em cache quando o tween nasceu — e aqui
+         ele nasce antes de a fonte e o layout assentarem, entao a conta
+         dava 7% de zero e o transform saia `translate3d(0,0,0)`. Com
+         funcao + invalidateOnRefresh o valor e relido a cada refresh,
+         inclusive depois de redimensionar. */
+      const curso = () => fig.offsetHeight * 0.07;
+
+      gsap.fromTo(fig.querySelector('.ideias__foto'),
+        { y: () => -curso() },
+        {
+          y: () => curso(),
+          ease: 'none',
+          scrollTrigger: {
+            trigger: fig,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: true,
+            invalidateOnRefresh: true,
+          },
+        });
+    });
+
   }, { scope: alvo });
 
   return (
@@ -154,11 +241,18 @@ export default function Thoughts() {
                   como clicavel, nao um botaozinho ao lado dela. */}
               <Link className="ideias__peca" to={c.para} aria-label={`Ver o projeto — ${c.area}`}>
                 <figure className="ideias__figura">
-                  <div
-                    className="ideias__foto"
-                    style={{ backgroundImage: `url(${c.imagem})` }}
-                    role="presentation"
-                  />
+                  {/* Duas camadas de proposito: a LENTE recebe a lupa do
+                      hover (CSS) e a FOTO recebe a deriva do scroll
+                      (GSAP). Na mesma peca, a `transition: transform` do
+                      hover engolia cada escrita do GSAP e a deriva
+                      nunca saia do lugar. */}
+                  <div className="ideias__lente">
+                    <div
+                      className="ideias__foto"
+                      style={{ backgroundImage: `url(${c.imagem})` }}
+                      role="presentation"
+                    />
+                  </div>
                   <div className="ideias__riscos" aria-hidden="true">
                     <i /><i /><i />
                   </div>
