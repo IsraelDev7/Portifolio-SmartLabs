@@ -2473,9 +2473,11 @@ h3 {
 }
 
 /* ── fundo ──
-   A foto NAO cobre a secao inteira: 62% da largura, ancorada a esquerda,
-   como na referencia. Cobrindo tudo ela viraria papel de parede e o
-   formulario passaria a disputar leitura com o rosto. */
+   A foto cobre a secao INTEIRA, inclusive por tras da coluna da direita.
+   Antes ela parava em 62% e o gradiente fechava em Aco solido antes do
+   painel: o backdrop-filter continuava ligado, mas desfocar preto chapado
+   nao produz vidro nenhum — produz preto chapado. Vidro precisa de algo
+   atras para refratar. */
 .contato__fundo {
   position: absolute;
   inset: 0;
@@ -2485,20 +2487,21 @@ h3 {
 
 .contato__foto {
   position: absolute;
-  inset: 0 38% 0 0;
+  inset: 0;
   background-size: cover;
-  background-position: center 12%;
-  opacity: 0.55;
+  background-position: 30% 12%;
+  opacity: 0.6;
 }
 
-/* A sombra desce ate o Aco solido, e tambem fecha a direita — e o que
-   separa a foto do painel de texto sem precisar de uma borda. */
+/* A vertical desce ate o Aco solido. A horizontal so ESCURECE para a
+   direita — nao fecha mais: fechar apagaria o que o vidro tem para
+   refratar. */
 .contato__sombra {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(180deg, rgba(10,10,10,0.55) 0%, rgba(10,10,10,0.2) 34%, rgba(10,10,10,0.94) 82%, var(--aco) 100%),
-    linear-gradient(90deg, rgba(10,10,10,0) 0%, rgba(10,10,10,0.25) 42%, rgba(10,10,10,0.92) 66%, var(--aco) 78%);
+    linear-gradient(180deg, rgba(10,10,10,0.5) 0%, rgba(10,10,10,0.18) 32%, rgba(10,10,10,0.9) 84%, var(--aco) 100%),
+    linear-gradient(90deg, rgba(10,10,10,0) 0%, rgba(10,10,10,0.18) 45%, rgba(10,10,10,0.5) 100%);
 }
 
 /* ── grade ──
@@ -2524,10 +2527,24 @@ h3 {
   margin: calc(var(--space-6) * -1) calc(var(--content-padding) * -1)
           calc(var(--space-8) * -1) 0;
   padding-right: var(--content-padding);
-  background-color: rgba(20, 20, 20, 0.34);
-  backdrop-filter: blur(16px) saturate(1.08);
-  -webkit-backdrop-filter: blur(16px) saturate(1.08);
-  box-shadow: -36px 0 72px -22px rgba(0, 0, 0, 0.75);
+  background-color: rgba(20, 20, 20, 0.26);
+  backdrop-filter: blur(18px) saturate(1.1);
+  -webkit-backdrop-filter: blur(18px) saturate(1.1);
+}
+
+/* A sombra e um DEGRADE saindo da borda esquerda do painel para fora,
+   nao um box-shadow. box-shadow desenha um halo de contorno uniforme;
+   o degrade escurece a foto progressivamente conforme ela se aproxima do
+   vidro, que e o que faz o painel parecer apoiado sobre ela. */
+.contato__dir::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 100%;
+  width: clamp(80px, 9vw, 160px);
+  pointer-events: none;
+  background-image: linear-gradient(to left, rgba(10, 10, 10, 0.7), rgba(10, 10, 10, 0));
 }
 
 /* Sem backdrop-filter o painel a 34% deixaria o formulario ilegivel
@@ -2550,9 +2567,16 @@ h3 {
   backdrop-filter: blur(2px);
 }
 
-/* A caixa da direita nao tem moldura: quem a separa agora e o painel de
-   vidro em volta dela. Duas bordas concentricas so somariam ruido. */
-.contato__caixa--dir { border: 0; padding: 0; }
+/* Nem moldura nem fundo proprio: quem separa aquele bloco e o painel de
+   vidro em volta. O backdrop-filter da classe base tambem sai — filtro
+   de fundo aninhado dentro de outro cria a sua propria camada, e era ele
+   que ainda desenhava o retangulo atras do texto mesmo sem borda. */
+.contato__caixa--dir {
+  border: 0;
+  padding: 0;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
 
 /* A referencia usa 70px, mas la o titulo e "CONTACT ME" — duas palavras
    numa linha. O nosso e uma frase de sete, e no mesmo corpo ele ocupava
@@ -2743,8 +2767,8 @@ h3 {
   .contato__dir {
     margin: 0;
     padding: var(--space-4) var(--space-3);
-    box-shadow: none;
   }
+  .contato__dir::before { content: none; }
   .contato__esq { min-height: 0; }
   .contato__pe { margin-top: var(--space-6); }
   /* a foto passa a cobrir tudo: em coluna unica nao ha metade direita
