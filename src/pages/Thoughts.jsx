@@ -43,7 +43,7 @@ const CASOS = [
     titulo: 'A estrutura vem antes da estética.',
     resumo:
       'Interface bonita sobre arquitetura frágil não sobrevive ao primeiro pico de volume. O que sustenta a experiência premium é o que ninguém vê.',
-    imagem: '/images/estrutura-primeiro.jpg',
+    imagem: '/images/ideia-estrutura.jpg',
     para: '/work',
   },
   {
@@ -53,7 +53,7 @@ const CASOS = [
     titulo: 'Automação não é economizar tempo. É remover dependência.',
     resumo:
       'O ganho real não está nos minutos poupados. Está em o processo continuar quando a pessoa que sempre fazia aquela etapa não está.',
-    imagem: '/images/funcao-em-tudo.jpg',
+    imagem: '/images/ideia-dependencia.jpg',
     para: '/work',
   },
   {
@@ -63,7 +63,7 @@ const CASOS = [
     titulo: 'IA não é o produto. É a camada.',
     resumo:
       'Quando a inteligência entra como produto separado, alguém precisa aprender a operá-la. Quando entra como camada, ela some dentro do fluxo que já existia.',
-    imagem: '/images/nucleo.jpg',
+    imagem: '/images/ideia-camada.jpg',
     para: '/work',
   },
   {
@@ -73,7 +73,7 @@ const CASOS = [
     titulo: 'Tráfego sem estrutura vaza.',
     resumo:
       'Investir em aquisição antes de a operação aguentar o volume é pagar para descobrir onde o sistema quebra. Aquisição e tecnologia são o mesmo projeto.',
-    imagem: '/images/o-que-construo.jpg',
+    imagem: '/images/ideia-vazamento.jpg',
     para: '/work',
   },
 ];

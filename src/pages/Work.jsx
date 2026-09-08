@@ -32,19 +32,19 @@ const OBRAS = [
   { n: '01', titulo: ['[ nome do', 'projeto ]'], sub: '[ uma linha dizendo o que o projeto e ]',
     cliente: '[ cliente ]', tipo: '[ tipo de projeto ]', data: '[ mês e ano ]',
     legenda: '[ o problema que existia, e o que a estrutura nova resolveu. duas ou tres linhas. ]',
-    imagem: '/images/estrutura-primeiro.jpg', para: '/contact' },
+    imagem: '/images/work-performance.jpg', para: '/contact' },
   { n: '02', titulo: ['[ nome do', 'projeto ]'], sub: '[ uma linha dizendo o que o projeto e ]',
     cliente: '[ cliente ]', tipo: '[ tipo de projeto ]', data: '[ mês e ano ]',
     legenda: '[ o problema que existia, e o que a estrutura nova resolveu. duas ou tres linhas. ]',
-    imagem: '/images/funcao-em-tudo.jpg', para: '/contact' },
+    imagem: '/images/work-identidade.jpg', para: '/contact' },
   { n: '03', titulo: ['[ nome do', 'projeto ]'], sub: '[ uma linha dizendo o que o projeto e ]',
     cliente: '[ cliente ]', tipo: '[ tipo de projeto ]', data: '[ mês e ano ]',
     legenda: '[ o problema que existia, e o que a estrutura nova resolveu. duas ou tres linhas. ]',
-    imagem: '/images/o-que-construo.jpg', para: '/contact' },
+    imagem: '/images/work-automacao.jpg', para: '/contact' },
   { n: '04', titulo: ['[ nome do', 'projeto ]'], sub: '[ uma linha dizendo o que o projeto e ]',
     cliente: '[ cliente ]', tipo: '[ tipo de projeto ]', data: '[ mês e ano ]',
     legenda: '[ o problema que existia, e o que a estrutura nova resolveu. duas ou tres linhas. ]',
-    imagem: '/images/nucleo.jpg', para: '/contact' },
+    imagem: '/images/work-infra.jpg', para: '/contact' },
 ];
 
 export default function Work() {
