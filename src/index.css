@@ -2450,3 +2450,263 @@ h3 {
 
 .sobre__lista li { padding-left: 0; }
 .sobre__lista li::before { content: none; }
+
+/* ═══════════════════════════════════════════════════════════
+   CONTATO — reconstruida sobre a pagina de contato da referencia
+   Medido em 1280x800: secao de ~720px, coluna esquerda x=24 w=591,
+   direita x=781 w=444, titulo 70px, prosa da direita 20px.
+   ═══════════════════════════════════════════════════════════ */
+
+.contato {
+  position: relative;
+  min-height: 100vh;
+  background-color: var(--aco);
+  color: var(--cal);
+  padding: 14vh var(--content-padding) var(--space-8);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* ── fundo ──
+   A foto NAO cobre a secao inteira: 62% da largura, ancorada a esquerda,
+   como na referencia. Cobrindo tudo ela viraria papel de parede e o
+   formulario passaria a disputar leitura com o rosto. */
+.contato__fundo {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.contato__foto {
+  position: absolute;
+  inset: 0 38% 0 0;
+  background-size: cover;
+  background-position: center 12%;
+  opacity: 0.55;
+}
+
+/* A sombra desce ate o Aco solido, e tambem fecha a direita — e o que
+   separa a foto do painel de texto sem precisar de uma borda. */
+.contato__sombra {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(180deg, rgba(10,10,10,0.55) 0%, rgba(10,10,10,0.2) 34%, rgba(10,10,10,0.94) 82%, var(--aco) 100%),
+    linear-gradient(90deg, rgba(10,10,10,0) 0%, rgba(10,10,10,0.25) 42%, rgba(10,10,10,0.92) 66%, var(--aco) 78%);
+}
+
+/* ── grade ──
+   591 e 444 numa largura util de 1232: 48% e 36%, com a calha de 166px
+   (13%) entre as duas. */
+.contato__grade {
+  display: grid;
+  grid-template-columns: 48% 36%;
+  justify-content: space-between;
+  gap: var(--space-8);
+  align-items: start;
+}
+
+.contato__esq {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 62vh;
+}
+
+/* ── caixas emolduradas ── */
+.contato__caixa {
+  border: 1px solid var(--linha);
+  padding: var(--space-3);
+  backdrop-filter: blur(2px);
+}
+
+.contato__caixa--dir { border-color: rgba(209, 77, 41, 0.55); }
+
+/* A referencia usa 70px, mas la o titulo e "CONTACT ME" — duas palavras
+   numa linha. O nosso e uma frase de sete, e no mesmo corpo ele ocupava
+   cinco linhas e sozinho estourava a altura da secao. 4.4vw mantem ele
+   como o maior elemento da pagina com folga, em tres linhas. */
+.contato__titulo {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 4.4vw, 3.5rem);
+  line-height: 0.94;
+  letter-spacing: -0.035em;
+  text-transform: uppercase;
+  color: var(--solda);
+  margin: 0;
+}
+
+/* Colada no titulo de proposito: na referencia a prosa comeca logo
+   abaixo, dentro da mesma moldura — sao uma frase so em dois corpos. */
+.contato__prosa {
+  font-family: var(--font-mono);
+  font-size: clamp(0.72rem, 0.95vw, 0.86rem);
+  line-height: 1.6;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--fumaca);
+  margin: var(--space-2) 0 0;
+  max-width: 52ch;
+}
+
+/* ── a caixa da direita ── */
+.contato__convite {
+  margin: 0 0 var(--space-2);
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 1.6vw, 1.3rem);
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
+.contato__convite b { color: var(--solda); font-weight: inherit; }
+
+.contato__perguntas {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-mono);
+  font-size: clamp(0.72rem, 0.95vw, 0.86rem);
+  line-height: 1.85;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--cal);
+}
+
+.contato__perguntas li::before { content: '— '; color: var(--solda); }
+
+.contato__fecho {
+  margin: var(--space-2) 0 0;
+  font-family: var(--font-mono);
+  font-size: clamp(0.7rem, 0.9vw, 0.82rem);
+  line-height: 1.6;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--fumaca);
+}
+
+/* ── pe da coluna esquerda ── */
+.contato__pe { margin-top: var(--space-6); }
+
+/* meio transparente, como ele pediu: a regua marca a divisao sem virar
+   uma segunda borda competindo com a da caixa */
+.contato__regua {
+  display: block;
+  height: 1px;
+  background-color: rgba(245, 240, 232, 0.22);
+  margin-bottom: var(--space-3);
+}
+
+.contato__rotulo {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--solda);
+  margin-bottom: var(--space-2);
+}
+
+.rp {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: var(--space-3);
+}
+
+.rp__peca {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;               /* WCAG 2.5.5 */
+  color: var(--cal);
+  border: 1px solid var(--linha);
+  transition: color 200ms ease, border-color 200ms ease;
+}
+
+.rp__peca svg { width: 20px; height: 20px; display: block; }
+.rp__peca:hover { color: var(--solda); border-color: var(--solda); }
+
+/* ── formulario ── */
+.contato__forma {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.contato__par { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
+
+.contato__forma label { display: block; }
+
+.contato__forma label span {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fumaca);
+  margin-bottom: 0.3rem;
+}
+
+.contato__forma input,
+.contato__forma textarea {
+  width: 100%;
+  padding: 0.6rem 0;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--linha);
+  color: var(--cal);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  outline: none;
+  resize: vertical;
+  transition: border-color 200ms ease;
+}
+
+.contato__forma input::placeholder,
+.contato__forma textarea::placeholder { color: rgba(138, 132, 120, 0.7); }
+
+.contato__forma input:focus-visible,
+.contato__forma textarea:focus-visible { border-bottom-color: var(--solda); }
+
+.contato__enviar {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;           /* WCAG 2.5.5 */
+  margin-top: var(--space-2);
+  padding: 0.65rem 1.1rem;
+  border: 0;
+  cursor: pointer;
+  background-color: var(--solda);
+  color: var(--aco);
+  font-family: var(--font-display);
+  font-size: clamp(0.9rem, 1.35vw, 1.1rem);
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  transition: filter 200ms ease;
+}
+
+.contato__enviar:hover { filter: brightness(1.12); }
+.contato__enviar i { font-style: normal; font-size: 0.78em; }
+
+/* ── estreito ── */
+@media (max-width: 900px) {
+  .contato { padding-top: 14vh; }
+  .contato__grade { grid-template-columns: 1fr; gap: var(--space-6); }
+  .contato__esq { min-height: 0; }
+  .contato__pe { margin-top: var(--space-6); }
+  /* a foto passa a cobrir tudo: em coluna unica nao ha metade direita
+     para ela deixar livre */
+  .contato__foto { inset: 0; opacity: 0.4; }
+  .contato__sombra {
+    background-image: linear-gradient(180deg, rgba(10,10,10,0.6) 0%, rgba(10,10,10,0.9) 45%, var(--aco) 78%);
+  }
+}
+
+@media (max-width: 560px) {
+  .contato__par { grid-template-columns: 1fr; }
+}
