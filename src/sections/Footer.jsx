@@ -1,6 +1,11 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import NomeAlgoritmo from '../components/NomeAlgoritmo';
+
+gsap.registerPlugin(ScrollTrigger);
 
 /**
  * Footer — reconstrucao do rodape da referencia (vertical.framer.media),
@@ -43,7 +48,36 @@ const EMAIL = 'israel.devpf@gmail.com';
 const TELEFONE = '(62) 99287-9300';
 
 export default function Footer() {
+  const alvo = useRef(null);
   const [copiado, setCopiado] = useState(null);
+
+  /* As reguas verticais sao DESENHADAS de cima para baixo, nao aparecem
+     prontas. transform-origin no topo e scaleY: borda de CSS existe
+     inteira ou nao existe, e so escalando a partir de uma origem da para
+     mostrar o traco sendo feito. */
+  useGSAP(() => {
+    const reguas = gsap.utils.toArray(alvo.current.querySelectorAll('.pe__regua-v'));
+    if (!reguas.length) return;
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      gsap.set(reguas, { scaleY: 1 });
+      return;
+    }
+
+    gsap.fromTo(reguas,
+      { scaleY: 0 },
+      {
+        scaleY: 1,
+        duration: 0.9,
+        stagger: 0.12,
+        ease: 'power2.inOut',
+        scrollTrigger: {
+          trigger: alvo.current.querySelector('.pe__grade'),
+          start: 'top 85%',
+          toggleActions: 'restart none none reverse',
+        },
+      });
+  }, { scope: alvo });
 
   const copiar = useCallback((chave, valor) => {
     /* clipboard.writeText nao existe fora de https/localhost e rejeita
@@ -66,7 +100,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="pe">
+    <footer className="pe" ref={alvo}>
       {/* A faixa de chamada saiu daqui: o pedido de acao agora fica no
           bloco Sobre, logo abaixo da lista do oficio, onde o leitor
           acabou de ler o que eu faco. Aqui embaixo ela abria um vao de
@@ -84,6 +118,8 @@ export default function Footer() {
         <div className="pe__grade">
           {/* contato: barra vertical, telefone, e-mail */}
           <div className="pe__contato">
+            <i className="pe__regua-v" aria-hidden="true" />
+            <div className="pe__contato-texto">
             <button
               type="button"
               className="pe__tel"
@@ -105,6 +141,7 @@ export default function Footer() {
                 Não consegui copiar — selecione e copie à mão.
               </span>
             )}
+            </div>
           </div>
 
           {/* escritorio */}
@@ -117,18 +154,25 @@ export default function Footer() {
             <span className="pe__cnpj">Smart LABS · CNPJ 53.243.609/0001-58</span>
           </address>
 
-          <nav className="pe__nav" aria-label="Navegação do rodapé">
-            {NAV.map((l) => (
-              <Link key={l.para} to={l.para}>{l.rotulo}</Link>
-            ))}
-          </nav>
+          {/* As duas colunas dividem uma regua so, a esquerda do par —
+              e o mesmo tique da coluna de contato, e e ele que amarra os
+              links como um bloco em vez de duas listas soltas. */}
+          <div className="pe__links">
+            <i className="pe__regua-v" aria-hidden="true" />
 
-          <nav className="pe__redes" aria-label="Redes sociais">
-            {REDES.map((l) => (
-              <a key={l.url} href={l.url} target="_blank" rel="noreferrer">{l.rotulo}</a>
-            ))}
-            <Link to="/404">404</Link>
-          </nav>
+            <nav className="pe__nav" aria-label="Navegação do rodapé">
+              {NAV.map((l) => (
+                <Link key={l.para} to={l.para}>{l.rotulo}</Link>
+              ))}
+            </nav>
+
+            <nav className="pe__redes" aria-label="Redes sociais">
+              {REDES.map((l) => (
+                <a key={l.url} href={l.url} target="_blank" rel="noreferrer">{l.rotulo}</a>
+              ))}
+              <Link to="/404">404</Link>
+            </nav>
+          </div>
         </div>
 
         {/* a marca em corpo maximo, fechando */}
@@ -139,7 +183,7 @@ export default function Footer() {
           <button type="button" className="pe__subir" onClick={aoTopo} aria-label="Voltar ao topo">
             ↑
           </button>
-          <span className="pe__lugar">Goiânia, BR</span>
+          <span className="pe__lugar">Goiânia, BR · Londres, UK</span>
         </div>
       </div>
     </footer>
