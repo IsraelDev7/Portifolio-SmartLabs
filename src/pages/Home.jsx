@@ -69,8 +69,11 @@ export default function Home() {
           <div style={{ flex: '1 1 40%', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             {/* Ancora do bloco: e a peca parada que faz o olho perceber
                 que as outras duas se movem. Sem atributo, de proposito. */}
+            {/* aspect-ratio + object-fit no lugar de height:auto: da altura
+                real ao cartao sem esticar a foto, e a caixa deixa de
+                depender do carregamento da imagem para ter tamanho. */}
             <Mosaico semente={11}>
-              <img src="/images/estrutura-primeiro.jpg" alt="Maquete de concreto com malha estrutural" style={{ width: '100%', height: 'auto', filter: 'grayscale(100%)' }} />
+              <img src="/images/estrutura-primeiro.jpg" alt="Maquete de concreto com malha estrutural" style={{ width: '100%', aspectRatio: '3 / 4', objectFit: 'cover', display: 'block', filter: 'grayscale(100%)' }} />
             </Mosaico>
             <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: '#666', textTransform: 'uppercase' }}>ESTRUTURA PRIMEIRO (2026)</span>
           </div>
@@ -79,13 +82,13 @@ export default function Home() {
                 anima os filhos com `y` e os dois brigariam. Assim a foto e
                 a cobertura deslizam juntas e a legenda fica ancorada. */}
             <Mosaico deriva="-0.14" semente={23}>
-              <img src="/images/estetica-depois.jpg" alt="Silhueta dissolvendo em cubos" style={{ width: '100%', height: 'auto', filter: 'grayscale(100%)' }} />
+              <img src="/images/estetica-depois.jpg" alt="Silhueta dissolvendo em cubos" style={{ width: '100%', aspectRatio: '2 / 3', objectFit: 'cover', display: 'block', filter: 'grayscale(100%)' }} />
             </Mosaico>
             <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: '#666', textTransform: 'uppercase' }}>ESTÉTICA DEPOIS (2026)</span>
           </div>
-          <div style={{ flex: '1 1 20%', display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '5vw' }}>
+          <div style={{ flex: '1 1 24%', display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '5vw' }}>
             <Mosaico deriva="-0.26" semente={41}>
-              <img src="/images/funcao-em-tudo.jpg" alt="Paineis de vidro sobrepostos com luz ambar" style={{ width: '100%', height: 'auto', filter: 'grayscale(100%)' }} />
+              <img src="/images/funcao-em-tudo.jpg" alt="Paineis de vidro sobrepostos com luz ambar" style={{ width: '100%', aspectRatio: '2 / 3', objectFit: 'cover', display: 'block', filter: 'grayscale(100%)' }} />
             </Mosaico>
             <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: '#666', textTransform: 'uppercase' }}>FUNÇÃO EM TUDO (2026)</span>
           </div>

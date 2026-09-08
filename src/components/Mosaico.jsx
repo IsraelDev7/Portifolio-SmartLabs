@@ -131,10 +131,30 @@ export default function Mosaico({ children, deriva, className = '', style, semen
        ja lanca ReferenceError — o guarda `st ? ...` nao salvaria. */
     let st = null;
 
-    const observador = new ResizeObserver(() => {
-      if (medir()) { desenhar(st ? st.progress : 0); ScrollTrigger.refresh(); }
-    });
+    const remedir = () => {
+      if (medir()) { ultimoN = -1; desenhar(st ? st.progress : 0); ScrollTrigger.refresh(); }
+    };
+
+    const observador = new ResizeObserver(remedir);
     observador.observe(box);
+
+    /* O ResizeObserver sozinho NAO bastou. Medido: os tres mosaicos cujo
+       filho e uma <img> ficavam com o canvas em 300x150 — o padrao do
+       HTML, ou seja, `medir()` nunca rodou com caixa util — e um
+       ScrollTrigger.refresh() manual no console corrigia os tres de uma
+       vez. Os que tem <div> com tamanho no CSS sempre funcionaram.
+       A diferenca e a <img> de height:auto: no primeiro quadro a caixa
+       tem largura mas altura zero, e a entrega do crescimento nao chega
+       — provavelmente engolida pelo proprio refresh disparado de dentro
+       do callback.
+
+       Entao nao dependemos so dele. O `load` de cada imagem e um sinal
+       direto, e o par de rAF cobre a imagem que ja veio do cache e cujo
+       `load` nunca vai disparar. */
+    const imgs = Array.from(box.querySelectorAll('img'));
+    imgs.forEach((im) => { if (!im.complete) im.addEventListener('load', remedir); });
+
+    const quadro = requestAnimationFrame(() => requestAnimationFrame(remedir));
 
     st = ScrollTrigger.create({
       trigger: box,
@@ -145,7 +165,12 @@ export default function Mosaico({ children, deriva, className = '', style, semen
       onRefresh: () => { if (medir()) { ultimoN = -1; desenhar(st ? st.progress : 0); } },
     });
 
-    return () => { observador.disconnect(); st.kill(); };
+    return () => {
+      observador.disconnect();
+      cancelAnimationFrame(quadro);
+      imgs.forEach((im) => im.removeEventListener('load', remedir));
+      st.kill();
+    };
   }, [semente]);
 
   return (
