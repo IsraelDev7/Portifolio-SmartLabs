@@ -1937,3 +1937,441 @@ h3 {
   padding-top: var(--space-20);
   border-top: 1px solid var(--linha);
 }
+
+/* ═══════════════════════════════════════════════════════════
+   PE — o rodape, reconstruido sobre o da referencia
+   Medido em 1280x800: nome em corpo maximo · telefone 24px /
+   e-mail 16px em x=48 · endereco em x=286 (rotulo 20, linhas 16) ·
+   colunas de links em x=681, 16px · marca em corpo maximo no pe.
+   La o painel e verde-limao; aqui e Aco.
+   ═══════════════════════════════════════════════════════════ */
+
+.pe { background-color: var(--aco); }
+
+/* ── faixa de chamada ── */
+.pe__chamada {
+  text-align: center;
+  padding: var(--space-20) var(--content-padding) var(--space-16);
+}
+
+.pe__kicker {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--solda);
+  border: 1px solid var(--linha);
+  padding: 0.55rem 0.9rem;
+  margin-bottom: var(--space-6);
+}
+
+.pe__convite {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 6vw, 5rem);
+  line-height: 0.96;
+  letter-spacing: -0.035em;
+  color: var(--cal);
+  margin: 0 0 var(--space-8);
+}
+
+.pe__botao {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 44px;
+  padding: 0.7rem 1.2rem;
+  background-color: var(--solda);
+  color: var(--aco);
+  font-family: var(--font-display);
+  font-size: clamp(0.92rem, 1.5vw, 1.2rem);
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: filter 200ms ease;
+}
+
+.pe__botao:hover { filter: brightness(1.12); }
+.pe__botao i { font-style: normal; font-size: 0.78em; }
+
+/* ── o painel ── */
+.pe__painel {
+  position: relative;
+  background-color: var(--chapa);
+  border-top: 1px solid var(--linha);
+  padding: 0 var(--content-padding) var(--space-6);
+}
+
+/* O pente costura o painel ao corpo da pagina: sem ele o bloco vira uma
+   caixa colada no fim. Os tracos sao filhos de um flex, nao um
+   repeating-gradient, porque assim a contagem acompanha a largura e nao
+   sobra meio traco cortado na borda. */
+.pe__pente {
+  display: flex;
+  gap: 6px;
+  height: 34px;
+  overflow: hidden;
+  margin-bottom: var(--space-12);
+}
+
+.pe__pente i {
+  flex: 1 1 0;
+  background-color: var(--linha);
+}
+
+/* Corpo maximo de verdade: medido com Range, 13 caracteres a 14.2vw
+   davam 1025px numa caixa de 1172 — sobrava vao. A 15.8vw dao 1135 e a
+   linha fecha na largura, como na referencia. */
+.pe__nome {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 15.8vw, 13rem);
+  line-height: 0.86;
+  letter-spacing: -0.045em;
+  color: var(--cal);
+  margin: 0 0 var(--space-8);
+  white-space: nowrap;
+}
+
+.nalg { display: inline-block; }
+.nalg__letra { display: inline-block; }
+
+/* ── a grade de quatro colunas ──
+   Proporcoes medidas: contato em 48, endereco em 286, links em 681 de
+   1280 — ou seja 4%, 22% e 53% da largura. */
+.pe__grade {
+  display: grid;
+  grid-template-columns: 1.05fr 1.15fr 0.9fr 0.9fr;
+  gap: var(--space-6) var(--space-4);
+  padding-bottom: var(--space-12);
+}
+
+/* a barra vertical a esquerda do contato vem da referencia */
+.pe__contato {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  align-self: start;   /* a barra acompanha o texto, nao a coluna toda */
+  gap: 0.15rem;
+  padding-left: var(--space-2);
+  border-left: 2px solid var(--cal);
+}
+
+/* botao de verdade, nao span com onClick: copiar e uma acao, e o teclado
+   precisa alcancar. A aparencia e zerada aqui. */
+.pe__tel,
+.pe__email {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  text-align: left;
+  color: var(--cal);
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+  transition: color 200ms ease;
+}
+
+.pe__tel { font-size: clamp(1.05rem, 1.85vw, 1.5rem); }
+.pe__email { font-size: clamp(0.85rem, 1.25vw, 1rem); color: var(--fumaca); }
+.pe__tel:hover, .pe__email:hover { color: var(--solda); }
+
+.pe__aviso {
+  margin-top: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--solda);
+}
+
+/* ── escritorio ── */
+.pe__escritorio {
+  font-family: var(--font-body);
+  font-size: clamp(0.8rem, 1.1vw, 1rem);
+  line-height: 1.5;
+  font-style: normal;
+  color: var(--fumaca);
+}
+
+.pe__rotulo-end {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-family: var(--font-display);
+  font-size: clamp(0.92rem, 1.55vw, 1.25rem);
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--cal);
+}
+
+.pe__cnpj {
+  display: block;
+  margin-top: 0.7rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  color: var(--fumaca);
+}
+
+/* ── colunas de links ── */
+.pe__nav,
+.pe__redes {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.pe__nav a,
+.pe__redes a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-family: var(--font-display);
+  font-size: clamp(0.8rem, 1.05vw, 0.95rem);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--cal);
+  text-decoration: none;
+  transition: color 200ms ease;
+}
+
+.pe__nav a:hover,
+.pe__redes a:hover { color: var(--solda); }
+
+/* ── a marca em corpo maximo ──
+   17.4vw davam 1224px de texto numa caixa de 1172: com nowrap o excesso
+   nao gera scroll, ele CORTA em silencio, e o S final sumia. A caixa
+   mede 1172 de qualquer jeito, entao so medir o elemento nao acusa —
+   precisa medir o texto com um Range. 16.4vw fecham em 1148. */
+.pe__marca {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 16.4vw, 14rem);
+  line-height: 0.8;
+  letter-spacing: -0.05em;
+  color: var(--cal);
+  white-space: nowrap;
+  border-top: 1px solid var(--linha);
+  padding-top: var(--space-6);
+}
+
+/* ── base ── */
+.pe__base {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-top: var(--space-6);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--linha);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  color: var(--fumaca);
+}
+
+.pe__subir {
+  appearance: none;
+  background: none;
+  border: 1px solid var(--linha);
+  color: var(--cal);
+  width: 44px;
+  height: 44px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: border-color 200ms ease, color 200ms ease;
+}
+
+.pe__subir:hover { border-color: var(--solda); color: var(--solda); }
+
+@media (max-width: 820px) {
+  .pe__grade { grid-template-columns: 1fr 1fr; }
+  .pe__nome { white-space: normal; font-size: clamp(2rem, 13vw, 4rem); }
+  .pe__marca { white-space: normal; font-size: clamp(2.2rem, 15vw, 4.5rem); }
+  .pe__base { flex-wrap: wrap; }
+  .pe__lugar { order: 3; }
+}
+
+@media (max-width: 520px) {
+  .pe__grade { grid-template-columns: 1fr; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   LEGAL — o molde de privacidade e termos
+   ═══════════════════════════════════════════════════════════ */
+
+.legal {
+  background-color: var(--aco);
+  color: var(--cal);
+  padding: 22vh var(--content-padding) var(--space-16);
+}
+
+.legal__kicker {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--solda);
+}
+
+.legal__titulo {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 7vw, 5.5rem);
+  line-height: 0.94;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  margin: var(--space-2) 0 0;
+}
+
+.legal__vigencia {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fumaca);
+  margin: var(--space-3) 0 0;
+}
+
+/* contador para numerar as secoes sem repetir numero na marcacao */
+.legal__corpo {
+  counter-reset: secao;
+  margin-top: var(--space-12);
+  border-top: 1px solid var(--linha);
+}
+
+.legal__secao {
+  padding: var(--space-6) 0;
+  border-bottom: 1px solid var(--linha);
+}
+
+.legal__secao h2 {
+  counter-increment: secao;
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 2.1vw, 1.6rem);
+  letter-spacing: -0.025em;
+  text-transform: uppercase;
+  color: var(--cal);
+  margin: 0 0 var(--space-3);
+}
+
+.legal__secao h2::before {
+  content: counter(secao, decimal-leading-zero) " — ";
+  color: var(--solda);
+  font-family: var(--font-mono);
+  font-size: 0.7em;
+}
+
+/* 68ch, nao a largura da pagina: texto juridico e lido de ponta a ponta,
+   e linha longa demais faz o olho perder a volta */
+.legal__secao p,
+.legal__secao li {
+  font-family: var(--font-body);
+  font-size: clamp(0.88rem, 1.1vw, 1rem);
+  line-height: 1.65;
+  color: var(--fumaca);
+  max-width: 68ch;
+}
+
+.legal__secao p { margin: 0 0 var(--space-2); }
+.legal__secao b { color: var(--cal); font-weight: 500; }
+.legal__secao ul { margin: 0 0 var(--space-2); padding-left: 1.1rem; }
+.legal__secao li { margin-bottom: 0.5rem; }
+
+.legal a { color: var(--cal); text-decoration: underline; text-underline-offset: 3px; }
+.legal a:hover { color: var(--solda); }
+
+.legal__pe {
+  margin-top: var(--space-8);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  line-height: 1.8;
+  letter-spacing: 0.04em;
+  color: var(--fumaca);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ERRO — a 404
+   Medido na referencia: parede de 4 e 0 em 409px, cartao com
+   64px nas duas linhas e prosa de 24px em 462px de medida.
+   ═══════════════════════════════════════════════════════════ */
+
+.erro {
+  position: relative;
+  min-height: 100vh;
+  background-color: var(--aco);
+  display: grid;
+  place-items: center;
+  padding: 20vh var(--content-padding) var(--space-16);
+  overflow: hidden;
+}
+
+/* Grafite sobre Aco: dez pontos de luminancia. O bastante para a parede
+   existir sem competir com o cartao na frente. */
+.erro__parede {
+  position: absolute;
+  inset: -6% -12%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  pointer-events: none;
+  user-select: none;
+  font-family: var(--font-display);
+  font-size: clamp(9rem, 32vw, 26rem);
+  line-height: 0.78;
+  letter-spacing: -0.05em;
+  color: var(--grafite);
+}
+
+.erro__fila {
+  display: flex;
+  justify-content: center;
+  gap: 0.1em;
+}
+
+.erro__cartao {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  max-width: 32rem;
+}
+
+.erro__linha-um,
+.erro__linha-dois {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 5vw, 4rem);
+  line-height: 1.06;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  color: var(--cal);
+  margin: 0;
+}
+
+.erro__linha-dois em { font-style: normal; color: var(--fumaca); }
+
+/* 462px de medida na referencia = 36vw numa viewport de 1280 */
+.erro__prosa {
+  font-family: var(--font-body);
+  font-size: clamp(0.92rem, 1.85vw, 1.5rem);
+  line-height: 1.35;
+  color: var(--fumaca);
+  margin: var(--space-4) auto var(--space-6);
+  max-width: 30ch;
+}
+
+.erro__botao {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 44px;
+  padding: 0.7rem 1.2rem;
+  background-color: var(--solda);
+  color: var(--aco);
+  font-family: var(--font-display);
+  font-size: clamp(0.92rem, 1.5vw, 1.15rem);
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: filter 200ms ease;
+}
+
+.erro__botao:hover { filter: brightness(1.12); }
+.erro__botao i { font-style: normal; font-size: 0.78em; }

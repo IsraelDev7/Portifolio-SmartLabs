@@ -7,6 +7,9 @@ import Navbar from './components/Navbar'
 import Preloader from './sections/Preloader'
 import SliceCurtain from './components/SliceCurtain'
 import Footer from './sections/Footer'
+import Privacidade from './pages/Privacidade'
+import Termos from './pages/Termos'
+import NaoEncontrado from './pages/NaoEncontrado'
 
 // Pages
 import Home from './pages/Home'
@@ -42,6 +45,12 @@ export default function App() {
               <Route path="/about" element={<About />} />
               <Route path="/thoughts" element={<Thoughts />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/privacidade" element={<Privacidade />} />
+              <Route path="/termos" element={<Termos />} />
+              {/* /404 e alcancavel pelo link do rodape; o `*` pega
+                  qualquer endereco que nao exista. */}
+              <Route path="/404" element={<NaoEncontrado />} />
+              <Route path="*" element={<NaoEncontrado />} />
             </Routes>
           </main>
         </ScrollWrapper>
