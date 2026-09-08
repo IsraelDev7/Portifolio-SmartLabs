@@ -2914,9 +2914,12 @@ h3 {
 
 /* a regua grossa sob o titulo — o tique que a referencia poe em cada
    post, e o que separa o titulo do resumo sem abrir um vao */
+/* 8px — o valor medido na referencia, onde a barra espera com largura 0
+   e cresce ate a coluna inteira. Aqui cresce por scaleX, que a GPU
+   resolve sem re-layout a cada quadro. */
 .ideias__barra {
   display: block;
-  height: 4px;
+  height: 8px;
   background-color: var(--cal);
   margin: var(--space-3) 0;
   transform-origin: left center;
@@ -2943,15 +2946,87 @@ h3 {
   color: var(--cal);
 }
 
-.ideias__autor img {
+.ideias__autor img,
+.ideias__sem-foto {
   width: 44px;
   height: 44px;
   object-fit: cover;
-  display: block;
+  display: grid;
+  place-items: center;
   flex: none;
 }
 
+/* Enquanto nao chega a foto do cliente, o lugar dela fica MARCADO.
+   Vazio e melhor que um rosto qualquer fingindo ser alguem. */
+.ideias__sem-foto { border: 1px dashed var(--linha); }
+
 /* ── as figuras ── */
+/* ── a peca clicavel ──
+   O <Link> envolve a figura inteira: a area de clique tem que ser a peca
+   que o olho ja le como clicavel, nao um botaozinho ao lado dela. */
+.ideias__peca {
+  display: block;
+  position: relative;
+  text-decoration: none;
+  overflow: hidden;
+}
+
+.ideias__peca .ideias__foto {
+  transition: transform 900ms cubic-bezier(.22, 1, .36, 1),
+              filter 600ms ease;
+}
+
+.ideias__peca:hover .ideias__foto,
+.ideias__peca:focus-visible .ideias__foto {
+  transform: scale(1.06);
+  filter: brightness(0.72);
+}
+
+.ideias__peca:focus-visible { outline: 2px solid var(--solda); outline-offset: -2px; }
+
+/* A chamada so aparece no hover — e a promessa do clique, nao um rotulo
+   permanente competindo com a foto. */
+.ideias__chamada {
+  position: absolute;
+  left: var(--space-3);
+  bottom: var(--space-3);
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0.6rem 1rem;
+  background-color: var(--solda);
+  color: var(--aco);
+  font-family: var(--font-display);
+  font-size: clamp(0.85rem, 1.15vw, 1rem);
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 300ms ease, transform 420ms cubic-bezier(.22, 1, .36, 1);
+}
+
+.ideias__peca:hover .ideias__chamada,
+.ideias__peca:focus-visible .ideias__chamada {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.ideias__chamada i { font-style: normal; font-size: 0.78em; }
+
+/* Sem cursor nao ha hover: a chamada nasce visivel, senao o toque nao
+   tem como descobrir que a peca leva a algum lugar. */
+@media (hover: none) {
+  .ideias__chamada { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ideias__peca .ideias__foto,
+  .ideias__chamada { transition: none; }
+  .ideias__peca:hover .ideias__foto { transform: none; }
+}
+
 /* min-height, nao height: a imagem manda na altura da linha (como na
    referencia, 800 contra 470 do texto), mas se o post crescer mais que
    ela — titulo longo, tela estreita — ela acompanha em vez de estourar. */

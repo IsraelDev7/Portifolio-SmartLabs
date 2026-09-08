@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { Link } from 'react-router-dom';
 import { usePageMotion } from '../hooks/usePageMotion';
 import Letras from '../components/Letras';
 import { Monogram } from '../components/Logo';
@@ -28,28 +29,28 @@ gsap.registerPlugin(ScrollTrigger);
  * Cisao e do pente do rodape.
  */
 
-const POSTS = [
-  {
-    data: '12 de agosto de 2026',
-    titulo: 'A estrutura vem antes da estética.',
-    resumo:
-      'Interface bonita sobre arquitetura frágil não sobrevive ao primeiro pico de volume. O que sustenta a experiência premium é o que ninguém vê.',
-    imagem: '/images/estrutura-primeiro.jpg',
-  },
-  {
-    data: '03 de julho de 2026',
-    titulo: 'Automação não é economizar tempo. É remover dependência.',
-    resumo:
-      'O ganho real não está nos minutos poupados. Está em o processo continuar quando a pessoa que sempre fazia aquela etapa não está.',
-    imagem: '/images/funcao-em-tudo.jpg',
-  },
-  {
-    data: '21 de maio de 2026',
-    titulo: 'IA não é o produto. É a camada.',
-    resumo:
-      'Quando a inteligência entra como produto separado, alguém precisa aprender a operá-la. Quando entra como camada, ela some dentro do fluxo que já existia.',
-    imagem: '/images/nucleo.jpg',
-  },
+/* Quatro depoimentos. Nomes, fotos e falas ficam como PLACEHOLDER de
+   proposito: depoimento de cliente e declaracao de terceiro, e inventar
+   um — nome, rosto ou frase — e propaganda enganosa (CDC art. 37, e o
+   CONAR trata review fabricada como publicidade ilicita). A estrutura
+   fica pronta; o conteudo entra quando o Israel mandar o real. */
+const CASOS = [
+  { area: 'Psicanálise', cliente: '[ nome do cliente ]', foto: null,
+    titulo: '[ o que o cliente disse sobre o trabalho ]',
+    resumo: '[ duas ou tres linhas contando o problema que existia antes e o que mudou depois. ]',
+    imagem: '/images/estrutura-primeiro.jpg', para: '/work' },
+  { area: 'Fitness', cliente: '[ nome do cliente ]', foto: null,
+    titulo: '[ o que o cliente disse sobre o trabalho ]',
+    resumo: '[ duas ou tres linhas contando o problema que existia antes e o que mudou depois. ]',
+    imagem: '/images/funcao-em-tudo.jpg', para: '/work' },
+  { area: 'Arquitetura', cliente: '[ nome do cliente ]', foto: null,
+    titulo: '[ o que o cliente disse sobre o trabalho ]',
+    resumo: '[ duas ou tres linhas contando o problema que existia antes e o que mudou depois. ]',
+    imagem: '/images/o-que-construo.jpg', para: '/work' },
+  { area: '[ quarto segmento ]', cliente: '[ nome do cliente ]', foto: null,
+    titulo: '[ o que o cliente disse sobre o trabalho ]',
+    resumo: '[ duas ou tres linhas contando o problema que existia antes e o que mudou depois. ]',
+    imagem: '/images/nucleo.jpg', para: '/work' },
 ];
 
 export default function Thoughts() {
@@ -57,29 +58,42 @@ export default function Thoughts() {
   const alvo = useRef(null);
 
   useGSAP(() => {
+    const raiz = alvo.current;
     const reduz = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const reguas = gsap.utils.toArray(alvo.current.querySelectorAll('[data-regua]'));
 
     if (reduz) {
-      gsap.set(reguas, { scaleX: 1 });
+      gsap.set(raiz.querySelectorAll('[data-regua]'), { scaleX: 1 });
+      gsap.set(raiz.querySelectorAll('[data-sobe]'), { y: 0, opacity: 1 });
       return;
     }
 
-    /* Cada regua tem o SEU gatilho, nao um comum: elas estao espalhadas
-       por 3000px de pagina, e um gatilho unico dispararia todas quando a
-       primeira entrasse — as de baixo ja chegariam desenhadas. */
-    reguas.forEach((r) => {
+    /* Cada peca tem o SEU gatilho, nao um comum: elas estao espalhadas
+       por milhares de pixels, e um gatilho unico dispararia todas quando
+       a primeira entrasse — as de baixo ja chegariam prontas. */
+    gsap.utils.toArray(raiz.querySelectorAll('[data-regua]')).forEach((r) => {
       gsap.fromTo(r,
         { scaleX: 0 },
         {
           scaleX: 1,
           duration: 1.1,
           ease: 'power2.inOut',
-          scrollTrigger: {
-            trigger: r,
-            start: 'top 92%',
-            toggleActions: 'restart none none reverse',
-          },
+          scrollTrigger: { trigger: r, start: 'top 92%', toggleActions: 'restart none none reverse' },
+        });
+    });
+
+    /* 75px de subida com desvanecimento — o valor medido no DOM da
+       referencia, onde o titulo do cartao espera fora da tela em
+       translateY(75) e opacidade 0. */
+    gsap.utils.toArray(raiz.querySelectorAll('[data-sobe]')).forEach((el, i) => {
+      gsap.fromTo(el,
+        { y: 75, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 1,
+          ease: 'expo.out',
+          delay: (i % 4) * 0.06,
+          scrollTrigger: { trigger: el, start: 'top 90%', toggleActions: 'restart none none reverse' },
         });
     });
   }, { scope: alvo });
@@ -103,9 +117,9 @@ export default function Thoughts() {
         {/* ── faixa 2 · a declaracao ── */}
         <section className="ideias__faixa">
           <h2 className="ideias__declaracao">
-            O arquivo do que eu penso
+            O que dizem sobre
             <br />
-            enquanto construo.
+            o meu trabalho.
           </h2>
         </section>
 
@@ -116,30 +130,44 @@ export default function Thoughts() {
             dois posts. Na linha, quem for mais alto define a altura e o
             par nunca se separa. */}
         <section className="ideias__lista">
-          {POSTS.map((p) => (
-            <div className="ideias__linha" key={p.titulo}>
+          {CASOS.map((c) => (
+            <div className="ideias__linha" key={c.area}>
               <article className="ideias__post">
-                <p className="ideias__data">{p.data}</p>
-                <h3 className="ideias__post-titulo">{p.titulo}</h3>
+                <p className="ideias__data">{c.area}</p>
+                <h3 className="ideias__post-titulo" data-sobe>{c.titulo}</h3>
                 <i className="ideias__barra" data-regua aria-hidden="true" />
-                <p className="ideias__resumo">{p.resumo}</p>
-                <div className="ideias__autor">
-                  <img src="/images/avatar.jpg" alt="" width="44" height="44" />
-                  <span>Por Israel Passos</span>
+                <p className="ideias__resumo" data-sobe>{c.resumo}</p>
+
+                {/* a assinatura e do CLIENTE: rosto e nome de quem falou */}
+                <div className="ideias__autor" data-sobe>
+                  {c.foto
+                    ? <img src={c.foto} alt="" width="44" height="44" />
+                    : <span className="ideias__sem-foto" aria-hidden="true">
+                        <Monogram color="var(--fumaca)" size={18} />
+                      </span>}
+                  <span>{c.cliente}</span>
                 </div>
               </article>
 
-              <figure className="ideias__figura">
-                <div
-                  className="ideias__foto"
-                  style={{ backgroundImage: `url(${p.imagem})` }}
-                  role="presentation"
-                />
-                {/* os riscos: tres fios em posicoes diferentes por peca */}
-                <div className="ideias__riscos" aria-hidden="true">
-                  <i /><i /><i />
-                </div>
-              </figure>
+              {/* A imagem e o BOTAO. <Link> em volta da figura inteira:
+                  a area de clique tem que ser a peca que o olho ja le
+                  como clicavel, nao um botaozinho ao lado dela. */}
+              <Link className="ideias__peca" to={c.para} aria-label={`Ver o projeto — ${c.area}`}>
+                <figure className="ideias__figura">
+                  <div
+                    className="ideias__foto"
+                    style={{ backgroundImage: `url(${c.imagem})` }}
+                    role="presentation"
+                  />
+                  <div className="ideias__riscos" aria-hidden="true">
+                    <i /><i /><i />
+                  </div>
+                  <span className="ideias__chamada">
+                    Ver o projeto
+                    <i aria-hidden="true">▶▶</i>
+                  </span>
+                </figure>
+              </Link>
             </div>
           ))}
         </section>
