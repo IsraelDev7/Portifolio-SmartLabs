@@ -1984,10 +1984,10 @@ h3 {
 .pe__nome {
   font-family: var(--font-display);
   font-size: clamp(2rem, 15.8vw, 13rem);
-  line-height: 0.86;
+  line-height: 0.78;
   letter-spacing: -0.045em;
   color: var(--cal);
-  margin: 0 0 var(--space-8);
+  margin: 0 0 var(--space-4);
   white-space: nowrap;
 }
 
@@ -2001,7 +2001,7 @@ h3 {
   display: grid;
   grid-template-columns: 1.05fr 1.15fr 1.8fr;
   gap: var(--space-6) var(--space-4);
-  padding-bottom: var(--space-8);
+  padding-bottom: var(--space-6);
 }
 
 /* a barra vertical a esquerda do contato vem da referencia */
@@ -2104,14 +2104,15 @@ h3 {
   align-items: flex-start;
 }
 
-/* 32px onde ha cursor, 44 onde nao ha. O alvo de 44px da WCAG 2.5.5
-   existe para o dedo; com mouse ele so espalha a lista. Em ponteiro
-   grosso a regra volta a valer inteira, logo abaixo. */
+/* 24px onde ha cursor — o passo medido na referencia — e 44 onde nao ha.
+   O alvo de 44px da WCAG 2.5.5 existe para o dedo; com mouse ele so
+   espalha a lista. Em ponteiro grosso a regra volta a valer inteira,
+   logo abaixo. */
 .pe__nav a,
 .pe__redes a {
   display: inline-flex;
   align-items: center;
-  min-height: 32px;
+  min-height: 24px;
   font-family: var(--font-display);
   font-size: clamp(0.8rem, 1.05vw, 0.95rem);
   letter-spacing: 0.02em;
@@ -2137,12 +2138,12 @@ h3 {
 .pe__marca {
   font-family: var(--font-display);
   font-size: clamp(2.4rem, 16.4vw, 14rem);
-  line-height: 0.8;
+  line-height: 0.74;
   letter-spacing: -0.05em;
   color: var(--cal);
   white-space: nowrap;
   border-top: 1px solid var(--linha);
-  padding-top: var(--space-6);
+  padding-top: var(--space-4);
 }
 
 /* ── base ── */
@@ -2151,8 +2152,8 @@ h3 {
   align-items: center;
   justify-content: space-between;
   gap: var(--space-4);
-  margin-top: var(--space-6);
-  padding-top: var(--space-4);
+  margin-top: var(--space-4);
+  padding-top: var(--space-3);
   border-top: 1px solid var(--linha);
   font-family: var(--font-mono);
   font-size: 0.7rem;
