@@ -2796,3 +2796,204 @@ h3 {
 @media (max-width: 560px) {
   .contato__par { grid-template-columns: 1fr; }
 }
+
+/* ═══════════════════════════════════════════════════════════
+   IDEIAS — a pagina de artigos, sobre a /thoughts da referencia
+   Medido em 1280x800: titulo 241px (-0.08em) · linha em mono de 12px
+   com regua longa · faixa de 300px com declaracao em 90px (-0.06em) ·
+   lista 657 | imagens 609 · data 16px · titulo 64px lh 1.0.
+   La as faixas alternam claro/escuro/claro; aqui Aco/Grafite/Aco.
+   ═══════════════════════════════════════════════════════════ */
+
+.ideias { background-color: var(--aco); color: var(--cal); }
+
+/* ── faixa 1 ── */
+.ideias__capa {
+  padding: 16vh var(--content-padding) 0;
+}
+
+/* 241px numa viewport de 1280 = 18.8vw em Inter. Space Grotesk e mais
+   larga, entao 8 caracteres pedem menos corpo para fechar a mesma
+   medida — conferido com Range: o texto tem que caber na caixa. */
+.ideias__titulo {
+  font-family: var(--font-display);
+  /* Medido com Range: a 17.2vw o texto dava 992px numa caixa de 1172 e
+     sobrava vao. A 20.3vw ele fecha em ~1170 e encosta na largura, que e
+     o que a referencia faz. */
+  font-size: clamp(2.6rem, 20.3vw, 17rem);
+  line-height: 0.86;
+  letter-spacing: -0.075em;
+  text-transform: uppercase;
+  color: var(--cal);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.ideias__titulo .letra { display: inline-block; }
+
+/* a linha em mono com a regua correndo ate a borda */
+.ideias__selo {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-top: var(--space-4);
+  padding-bottom: var(--space-6);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fumaca);
+}
+
+.ideias__marca { flex: none; }
+
+.ideias__selo i {
+  flex: 1;
+  height: 2px;
+  background-color: var(--cal);
+  transform-origin: left center;
+}
+
+/* ── faixa 2 ──
+   300px de altura na referencia; aqui o conteudo manda e o padding
+   entrega altura equivalente. */
+.ideias__faixa {
+  background-color: var(--grafite);
+  border-top: 1px solid var(--linha);
+  border-bottom: 1px solid var(--linha);
+  padding: var(--space-8) var(--content-padding);
+}
+
+/* 90px numa viewport de 1280 = 7vw */
+.ideias__declaracao {
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 6.4vw, 5.4rem);
+  line-height: 1.0;
+  letter-spacing: -0.05em;
+  text-transform: uppercase;
+  color: var(--cal);
+  margin: 0;
+}
+
+/* ── faixa 3 ──
+   657 | 609 medidos na referencia = 52/48, os mesmos do resto do site. */
+/* 657|609 medidos na referencia = 52/48. A grade vive na LINHA, nao na
+   secao: cada post e a sua imagem sao um par, e quem for mais alto
+   define a altura da linha. */
+.ideias__linha {
+  display: grid;
+  grid-template-columns: 52% 48%;
+  align-items: stretch;
+  border-top: 1px solid var(--linha);
+}
+
+.ideias__post {
+  padding: var(--space-8) var(--space-6) var(--space-8) var(--content-padding);
+}
+
+.ideias__data {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fumaca);
+  margin: 0 0 var(--space-3);
+}
+
+/* 64px = 5vw, entrelinha 1.0 e tracking -0.04em, medidos */
+.ideias__post-titulo {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 5vw, 4rem);
+  line-height: 1.0;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  color: var(--cal);
+  margin: 0;
+}
+
+/* a regua grossa sob o titulo — o tique que a referencia poe em cada
+   post, e o que separa o titulo do resumo sem abrir um vao */
+.ideias__barra {
+  display: block;
+  height: 4px;
+  background-color: var(--cal);
+  margin: var(--space-3) 0;
+  transform-origin: left center;
+}
+
+.ideias__resumo {
+  font-family: var(--font-body);
+  font-size: clamp(0.88rem, 1.15vw, 1.05rem);
+  line-height: 1.5;
+  color: var(--fumaca);
+  margin: 0;
+  max-width: 46ch;
+}
+
+.ideias__autor {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-top: var(--space-4);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--cal);
+}
+
+.ideias__autor img {
+  width: 44px;
+  height: 44px;
+  object-fit: cover;
+  display: block;
+  flex: none;
+}
+
+/* ── as figuras ── */
+/* min-height, nao height: a imagem manda na altura da linha (como na
+   referencia, 800 contra 470 do texto), mas se o post crescer mais que
+   ela — titulo longo, tela estreita — ela acompanha em vez de estourar. */
+.ideias__figura {
+  position: relative;
+  margin: 0;
+  min-height: 30rem;
+  overflow: hidden;
+}
+
+.ideias__foto {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+}
+
+/* Os riscos. Tres fios de 1px em Cal a 8%, em alturas diferentes: e o
+   detalhe que impede a foto de ler como retangulo colado. Mesma familia
+   dos fios da Cisao e do pente do rodape. */
+.ideias__riscos {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.ideias__riscos i {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background-color: rgba(245, 240, 232, 0.08);
+}
+
+.ideias__riscos i:nth-child(1) { top: 22%; }
+.ideias__riscos i:nth-child(2) { top: 54%; right: 34%; }
+.ideias__riscos i:nth-child(3) { top: 78%; left: 26%; }
+
+@media (max-width: 900px) {
+  .ideias__capa { padding-top: 13vh; }
+  .ideias__linha { grid-template-columns: 1fr; }
+  .ideias__post { padding: var(--space-6) var(--content-padding); }
+  .ideias__figura { min-height: 0; aspect-ratio: 16 / 10; }
+  .ideias__titulo { font-size: clamp(2.2rem, 16vw, 5rem); }
+}
