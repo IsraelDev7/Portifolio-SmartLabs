@@ -2029,26 +2029,18 @@ h3 {
 }
 
 /* ── a narrativa em cadeia ── */
-/* Respiro apertado de proposito: a cadeia e o fecho da secao, nao uma
-   secao nova. Com 128 de margem e 64 de padding ela nascia isolada no
-   meio de um vazio. */
-.sobre__cadeia {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-3);
-  margin-top: var(--space-8);
-  padding-top: var(--space-4);
-  border-top: 1px solid var(--linha);
-  font-family: var(--font-display);
-  font-size: clamp(1.1rem, 2.6vw, 2.1rem);
-  letter-spacing: -0.03em;
-  text-transform: uppercase;
-  color: var(--fumaca);
-}
+/* A esteira que fecha a secao. Respiro apertado de proposito: ela e o
+   fecho, nao uma secao nova — com margem cheia nascia isolada no meio de
+   um vazio, que era justamente o defeito da versao estatica.
 
-.sobre__cadeia i { font-style: normal; color: var(--solda); }
-.sobre__cadeia-fim { color: var(--cal); }
+   Sangra ate as bordas da tela ignorando o padding do pai: uma faixa
+   que corre e precisa entrar e sair do campo de visao, e parando a 20px
+   de cada lado ela leria como uma caixa com texto deslizando dentro. */
+.sobre__esteira {
+  margin-top: var(--space-8);
+  margin-left: calc(var(--content-padding) * -1);
+  margin-right: calc(var(--content-padding) * -1);
+}
 
 /* ── estreito ── */
 @media (max-width: 820px) {
@@ -3458,4 +3450,335 @@ h3 {
   .obra__texto { padding: var(--space-6) var(--content-padding); }
   .obra__fios { display: none; }
   .obra__peca { min-height: 0; aspect-ratio: 16 / 10; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MENU MOVEL — a navegacao em arco, no canto do polegar
+   ═══════════════════════════════════════════════════════════
+
+   So existe abaixo de 820px. Acima disso a barra do topo da conta dos
+   quatro links com folga, e um segundo ponto de navegacao flutuando na
+   tela seria ruido. */
+
+.mmv { display: none; }
+
+@media (max-width: 820px) {
+  .mmv {
+    display: block;
+    position: fixed;
+    /* env(safe-area-inset-*) e o que mantem o botao acima da barra de
+       gestos do iPhone. Sem isso ele fica exatamente onde o sistema
+       captura o swipe de "voltar ao inicio", e metade dos toques vira
+       um gesto do SO em vez de um clique no menu. */
+    right: calc(20px + env(safe-area-inset-right, 0px));
+    bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+    z-index: 200;   /* acima da navbar (100) */
+  }
+
+  /* ── o veu ── */
+  .mmv__veu {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 10, 10, 0.82);
+    backdrop-filter: blur(3px);
+    opacity: 0;
+    visibility: hidden;
+    /* O veu e filho de um elemento no canto; sem sair do fluxo com
+       inset:0 ele cobriria so o proprio botao. */
+  }
+
+  /* ── o gatilho ── */
+  .mmv__botao {
+    position: relative;
+    z-index: 2;
+    /* 56px: acima dos 44 da WCAG 2.5.5. Aqui nao ha desconto de
+       hover — este alvo so existe onde a entrada e o dedo. */
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--cal);
+    border: none;
+    border-radius: 0;
+    cursor: pointer;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* ── as tres barras que viram X ── */
+  .mmv__glifo {
+    position: relative;
+    display: block;
+    width: 22px;
+    height: 14px;
+  }
+
+  .mmv__glifo i {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--aco);
+    transition: transform .32s cubic-bezier(0.16, 1, 0.3, 1),
+                opacity .18s linear;
+  }
+
+  .mmv__glifo i:nth-child(1) { top: 0; }
+  .mmv__glifo i:nth-child(2) { top: 6px; }
+  .mmv__glifo i:nth-child(3) { top: 12px; }
+
+  /* As barras de fora giram sobre a do meio, que some. Rotacionar as
+     tres deixaria um risco atravessado no cruzamento do X. */
+  .mmv__botao--aberto .mmv__glifo i:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+  .mmv__botao--aberto .mmv__glifo i:nth-child(2) { opacity: 0; }
+  .mmv__botao--aberto .mmv__glifo i:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+  /* ── a orbita ──
+     Ancorada no CENTRO do botao: os itens recebem x/y do GSAP em pixels
+     relativos a este ponto, entao a conta do arco nao precisa saber
+     onde o botao esta na tela. */
+  .mmv__orbita {
+    position: absolute;
+    right: 28px;    /* metade do botao */
+    bottom: 28px;
+    width: 0;
+    height: 0;
+    z-index: 1;
+  }
+
+  .mmv__item {
+    position: absolute;
+    /* translate(-50%,-50%) no CSS, deslocamento no GSAP: o GSAP escreve
+       transform e sobrescreveria o translate se ele morasse la. Com
+       margin negativa o centro do item cai no ponto do arco sem disputar
+       a mesma propriedade. */
+    left: 0;
+    top: 0;
+    margin: -26px 0 0 -26px;
+    width: 52px;
+    height: 52px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    background: var(--grafite);
+    border: 1px solid rgba(245, 240, 232, 0.20);
+    text-decoration: none;
+    opacity: 0;
+    visibility: hidden;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .mmv__item--ativo {
+    border-color: var(--solda);
+    background: var(--chapa);
+  }
+
+  /* As tres barrinhas do monograma, em miniatura */
+  .mmv__marca {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 11px;
+  }
+
+  .mmv__marca i {
+    width: 3px;
+    background: var(--fumaca);
+    transition: background .2s linear;
+  }
+  .mmv__marca i:nth-child(1) { height: 5px; }
+  .mmv__marca i:nth-child(2) { height: 8px; }
+  .mmv__marca i:nth-child(3) { height: 11px; }
+
+  .mmv__item--ativo .mmv__marca i { background: var(--solda); }
+
+  /* O rotulo sai da caixa: "THOUGHTS" nao cabe dentro de 52px sem
+     encolher a fonte a ponto de nao se ler. Fora, ele pode ser mais
+     largo que o alvo sem obrigar o alvo a crescer. */
+  .mmv__rotulo {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 6px;
+    font-family: var(--font-mono);
+    font-size: 0.56rem;
+    letter-spacing: 0.08em;
+    color: var(--cal);
+    white-space: nowrap;
+  }
+
+  .mmv__item--ativo .mmv__rotulo { color: var(--solda); }
+
+  /* ── a barra do topo perde os links ──
+     O logo fica: e a ancora para a home e a assinatura da marca. Os
+     quatro links saem porque somavam 482px numa tela de 375 — a origem
+     do scroll horizontal da pagina inteira. */
+  .nav-links-desktop { display: none !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mmv__glifo i { transition: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MOBILE — o que a pagina precisa desfazer abaixo de 820px
+   ═══════════════════════════════════════════════════════════
+
+   O site foi construido em telas largas e quase nao tinha regra abaixo
+   de 640px: medido em 375px, a home tinha 20.537px de altura (22,8
+   telas), 68px de scroll horizontal e titulos de ate 94px numa faixa
+   util de 329px. Este bloco e a correcao.
+
+   O principio: em coluna estreita, LADO A LADO nao existe. Toda divisao
+   em metades vira pilha, e todo `sticky` que dependia de uma coluna
+   alta ao lado de outra e desligado — sem a coluna vizinha para
+   percorrer, ele so gruda no topo e atropela a barra. */
+
+@media (max-width: 820px) {
+
+  /* ── as metades da home ──
+     `!important` porque a largura vem do atributo `style` do JSX, e so
+     uma declaracao marcada vence o inline. A alternativa seria mover
+     quatro blocos de estilo para o CSS, o que muda muito mais codigo
+     para o mesmo efeito. */
+  .meia {
+    flex: 1 1 100% !important;
+    min-width: 0 !important;
+  }
+
+  .meia--presa {
+    position: static !important;   /* sem coluna vizinha, o sticky so atrapalha */
+    border-right: none !important;
+    border-bottom: 1px solid #222;
+  }
+
+  .meia--figura { min-height: 62vw !important; }
+
+  /* ── a cisao ──
+     Era `display:flex` com metades de 52/48 e TRES sticky dentro
+     (imagem, fios, selo). Em 375px as metades continuavam lado a lado
+     esmagando o texto, e os sticky grudavam no topo por cima da barra —
+     e o defeito dos prints. */
+  .cisao {
+    flex-direction: column;
+  }
+
+  .cisao__esq,
+  .cisao__dir {
+    flex: 1 1 auto !important;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .cisao__imagem,
+  .cisao__fios,
+  .cisao__selo {
+    position: relative !important;
+    top: auto !important;
+    height: auto !important;
+  }
+
+  .cisao__imagem { aspect-ratio: 4 / 3; }
+  .cisao__fios { display: none; }   /* fio vertical entre colunas que nao existem mais */
+
+  /* ── a faixa ── */
+  .faixa__sequencia { grid-template-columns: 1fr !important; }
+  .faixa__tira { border-left: none; }
+
+  /* ── escala tipografica ──
+     A causa dos titulos gigantes nao era o `vw` do clamp — era o MINIMO
+     dele. `clamp(4rem, 8vw, 10rem)` em 375px calcula 8vw = 30px, o
+     minimo de 64px vence, e o titulo sai com 64. Todo clamp da pagina
+     tinha esse mesmo defeito de origem: os minimos foram escolhidos
+     olhando telas largas.
+
+     `!important` de novo pelo inline do JSX. */
+  .page-home section h2 { font-size: clamp(2rem, 9vw, 2.6rem) !important; }
+  .page-home section h3 { font-size: clamp(1.7rem, 7.5vw, 2.2rem) !important; }
+  .page-home section p  { font-size: 0.9rem !important; }
+
+  .assinatura__marca,
+  .pe__nome,
+  .vitrine__codigo { font-size: clamp(1.8rem, 8vw, 2.4rem) !important; }
+
+  .sobre__eu-cinza,
+  .sobre__eu { font-size: clamp(2rem, 10vw, 2.8rem) !important; }
+
+  /* ── a galeria de cinco camadas ──
+     Ja tratada no bloco .sede; aqui so o Mosaico da secao 2, que era
+     `width:70%` de uma metade que agora ocupa a tela inteira. */
+  .meia--figura .mosaico {
+    width: 86% !important;
+    height: auto !important;
+  }
+
+  /* ── folga do rodape ──
+     O botao do menu mora no canto inferior direito. Sem esta reserva
+     ele fica por cima do ultimo link do rodape, e os dois competem pelo
+     mesmo toque. */
+  .pe { padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ESTEIRA — a faixa que corre sem comeco nem fim
+   ═══════════════════════════════════════════════════════════ */
+
+.esteira {
+  /* overflow hidden e o que esconde o ponto de retorno: sem ele, a
+     segunda copia aparece chegando pela direita e o truque se ve. */
+  overflow: hidden;
+  border-top: 1px solid var(--linha);
+  border-bottom: 1px solid var(--linha);
+  padding: var(--space-4) 0;
+  background: var(--aco);
+}
+
+.esteira__tira {
+  display: flex;
+  width: max-content;   /* sem isto o flex encolhe a tira ate a largura do pai e o loop nao tem percurso */
+  will-change: transform;
+}
+
+.esteira__copia {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+}
+
+.esteira__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding-right: var(--space-4);
+  white-space: nowrap;
+}
+
+.esteira__termo {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 3.4vw, 2.6rem);
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: var(--cal);
+  line-height: 1;
+}
+
+/* O separador em Solda e o que da ritmo: sem ele a faixa vira uma
+   frase longa correndo, e o olho perde onde um termo acaba. */
+.esteira__sep {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  font-style: normal;
+  color: var(--solda);
+  line-height: 1;
+}
+
+/* Movimento reduzido: a faixa para e mostra a primeira copia inteira,
+   estatica. O componente ja nao cria o tween; aqui so se garante que a
+   duplicata nao apareca cortada ao lado dela. */
+@media (prefers-reduced-motion: reduce) {
+  .esteira__tira { transform: none !important; }
 }

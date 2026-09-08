@@ -4,6 +4,7 @@ import { useLenis } from './hooks/useLenis'
 
 // Components
 import Navbar from './components/Navbar'
+import MenuMovel from './components/MenuMovel'
 import Preloader from './sections/Preloader'
 import SliceCurtain from './components/SliceCurtain'
 import Footer from './sections/Footer'
@@ -36,6 +37,11 @@ export default function App() {
             barra no z-index, para o logo continuar visivel por cima. */}
         <SliceCurtain />
         <Navbar />
+        {/* Irmao da barra, nao filho dela: a barra e `position: fixed`
+            com `mix-blend-mode: difference`, e todo descendente herda a
+            mistura — o menu apareceria com as cores invertidas contra o
+            que passa por tras. */}
+        <MenuMovel />
 
         <ScrollWrapper>
           <main>

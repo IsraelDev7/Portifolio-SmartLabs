@@ -365,3 +365,54 @@
     gap: var(--space-2);
   }
 }
+
+/* ── telas estreitas de verdade ──
+   A regra de 900px acima ja existia, mas so mexia em margem e
+   alinhamento: o `position:absolute` do bloco do topo e o corpo do
+   texto massivo passavam intactos. Medido em 375px:
+
+     .hero-massive-text  clamp(80px, 25vw, 150px) -> 94px
+                         "SMARTLABS" em 94px pede ~500px de linha, e a
+                         palavra se partia em tres pedacos atravessando
+                         o resto do heroi
+     .hero-block-top     left:66vw + width:38vw -> borda direita em
+                         389px numa tela de 369
+
+   Abaixo de 560px o heroi deixa de ser uma composicao em camadas
+   sobrepostas e vira uma coluna: em 335px de faixa util nao ha espaco
+   para duas coisas disputarem o mesmo lugar. */
+@media (max-width: 560px) {
+  .hero-massive-text {
+    /* 14vw = 52px em 375: as nove letras cabem numa linha so, que e a
+       condicao para a palavra continuar legivel como palavra. */
+    font-size: clamp(34px, 14vw, 56px);
+    padding: 9vh 5vw 6vh;
+    line-height: 0.85;
+  }
+
+  .hero-grid { display: none; }   /* a grade de numeros 001-004 nao cabe e nao carrega informacao */
+
+  .hero-content {
+    padding: 11vh 5vw 4vh 5vw;
+    justify-content: flex-end;
+    gap: var(--space-4);
+  }
+
+  /* Sai do absoluto e entra na coluna, na ordem de leitura. */
+  .hero-block-top {
+    position: static;
+    left: auto;
+    top: auto;
+    width: 100%;
+    max-width: none;
+  }
+
+  .hero-headline { font-size: clamp(26px, 8vw, 34px); }
+
+  .hero-subheadline { font-size: 0.85rem; }
+
+  /* O fundo perde forca para o texto poder ficar por cima dele sem
+     caixa: com a foto em brilho cheio, as letras Cal sobre a pele
+     clara do retrato caem abaixo do contraste minimo. */
+  .hero-bg-image { filter: brightness(0.55); }
+}

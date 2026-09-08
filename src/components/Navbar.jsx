@@ -77,7 +77,10 @@ export default function Navbar() {
         </span>
       </TransitionLink>
 
-      <div style={{ display: 'flex', gap: 'var(--space-6)', alignItems: 'center' }}>
+      {/* A classe existe so para o CSS poder esconder o grupo abaixo de
+          820px, onde o <MenuMovel> assume. Os quatro links somavam 482px
+          numa tela de 375 e eram a origem do scroll horizontal do site. */}
+      <div className="nav-links-desktop" style={{ display: 'flex', gap: 'var(--space-6)', alignItems: 'center' }}>
         {[
           { to: '/work', label: 'Work' },
           { to: '/about', label: 'About' },

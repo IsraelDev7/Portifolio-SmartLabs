@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import Firma from '../components/Firma';
 import Letras from '../components/Letras';
 import Falha from '../components/Falha';
+import Esteira from '../components/Esteira';
 
 /**
  * Sobre — o bloco "quem eu sou", reconstruido sobre o "I'AM" da
@@ -150,18 +151,21 @@ export default function Sobre({ variante = 'pagina' }) {
         </div>
       </section>
 
-      {/* ── 6 · a narrativa em cadeia ── */}
-      <section className="sobre__cadeia" data-anim="stagger">
-        <span>Pessoas</span>
-        <i aria-hidden="true">→</i>
-        <span>Negócios</span>
-        <i aria-hidden="true">→</i>
-        <span>Tecnologia</span>
-        <i aria-hidden="true">→</i>
-        <span>Sistemas</span>
-        <i aria-hidden="true">→</i>
-        <span className="sobre__cadeia-fim">SmartLABS</span>
-      </section>
+      {/* ── 6 · a narrativa em esteira ──
+          Era uma linha estatica que quebrava em duas e deixava meia tela
+          de vazio embaixo. Como esteira ela resolve as tres coisas de
+          uma vez: nao sobra espaco (a faixa tem a altura do texto), os
+          termos ficam lado a lado por construcao, e a cadeia ganha o
+          movimento continuo que ela ja descrevia em palavras.
+
+          O percurso e o mesmo da narrativa — pessoas viram negocios,
+          negocios pedem tecnologia, tecnologia vira sistema — e numa
+          esteira ele nao tem fim, que e exatamente o argumento. */}
+      <Esteira
+        className="sobre__esteira"
+        itens={['Pessoas', 'Negócios', 'Tecnologia', 'Sistemas', 'SmartLABS']}
+        separador="→"
+      />
     </div>
   );
 }

@@ -101,7 +101,7 @@ export default function Home() {
       {/* SECTION 2: EDITORIAL BLOCK */}
       <section style={{ backgroundColor: '#000', color: 'var(--text-color)', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <div style={{ display: 'flex', flexWrap: 'wrap', flex: 1 }}>
-          <div style={{ flex: '1 1 50%', minHeight: '50vh', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="meia meia--figura" style={{ flex: '1 1 50%', minHeight: '50vh', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             {/* Image Placeholder */}
             {/* Contramao na deriva (+0.14) e revelacao em ladrilhos pelo
                 scroll. Saiu o data-anim="frame": o clip e o mosaico
@@ -110,7 +110,7 @@ export default function Home() {
               <div style={{ width: '100%', height: '100%', backgroundColor: '#111', backgroundImage: 'url(/images/imagine-alguem.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', filter: 'grayscale(100%) brightness(0.8)' }}></div>
             </Mosaico>
           </div>
-          <div style={{ flex: '1 1 50%', display: 'flex', alignItems: 'center', padding: '5vw' }}>
+          <div className="meia meia--texto" style={{ flex: '1 1 50%', display: 'flex', alignItems: 'center', padding: '5vw' }}>
             <h2 data-anim="words" style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(3rem, 5vw, 6rem)', lineHeight: '0.9', textTransform: 'uppercase', color: 'var(--text-color)', letterSpacing: '-0.02em' }}>
               Imagine alguém chegando pela primeira vez ao seu negócio. Essa pessoa não conhece você. Ela só consegue julgar aquilo que vê.
             </h2>
@@ -183,7 +183,7 @@ export default function Home() {
             cima dela. E o "travar a tela": a foto para, o conteudo passa.
             alignSelf flex-start e obrigatorio — em flex o padrao estica o
             item para a altura toda e sticky nunca chega a grudar. */}
-        <div style={{ flex: '1 1 50%', padding: '5vw', position: 'sticky', top: 0, alignSelf: 'flex-start', borderRight: '1px solid #222' }}>
+        <div className="meia meia--presa" style={{ flex: '1 1 50%', padding: '5vw', position: 'sticky', top: 0, alignSelf: 'flex-start', borderRight: '1px solid #222' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: '#888', marginBottom: '2rem' }}>
             <span>SMARTLABS —— // BUILD</span>
             <span>REVISION —— NEUE 1.0</span>
@@ -197,7 +197,7 @@ export default function Home() {
         </div>
         
         {/* Right Half — sobe POR CIMA da imagem grudada */}
-        <div style={{ flex: '1 1 50%', display: 'flex', flexDirection: 'column', position: 'relative', zIndex: 2 }}>
+        <div className="meia meia--pilha" style={{ flex: '1 1 50%', display: 'flex', flexDirection: 'column', position: 'relative', zIndex: 2 }}>
           {/* Top Grey Box */}
           <div style={{ backgroundColor: '#111', padding: '5vw', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
             <h3 data-anim="rise" style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(3rem, 5vw, 6rem)', lineHeight: '0.9', color: '#fff', textTransform: 'uppercase' }}>EXPERIÊNCIA</h3>
