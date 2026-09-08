@@ -9,6 +9,79 @@ import Moldura from '../components/Moldura';
 import Modulo from '../components/Modulo';
 import Camadas from '../sections/Camadas';
 
+/**
+ * As cinco pecas da galeria "nao e apenas um site" — as camadas de uma
+ * sede digital, da fundacao ao acabamento, com a autoria no meio.
+ *
+ * `area` e `grid-area: linha-inicio / coluna-inicio / linha-fim /
+ * coluna-fim` na grade de 12 colunas por linhas de 2vw definida no CSS.
+ * Os retangulos NAO sao arbitrarios: cada um foi calculado para bater
+ * com a proporcao do arquivo, senao o `object-fit: cover` corta a peca.
+ * Com coluna de 6.217vw e vao de 1.4vw:
+ *
+ *   estrutura  5 col = 36.7vw x 18 lin = 36.0vw -> 1.02  (arquivo 1:1)
+ *   estetica   2 col = 13.8vw x  9 lin = 18.0vw -> 0.77  (arquivo 0.75)
+ *   interface  3 col = 21.5vw x 11 lin = 22.0vw -> 0.98  (arquivo 1:1)
+ *   arquiteto  7 col = 51.9vw x 15 lin = 30.0vw -> 1.73  (arquivo 1.76)
+ *   motor      4 col = 29.1vw x 11 lin = 22.0vw -> 1.32  (arquivo 1.33)
+ *
+ * A ordem do array e a ordem de LEITURA (topo para baixo), nao a da
+ * composicao visual — quem navega por teclado ou leitor de tela percorre
+ * as pecas na ordem em que elas aparecem na pagina.
+ *
+ * `deriva` e o fator do useDeriva, e o alcance dele NAO e intuitivo: o
+ * curso vale (altura do cartao + altura da viewport), entao -0.12 num
+ * cartao de 250px numa tela de 818 desloca 128px — quase a folga inteira
+ * que o MOTOR tem acima dele. Foi medido: com -0.12 o cartao invadia o
+ * rotulo da ESTRUTURA. Os fatores aqui estao dimensionados contra a
+ * folga real de cada peca, nao escolhidos por gosto.
+ */
+const SEDE = [
+  {
+    id: 'estrutura',
+    area: '1 / 1 / 19 / 6',
+    imagem: '/images/camada-estrutura.jpg',
+    alt: 'Maquete de concreto de um edificio, com a malha estrutural desenhada em laranja sobre as arestas',
+    rotulo: 'ESTRUTURA PRIMEIRO',
+    semente: 11,
+  },
+  {
+    id: 'estetica',
+    area: '2 / 11 / 11 / 13',
+    imagem: '/images/estetica-depois.jpg',
+    alt: 'Escultura de gesso polido com a malha estrutural transparecendo sob a superficie',
+    rotulo: 'ESTÉTICA DEPOIS',
+    deriva: '-0.06',
+    semente: 23,
+  },
+  {
+    id: 'interface',
+    area: '6 / 7 / 17 / 10',
+    imagem: '/images/camada-interface.jpg',
+    alt: 'Paineis de vidro suspensos com marcacoes de interface, atravessados por luz ambar',
+    rotulo: 'INTERFACE QUE RESPONDE',
+    deriva: '-0.09',
+    semente: 41,
+  },
+  {
+    id: 'arquiteto',
+    area: '21 / 6 / 36 / 13',
+    imagem: '/images/camada-arquiteto.jpg',
+    alt: 'Israel Passos de perfil no escuro, o contorno desenhado por uma luz ambar',
+    rotulo: 'TEM UM ARQUITETO',
+    semente: 59,
+  },
+  {
+    id: 'motor',
+    area: '24 / 1 / 35 / 5',
+    imagem: '/images/work-automacao.jpg',
+    alt: 'Mecanismo de placas metalicas com luz ambar correndo entre elas',
+    rotulo: 'MOTOR POR DENTRO',
+    deriva: '-0.05',
+    semente: 73,
+  },
+];
+
 export default function Home() {
   const motionRef = usePageMotion();
 
@@ -61,37 +134,42 @@ export default function Home() {
           É A SEDE DIGITAL DA SUA EMPRESA. O RESULTADO É UMA PRESENÇA DIGITAL SOFISTICADA, ESTRATÉGICA E PREPARADA PARA CRESCER.
         </p>
         
-        {/* Editorial Masonry Gallery */}
-        {/* data-bloco no lugar do stagger: a cascata subia todas as
-            colunas do mesmo jeito. Agora a do meio desce enquanto as
-            vizinhas sobem, e cada uma e revelada pelo lado de onde vem. */}
-        <div data-bloco style={{ marginTop: '10vw', display: 'flex', flexWrap: 'wrap', gap: '2rem' }}>
-          <div style={{ flex: '1 1 40%', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            {/* Ancora do bloco: e a peca parada que faz o olho perceber
-                que as outras duas se movem. Sem atributo, de proposito. */}
-            {/* aspect-ratio + object-fit no lugar de height:auto: da altura
-                real ao cartao sem esticar a foto, e a caixa deixa de
-                depender do carregamento da imagem para ter tamanho. */}
-            <Mosaico semente={11}>
-              <img src="/images/estrutura-primeiro.jpg" alt="Maquete de concreto com malha estrutural" style={{ width: '100%', aspectRatio: '3 / 4', objectFit: 'cover', display: 'block', filter: 'grayscale(100%)' }} />
-            </Mosaico>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: '#666', textTransform: 'uppercase' }}>ESTRUTURA PRIMEIRO (2026)</span>
-          </div>
-          <div style={{ flex: '1 1 30%', display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '15vw' }}>
-            {/* A deriva vai no MOSAICO, nao na coluna: o data-bloco do pai
-                anima os filhos com `y` e os dois brigariam. Assim a foto e
-                a cobertura deslizam juntas e a legenda fica ancorada. */}
-            <Mosaico deriva="-0.14" semente={23}>
-              <img src="/images/estetica-depois.jpg" alt="Escultura de gesso polido com a malha estrutural transparecendo sob a superficie" style={{ width: '100%', aspectRatio: '2 / 3', objectFit: 'cover', display: 'block', filter: 'grayscale(100%)' }} />
-            </Mosaico>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: '#666', textTransform: 'uppercase' }}>ESTÉTICA DEPOIS (2026)</span>
-          </div>
-          <div style={{ flex: '1 1 24%', display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '5vw' }}>
-            <Mosaico deriva="-0.26" semente={41}>
-              <img src="/images/funcao-em-tudo.jpg" alt="Laminas de vidro empilhadas, cada uma com sua aresta luminosa" style={{ width: '100%', aspectRatio: '2 / 3', objectFit: 'cover', display: 'block', filter: 'grayscale(100%)' }} />
-            </Mosaico>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: '#666', textTransform: 'uppercase' }}>FUNÇÃO EM TUDO (2026)</span>
-          </div>
+        {/* ── As camadas de uma sede digital ──
+            Cinco pecas de tamanhos deliberadamente diferentes, em dois
+            andares que se ENTRELACAM: B e D correm ao lado de A, e E ao
+            lado de C. E o entrelacamento que segura a altura — empilhadas,
+            as mesmas cinco pecas passariam de 110vw; assim ficam em 72.
+
+            Sem `data-bloco` aqui, de proposito. Aquele hook usa UM gatilho
+            para o grupo inteiro, e num bloco de 72vw as pecas de baixo
+            disparariam a ~1150px numa viewport de 818 — animando fora da
+            tela, o mesmo defeito ja corrigido no rodape. E somar
+            slide+clipPath por cima do Mosaico e a mesma colisao de duas
+            animacoes que apagou o terceiro cartao da versao anterior.
+            Aqui a GERACAO EM PIXEL e a entrada, e cada peca tem o seu
+            proprio gatilho, dentro do proprio Mosaico.
+
+            A deriva vai na PECA, nao no Mosaico: assim a foto e o seu
+            rotulo sobem juntos. Na versao anterior ela morava no Mosaico
+            para nao brigar com o `y` que o data-bloco do pai escrevia —
+            sem o data-bloco essa razao acabou, e mante-la la deixaria o
+            rotulo para tras, abrindo uma lacuna do tamanho do
+            deslocamento entre a foto e o nome dela.
+
+            Sem `grayscale` tambem: tres destas imagens trazem o Solda
+            nativo — o contorno do retrato, o wireframe da maquete, a luz
+            atravessando os paineis. O filtro matava exatamente o que faz
+            elas serem da marca. As outras duas ja sao P&B no arquivo,
+            entao nada muda nelas. */}
+        <div className="sede">
+          {SEDE.map((c) => (
+            <figure className="sede__peca" style={{ gridArea: c.area }} data-deriva={c.deriva} key={c.id}>
+              <Mosaico className="sede__caixa" semente={c.semente}>
+                <img src={c.imagem} alt={c.alt} />
+              </Mosaico>
+              <figcaption className="sede__rotulo">{c.rotulo} (2026)</figcaption>
+            </figure>
+          ))}
         </div>
       </section>
 

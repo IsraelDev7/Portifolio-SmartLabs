@@ -408,6 +408,124 @@ h3 {
 }
 
 /* ═══════════════════════════════════════════════════════════
+   SEDE — a galeria das cinco camadas de uma sede digital
+   ═══════════════════════════════════════════════════════════
+
+   Grade de 12 colunas por linhas de 2vw. A linha curta e o que permite
+   posicionar cada peca com precisao de ~1% da largura da tela: com
+   linhas altas, so daria para escolher entre alturas grosseiras e as
+   proporcoes nao fechariam com as das fotos.
+
+   As pecas se ENTRELACAM em vez de empilhar — a estetica e a interface
+   correm ao lado da estrutura, o motor ao lado do arquiteto. Empilhadas,
+   as mesmas cinco passariam de 110vw de altura; entrelacadas ficam em 70.
+
+   `grid-auto-flow: dense` de proposito NAO esta aqui: toda peca declara
+   a sua area explicitamente, e o preenchimento automatico so poderia
+   desmanchar a composicao se alguem esquecesse uma. */
+
+.sede {
+  margin-top: 10vw;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-auto-rows: 2vw;
+  column-gap: 1.4vw;
+}
+
+.sede__peca {
+  /* <figure> vem com margem do agente de usuario; sem zerar, cada peca
+     encolhe dentro da propria celula e as proporcoes calculadas erram. */
+  margin: 0;
+  position: relative;
+  min-width: 0;   /* deixa o item de grid encolher abaixo do conteudo */
+}
+
+/* O Mosaico ocupa a celula INTEIRA: e a area do grid que define a
+   proporcao do cartao, nao a imagem. Assim a composicao nao depende de
+   a foto ter carregado, e trocar uma foto por outra de proporcao
+   parecida nao move nada em volta. */
+.sede__caixa {
+  height: 100%;
+}
+
+.sede__caixa img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* O rotulo sai do fluxo da celula. Dentro dela, ele roubaria altura da
+   foto e quebraria a proporcao calculada; aqui ele flutua logo abaixo,
+   no vao que a propria composicao ja deixa. */
+.sede__rotulo {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 0.9rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  line-height: 1.2;
+  color: #666;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* ── tablet ──
+   Doze colunas em 768px dariam colunas de 51px: as pecas de 2 e 3
+   colunas virariam selos ilegiveis. A grade cai para 6 colunas e as
+   pecas passam a ocupar metade ou a largura inteira, mantendo a
+   alternancia de tamanho que e o ponto da composicao. */
+@media (max-width: 1024px) {
+  .sede {
+    grid-template-columns: repeat(6, 1fr);
+    grid-auto-rows: 4vw;
+    column-gap: 2vw;
+  }
+  /* !important porque a area vem do atributo `style` do JSX, que so
+     perde para uma declaracao marcada. A alternativa seria calcular as
+     areas de cada quebra no JS e reagir a resize — mais codigo para o
+     mesmo resultado. */
+  .sede__peca:nth-child(1) { grid-area: 1 / 1 / 15 / 5 !important; }
+  .sede__peca:nth-child(2) { grid-area: 4 / 5 / 13 / 7 !important; }
+  .sede__peca:nth-child(3) { grid-area: 18 / 3 / 29 / 7 !important; }
+  .sede__peca:nth-child(4) { grid-area: 32 / 1 / 44 / 7 !important; }
+  .sede__peca:nth-child(5) { grid-area: 47 / 1 / 57 / 5 !important; }
+}
+
+/* ── mobile ──
+   Uma coluna. A composicao assimetrica nao sobrevive a 375px, mas a
+   VARIACAO DE TAMANHO sim: cada peca guarda a sua proporcao pelo
+   aspect-ratio, entao a pagina continua alternando cheio e estreito
+   em vez de virar uma pilha de retangulos iguais. */
+@media (max-width: 640px) {
+  .sede {
+    display: flex;
+    flex-direction: column;
+    gap: 3.5rem;
+    margin-top: 18vw;
+  }
+  .sede__peca { grid-area: auto !important; }
+  .sede__caixa { height: auto; }
+  .sede__caixa img { height: auto; }
+
+  .sede__peca:nth-child(1) .sede__caixa img { aspect-ratio: 1 / 1; }
+  .sede__peca:nth-child(2) .sede__caixa img { aspect-ratio: 3 / 4; width: 62%; }
+  .sede__peca:nth-child(3) .sede__caixa img { aspect-ratio: 1 / 1; width: 84%; }
+  .sede__peca:nth-child(4) .sede__caixa img { aspect-ratio: 16 / 9; }
+  .sede__peca:nth-child(5) .sede__caixa img { aspect-ratio: 4 / 3; width: 90%; }
+
+  /* Fora do fluxo, o rotulo se sobrepunha a peca seguinte quando a
+     coluna vira pilha. Aqui ele volta a ocupar espaco. */
+  .sede__rotulo {
+    position: static;
+    display: block;
+    margin-top: 0.75rem;
+    white-space: normal;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
    NIVEL — indicador de tres barras que pulsa
    ═══════════════════════════════════════════════════════════ */
 
