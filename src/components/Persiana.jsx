@@ -30,35 +30,78 @@ gsap.registerPlugin(ScrollTrigger);
 const COLUNAS = 12;
 const BANDAS = 4;
 
-export default function Persiana({ imagem, className = '', posicao = 'center' }) {
-  const alvo = useRef(null);
+/* Quando a cortina do preloader termina de subir: 1s de texto + 0,5s de
+   pausa + 1,2s de cortina. O gatilho e `top 85%`, entao a peca que ja
+   nasce visivel dispara na montagem — atras da cortina, e quem chega
+   depois so encontra a foto pronta. Montar so depois disso e o que faz a
+   primeira persiana da pagina ser vista. */
+const ALVO_PRIMEIRA = 2700;
 
-  useGSAP(() => {
-    const ripas = gsap.utils.toArray(alvo.current.querySelectorAll('.persiana__ripa'));
-    if (!ripas.length) return;
+/** A grade de ripas, para quem ja tem a propria foto montada. */
+export function GradeRipas() {
+  return (
+    <div className="persiana__grade" aria-hidden="true">
+      {Array.from({ length: BANDAS * COLUNAS }, (_, i) => (
+        <i
+          key={i}
+          className="persiana__ripa"
+          style={{ transformOrigin: i % 2 ? 'center bottom' : 'center top' }}
+        />
+      ))}
+    </div>
+  );
+}
 
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      gsap.set(ripas, { scaleY: 0 });
-      return;
-    }
+/**
+ * Liga a persiana numa grade que ja existe no DOM. Exportada para a
+ * Thoughts usar a MESMA mecanica em vez de uma copia: dois lugares com a
+ * mesma animacao escrita duas vezes divergem na primeira correcao feita
+ * so em um deles.
+ *
+ * Devolve a funcao de limpeza.
+ */
+export function animarRipas(raiz, gatilho = raiz) {
+  const ripas = gsap.utils.toArray(raiz.querySelectorAll('.persiana__ripa'));
+  if (!ripas.length) return () => {};
 
-    gsap.fromTo(ripas,
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    gsap.set(ripas, { scaleY: 0 });
+    return () => {};
+  }
+
+  let st = null;
+  let vivo = true;
+
+  const montar = () => {
+    if (!vivo) return;
+    st = gsap.fromTo(ripas,
       { scaleY: 1 },
       {
         scaleY: 0,
         duration: 0.62,
         ease: 'power2.inOut',
-        /* stagger em grade: o GSAP calcula a distancia de cada celula ate
-           a de origem e escalona por ela. `from: random` espalha, que e o
-           que o preview faz — ordem de coluna daria uma varredura. */
         stagger: { each: 0.014, grid: [BANDAS, COLUNAS], from: 'random' },
         scrollTrigger: {
-          trigger: alvo.current,
+          trigger: gatilho,
           start: 'top 85%',
           toggleActions: 'restart none none reverse',
         },
-      });
-  }, { scope: alvo });
+      }).scrollTrigger;
+  };
+
+  const t = window.setTimeout(montar, Math.max(0, ALVO_PRIMEIRA - performance.now()));
+
+  return () => {
+    vivo = false;
+    window.clearTimeout(t);
+    if (st) st.kill();
+  };
+}
+
+export default function Persiana({ imagem, className = '', posicao = 'center' }) {
+  const alvo = useRef(null);
+
+  useGSAP(() => animarRipas(alvo.current), { scope: alvo });
 
   return (
     <div ref={alvo} className={`persiana ${className}`}>
@@ -68,15 +111,7 @@ export default function Persiana({ imagem, className = '', posicao = 'center' })
         role="presentation"
       />
 
-      <div className="persiana__grade" aria-hidden="true">
-        {Array.from({ length: BANDAS * COLUNAS }, (_, i) => (
-          <i
-            key={i}
-            className="persiana__ripa"
-            style={{ transformOrigin: i % 2 ? 'center bottom' : 'center top' }}
-          />
-        ))}
-      </div>
+      <GradeRipas />
     </div>
   );
 }

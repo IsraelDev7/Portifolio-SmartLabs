@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { usePageMotion } from '../hooks/usePageMotion';
 import Letras from '../components/Letras';
 import { Monogram } from '../components/Logo';
+import { GradeRipas, animarRipas } from '../components/Persiana';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -159,6 +160,11 @@ export default function Thoughts() {
        com scale(1.3): a sobra existe para ela poder correr. Aqui a foto
        sangra 12% para fora em cima e embaixo e desliza no scroll — o que
        o olho le e a imagem indo por dentro enquanto a moldura sobe. */
+    /* A mesma persiana da Work, IMPORTADA — nao copiada. Duas copias da
+       mesma animacao divergem na primeira correcao feita so em uma. */
+    const limpezas = gsap.utils.toArray(raiz.querySelectorAll('.ideias__figura'))
+      .map((fig) => animarRipas(fig));
+
     gsap.utils.toArray(raiz.querySelectorAll('.ideias__figura')).forEach((fig) => {
       /* y em px medido na hora, nao yPercent. yPercent converte usando a
          altura que o GSAP tinha em cache quando o tween nasceu — e aqui
@@ -183,6 +189,7 @@ export default function Thoughts() {
         });
     });
 
+    return () => limpezas.forEach((f) => f());
   }, { scope: alvo });
 
   return (
@@ -253,6 +260,7 @@ export default function Thoughts() {
                       role="presentation"
                     />
                   </div>
+                  <GradeRipas />
                   <div className="ideias__riscos" aria-hidden="true">
                     <i /><i /><i />
                   </div>

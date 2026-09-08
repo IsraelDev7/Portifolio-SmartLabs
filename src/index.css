@@ -3063,9 +3063,15 @@ h3 {
 /* Os riscos. Tres fios de 1px em Cal a 8%, em alturas diferentes: e o
    detalhe que impede a foto de ler como retangulo colado. Mesma familia
    dos fios da Cisao e do pente do rodape. */
+/* A grade da persiana fica ENTRE a lente e os riscos: cobre a foto, mas
+   os fios de detalhe ficam por cima e continuam visiveis durante a
+   montagem. */
+.ideias__figura .persiana__grade { z-index: 1; }
+
 .ideias__riscos {
   position: absolute;
   inset: 0;
+  z-index: 2;
   pointer-events: none;
 }
 
@@ -3232,12 +3238,16 @@ h3 {
 /* ── a coluna de fios ──
    Eles se abrem a partir do lado da imagem e param no texto: e o que
    costura as duas metades em vez de deixar duas colunas soltas. */
+/* Sem respiro vertical: os fios correm de ponta a ponta do bloco, e os
+   de um projeto encostam nos do seguinte formando UMA coluna continua
+   descendo a pagina — como na referencia. Com 64px de padding em cada
+   ponta sobrava um buraco de 128px em cada emenda. */
 .obra__fios {
   display: flex;
   align-items: stretch;
   justify-content: space-between;
   gap: 2px;
-  padding: var(--space-8) 0;
+  padding: 0;
 }
 
 .obra__fios i {
