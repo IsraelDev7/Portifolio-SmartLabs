@@ -2485,12 +2485,18 @@ h3 {
   pointer-events: none;
 }
 
+/* A fonte e um retrato 2:3 bem apertado. Em `cover` dentro de uma caixa
+   deitada ela era ampliada 1.16x e so uma faixa de 47% da altura
+   aparecia — sobrava um queixo gigante no lugar da figura. O arquivo foi
+   recomposto numa tela de 1600x1100 com a figura inteira em escala e
+   escuro em volta, que e o enquadramento da referencia. Agora `cover`
+   quase nao corta: 1.45 de proporcao contra 1.42 da secao. */
 .contato__foto {
   position: absolute;
   inset: 0;
   background-size: cover;
-  background-position: 30% 12%;
-  opacity: 0.6;
+  background-position: center;
+  opacity: 0.62;
 }
 
 /* A vertical desce ate o Aco solido. A horizontal so ESCURECE para a
