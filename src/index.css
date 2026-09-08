@@ -2457,7 +2457,12 @@ h3 {
    direita x=781 w=444, titulo 70px, prosa da direita 20px.
    ═══════════════════════════════════════════════════════════ */
 
+/* flex-column com a grade crescendo: e o que faz o painel de vidro
+   alcancar o pe da secao. Com a grade em altura automatica ele parava na
+   altura do formulario e ficava boiando no meio da tela. */
 .contato {
+  display: flex;
+  flex-direction: column;
   position: relative;
   min-height: 100vh;
   background-color: var(--aco);
@@ -2504,7 +2509,31 @@ h3 {
   grid-template-columns: 48% 36%;
   justify-content: space-between;
   gap: var(--space-8);
-  align-items: start;
+  align-items: stretch;
+  flex: 1;
+}
+
+/* Painel de vidro. backdrop-filter e o unico jeito de o desfoque pegar
+   o que esta ATRAS do elemento — `filter: blur` borraria o proprio
+   conteudo, texto incluido. A sombra e projetada para a esquerda: e ela
+   que descola o painel da foto sem precisar de borda. */
+.contato__dir {
+  position: relative;
+  padding: var(--space-6) var(--space-4);
+  /* sangra ate a borda da tela, como no print */
+  margin: calc(var(--space-6) * -1) calc(var(--content-padding) * -1)
+          calc(var(--space-8) * -1) 0;
+  padding-right: var(--content-padding);
+  background-color: rgba(20, 20, 20, 0.34);
+  backdrop-filter: blur(16px) saturate(1.08);
+  -webkit-backdrop-filter: blur(16px) saturate(1.08);
+  box-shadow: -36px 0 72px -22px rgba(0, 0, 0, 0.75);
+}
+
+/* Sem backdrop-filter o painel a 34% deixaria o formulario ilegivel
+   sobre a foto. O fallback fecha a cor em vez de tentar o desfoque. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .contato__dir { background-color: rgba(20, 20, 20, 0.9); }
 }
 
 .contato__esq {
@@ -2521,7 +2550,9 @@ h3 {
   backdrop-filter: blur(2px);
 }
 
-.contato__caixa--dir { border-color: rgba(209, 77, 41, 0.55); }
+/* A caixa da direita nao tem moldura: quem a separa agora e o painel de
+   vidro em volta dela. Duas bordas concentricas so somariam ruido. */
+.contato__caixa--dir { border: 0; padding: 0; }
 
 /* A referencia usa 70px, mas la o titulo e "CONTACT ME" — duas palavras
    numa linha. O nosso e uma frase de sete, e no mesmo corpo ele ocupava
@@ -2551,11 +2582,17 @@ h3 {
 }
 
 /* ── a caixa da direita ── */
+/* Mesmo tratamento do titulo da esquerda — familia, peso e aperto de
+   entreletra. Antes o `font-weight: inherit` no <b> anulava o negrito e
+   o convite saia leve ao lado de um titulo pesado: mesma fonte, leitura
+   diferente. */
 .contato__convite {
-  margin: 0 0 var(--space-2);
+  margin: 0 0 var(--space-3);
   font-family: var(--font-display);
-  font-size: clamp(1rem, 1.6vw, 1.3rem);
-  letter-spacing: -0.02em;
+  font-weight: 700;
+  font-size: clamp(1.05rem, 1.85vw, 1.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
   text-transform: uppercase;
 }
 
@@ -2609,24 +2646,30 @@ h3 {
 
 .rp {
   list-style: none;
-  margin: 0;
+  margin: 0 0 0 -10px;   /* o glifo alinha com o rotulo, nao a caixa */
   padding: 0;
   display: flex;
-  gap: var(--space-3);
+  gap: var(--space-2);
 }
 
+/* Sem moldura — so o glifo. A caixa de 44px continua existindo como
+   ALVO (WCAG 2.5.5); ela so deixou de ser desenhada. Encolher o alvo
+   junto com a borda seria trocar ruido visual por dedo errando o link. */
 .rp__peca {
   display: grid;
   place-items: center;
   width: 44px;
-  height: 44px;               /* WCAG 2.5.5 */
+  height: 44px;
   color: var(--cal);
-  border: 1px solid var(--linha);
-  transition: color 200ms ease, border-color 200ms ease;
+  transition: color 200ms ease, transform 200ms ease;
 }
 
-.rp__peca svg { width: 20px; height: 20px; display: block; }
-.rp__peca:hover { color: var(--solda); border-color: var(--solda); }
+.rp__peca svg { width: 22px; height: 22px; display: block; }
+.rp__peca:hover { color: var(--solda); transform: translateY(-2px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .rp__peca:hover { transform: none; }
+}
 
 /* ── formulario ── */
 .contato__forma {
@@ -2697,6 +2740,11 @@ h3 {
 @media (max-width: 900px) {
   .contato { padding-top: 14vh; }
   .contato__grade { grid-template-columns: 1fr; gap: var(--space-6); }
+  .contato__dir {
+    margin: 0;
+    padding: var(--space-4) var(--space-3);
+    box-shadow: none;
+  }
   .contato__esq { min-height: 0; }
   .contato__pe { margin-top: var(--space-6); }
   /* a foto passa a cobrir tudo: em coluna unica nao ha metade direita
