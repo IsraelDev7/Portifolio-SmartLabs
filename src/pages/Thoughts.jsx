@@ -204,9 +204,9 @@ export default function Thoughts() {
         {/* ── faixa 2 · a declaracao ── */}
         <section className="ideias__faixa">
           <h2 className="ideias__declaracao">
-            O que dizem sobre
+            O arquivo do que eu penso
             <br />
-            o meu trabalho.
+            enquanto construo.
           </h2>
         </section>
 

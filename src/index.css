@@ -3035,12 +3035,16 @@ h3 {
   .ideias__peca:hover .ideias__lente { transform: none; }
 }
 
-/* min-height, nao height: a imagem manda na altura da linha (como na
-   referencia, 800 contra 470 do texto), mas se o post crescer mais que
-   ela — titulo longo, tela estreita — ela acompanha em vez de estourar. */
+/* min-height E height: 100%. O min-height e o piso — a imagem manda na
+   altura da linha, como na referencia (800 contra 470 do texto). Mas so
+   com ele a figura ficava travada em 480 enquanto o link em volta
+   esticava com a linha, e sobrava um vao preto no pe de cada cartao —
+   146px no maior deles. O height:100% faz a figura acompanhar quando o
+   texto for mais alto. */
 .ideias__figura {
   position: relative;
   margin: 0;
+  height: 100%;
   min-height: 30rem;
   overflow: hidden;
 }
