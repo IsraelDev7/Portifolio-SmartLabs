@@ -3820,12 +3820,20 @@ html { scrollbar-gutter: stable; }
      horizontal da pagina inteira. */
   .nav-links-desktop { display: none !important; }
 
-  /* ── o logo nao some quando o menu abre ──
-     Ele sobe para cima da cortina e continua ali, como na referencia,
-     onde "vertical" acompanha o menu aberto. O `mix-blend-mode:
-     difference` da barra e desligado: sobre o escuro da cortina ele
-     inverteria o logo para um cinza sujo. */
-  .mmv-travado nav {
+  /* ── a marca fica SEMPRE por cima ──
+     Nao so com o menu aberto: a barra do topo tem z-index 200 e a barra
+     de navegacao tinha 100, entao a marca ficava escondida atras dela o
+     tempo todo — inclusive com o menu fechado. Medido com
+     elementFromPoint no centro do logo: quem respondia era o veu.
+
+     215 poe a marca acima da cortina (200) e do painel (210), e o painel
+     comeca 84px abaixo do topo, entao nao ha disputa por espaco.
+
+     O `mix-blend-mode: difference` sai junto: ele existia para a marca
+     se virar sozinha sobre fundos claros ou escuros, e agora ela tem
+     sempre a barra escura por tras. Mantido, inverteria o Cal contra a
+     barra e devolveria um cinza sujo. */
+  nav {
     z-index: 215 !important;
     mix-blend-mode: normal !important;
   }

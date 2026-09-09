@@ -47,11 +47,13 @@ const SECUNDARIOS = [
 /* Quanto cada metade do circulo anda ao se separar. 9px: o bastante para
    os dois lerem como dois pontos distintos, pouco o bastante para
    continuarem sendo o mesmo objeto que se dividiu. */
-const SEPARACAO = 9;
+const SEPARACAO = 11;
 
-/* O gatilho e um circulo GRANDE no repouso e dois pequenos quando aberto:
-   26px x 0.34 = ~9px cada, que e o tamanho dos dois pontos da referencia. */
-const ESCALA_ABERTO = 0.34;
+/* O gatilho e um circulo GRANDE no repouso e dois menores quando aberto:
+   26px x 0.46 = ~12px cada. A referencia usa ~9px, mas ali o gatilho
+   fechado tambem e menor — proporcionalmente, 12 e o que mantem os dois
+   pontos legiveis contra um circulo de 26. */
+const ESCALA_ABERTO = 0.46;
 
 const PASSO_TEXTO = 0.055;
 
@@ -89,12 +91,16 @@ export default function MenuMovel() {
 
     const reduz = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    /* A cortina parte da base da barra: `inset(0 0 calc(100% - Hpx) 0)`
-       deixa visivel so a faixa do topo. Animar ate `inset(0)` e a
-       cortina descendo. Em px, nao em %, para a barra ter sempre a mesma
-       altura independente do tamanho da tela. */
+    /* A cortina parte da BASE DA BARRA e so desce dali: o recorte deixa
+       visivel a faixa do topo e vai abrindo para baixo.
+
+       Em pixels absolutos, e nao em `calc(100% - 64px)`: o GSAP nao
+       interpola calc() dentro de clip-path — ele trata a expressao como
+       string e salta direto para o valor final, o que fazia a cortina
+       aparecer de uma vez em vez de descer. Lendo a altura da janela na
+       hora, os dois extremos viram numeros e a interpolacao acontece. */
     const ALTURA_BARRA = 64;
-    const fechada = `inset(0px 0px calc(100% - ${ALTURA_BARRA}px) 0px)`;
+    const fechada = () => `inset(0px 0px ${Math.max(0, window.innerHeight - ALTURA_BARRA)}px 0px)`;
     const abertaTotal = 'inset(0px 0px 0px 0px)';
 
     const abrirDireto = () => {
@@ -107,7 +113,7 @@ export default function MenuMovel() {
     };
 
     const fecharDireto = () => {
-      gsap.set(veu.current, { autoAlpha: 1, clipPath: fechada });
+      gsap.set(veu.current, { autoAlpha: 1, clipPath: fechada() });
       gsap.set(painel.current, { autoAlpha: 0 });
       gsap.set(linhas, { clipPath: 'inset(0% 0% 100% 0%)', y: 0 });
       gsap.set(regua, { scaleX: 0 });
@@ -130,7 +136,7 @@ export default function MenuMovel() {
 
       /* 2 · a cortina desce a partir da barra */
       tl.set(veu.current, { autoAlpha: 1 }, 0)
-        .fromTo(veu.current, { clipPath: fechada }, { clipPath: abertaTotal, duration: 0.62, ease: 'power3.inOut' }, 0.02)
+        .fromTo(veu.current, { clipPath: fechada() }, { clipPath: abertaTotal, duration: 0.62, ease: 'power3.inOut' }, 0.02)
         .set(painel.current, { autoAlpha: 1 }, 0.2);
 
       /* 3 · a persiana: cada linha e DESCOBERTA de baixo para cima. O `y`
@@ -162,7 +168,7 @@ export default function MenuMovel() {
 
     /* A cortina sobe de volta ate a barra — nao some. A barra continua
        la depois, que e o estado de repouso. */
-    tl.to(veu.current, { clipPath: fechada, duration: 0.5, ease: 'power3.inOut' }, 0.16);
+    tl.to(veu.current, { clipPath: fechada(), duration: 0.5, ease: 'power3.inOut' }, 0.16);
 
     tl.to(pontos, { y: 0, scale: 1, duration: 0.32, ease: 'back.in(1.8)' }, 0.3);
   }, { dependencies: [aberto], scope: raiz });
