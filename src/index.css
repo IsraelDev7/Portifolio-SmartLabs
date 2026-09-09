@@ -407,6 +407,12 @@ h3 {
   .mosaico__cobertura { display: none; }
 }
 
+/* As linhas da cisao substituiram <br/>. `display:block` vale em toda
+   largura — sem ele, em tela larga os dois spans virariam texto corrido
+   e "Experiencia e interface." colaria em "Logica e funcionamento.".
+   O corpo proprio de cada uma e que so existe no telefone. */
+.cisao__ln { display: block; }
+
 /* ═══════════════════════════════════════════════════════════
    SEDE — a galeria das cinco camadas de uma sede digital
    ═══════════════════════════════════════════════════════════
@@ -3515,8 +3521,139 @@ h3 {
     height: auto !important;
   }
 
-  .cisao__imagem { aspect-ratio: 4 / 3; }
+  /* ── a imagem ──
+     627px de altura na referencia, numa tela de 414: proporcao 1:1.51.
+     Largura cheia, sem recuo — e a peca que ancora a secao. */
+  .cisao__imagem {
+    aspect-ratio: 414 / 627;
+    width: 100%;
+  }
+
   .cisao__fios { display: none; }   /* fio vertical entre colunas que nao existem mais */
+
+  /* ── a marcacao sobre a imagem ──
+     So existe no telefone. Na referencia ela ocupa o canto superior
+     esquerdo e deixa o resto da foto livre: a imagem continua sendo o
+     assunto e a marcacao le como anotacao tecnica por cima dela. */
+  .cisao__marcacao {
+    position: absolute;
+    top: 59px;      /* medido: 10866 - 10807 */
+    left: 20px;
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  .cisao__palavras {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .cisao__palavras li {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.12rem;      /* 18px */
+    line-height: 20px;       /* passo medido na referencia */
+    letter-spacing: -0.06em;
+    color: var(--cal);
+    text-transform: uppercase;
+    /* A sombra e o que segura a leitura sobre uma foto de contraste
+       imprevisivel: sem ela, uma palavra que calha sobre a parte clara
+       da maquete some. */
+    text-shadow: 0 1px 12px rgba(10, 10, 10, 0.85);
+  }
+
+  /* ── o REC ──
+     43px na referencia, 121px abaixo da primeira palavra. Pisca como a
+     luz de uma camera gravando: some por um instante curto e volta,
+     com uma pausa longa entre os toques. Um fade simetrico leria como
+     respiracao; o que faz pensar em gravacao e a assimetria. */
+  .cisao__rec {
+    display: block;
+    width: 43px;
+    height: 43px;
+    margin-top: 78px;
+    border-radius: 50%;
+    background: var(--solda);
+    animation: cisao-rec 1.6s steps(1, end) infinite;
+  }
+
+  @keyframes cisao-rec {
+    0%,  62% { opacity: 1; }
+    63%, 78% { opacity: 0.18; }
+    79%     { opacity: 1; }
+  }
+
+  /* ── a declaracao sobre a base da imagem ──
+     Na referencia o titulo de 52px comeca 50px ANTES de a imagem
+     terminar: ele monta sobre a base dela e continua abaixo. E essa
+     sobreposicao que costura as duas metades — parando depois da foto,
+     viraria uma legenda. */
+  .cisao__textos { position: relative; z-index: 2; }
+
+  .cisao__camada { margin-top: -50px; }
+
+  /* Os 52px da referencia valem para as frases DELA. As nossas tem o
+     dobro de caracteres — "Experiencia e interface." pede 33px para
+     encher os mesmos 360, e "Logica e funcionamento." pede 31. O que se
+     preserva e a regra (a linha enche a largura), nao o numero: copiar o
+     52 fazia o texto vazar 48px pela borda. */
+  .cisao__declaracao {
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: 1.02;
+    letter-spacing: -0.06em;
+    text-transform: uppercase;
+    color: var(--cal);
+    padding: 0 24px;
+    margin: 0;
+    text-shadow: 0 2px 18px rgba(10, 10, 10, 0.6);
+  }
+
+  .cisao__ln {
+    display: block;
+    font-size: 1.94rem;      /* ponto de partida; o corpo final vem da medicao */
+    white-space: nowrap;
+  }
+
+  /* ── o painel da direita ── */
+  .cisao__kicker { font-size: 0.66rem; letter-spacing: 0.16em; }
+
+  /* O papel do "WHAT HOLDS UP IS WHAT MATTERS." — 32px la, 41px aqui,
+     que e o corpo em que "A fachada e bonita." enche a largura. */
+  .cisao__menor {
+    font-size: 2.56rem;
+    line-height: 1;
+    letter-spacing: -0.06em;
+    text-transform: uppercase;
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--cal);
+  }
+
+  /* A palavra grande: 90px na referencia, mas o corpo aqui vem do
+     useCorpoJusto — a nossa fonte e mais larga e o texto e outro, entao
+     um valor fixo ou vazaria ou sobraria. O que importa e a REGRA: esta
+     linha enche a largura, e e a maior coisa da secao. */
+  /* O par "EMBRACING THE / UNKNOWN": uma linha media e uma palavra em
+     corpo maximo. Medido nos nossos textos: 39px e 72px. */
+  .cisao__maior {
+    line-height: 0.9;
+    letter-spacing: -0.07em;
+    text-transform: uppercase;
+    margin: 0;
+  }
+
+  .cisao__ln-a,
+  .cisao__ln-b { display: block; white-space: nowrap; }
+
+  /* Pontos de partida do primeiro quadro; o corpo final e medido. */
+  .cisao__ln-a { font-size: 2.44rem; }
+  .cisao__ln-b { font-size: 4.5rem; }
+
+  .cisao__prosa { font-size: 0.82rem; line-height: 1.55; }
+
+  .cisao__ato { padding: var(--space-6) 24px var(--space-8); }
 
   /* ── a faixa ── */
   .faixa__sequencia { grid-template-columns: 1fr !important; }
@@ -3535,9 +3672,14 @@ h3 {
      (é marcada) e devolvia os paragrafos da lista de servicos a 14.4px,
      inflando o bloco de baixo em 160px e empurrando a lista para dentro
      da marca. */
-  .page-home section:not(.hero-section) h2 { font-size: clamp(2rem, 9vw, 2.6rem) !important; }
-  .page-home section:not(.hero-section) h3 { font-size: clamp(1.7rem, 7.5vw, 2.2rem) !important; }
-  .page-home section:not(.hero-section) p  { font-size: 0.9rem !important; }
+  /* As excecoes existem porque estas duas secoes tem escala PROPRIA,
+     medida contra o desenho delas: o heroi contra o seu orcamento
+     vertical, a cisao contra a referencia. Sem elas, esta regra (que e
+     marcada) vencia e devolvia a declaracao da cisao a 14px onde ela
+     precisa de 52. */
+  .page-home section:not(.hero-section):not(.cisao) h2 { font-size: clamp(2rem, 9vw, 2.6rem) !important; }
+  .page-home section:not(.hero-section):not(.cisao) h3 { font-size: clamp(1.7rem, 7.5vw, 2.2rem) !important; }
+  .page-home section:not(.hero-section):not(.cisao) p  { font-size: 0.9rem !important; }
 
   .assinatura__marca,
   .pe__nome,

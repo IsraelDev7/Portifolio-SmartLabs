@@ -25,6 +25,11 @@ export default function Camadas() {
       <Cisao
         imagem="/images/estrutura-primeiro.jpg"
 
+        /* A coluna de palavras sobre a imagem, no telefone. Sao os
+           mesmos rotulos que ja aparecem no selo e no rodape — nenhuma
+           copy nova; o que muda e a forma de apresenta-los. */
+        palavras={['Banco de dados', 'Integrações', 'APIs', 'Sistemas']}
+
         /* verde — selo emoldurado no topo-esquerda */
         selo={<>
           <Item rotulo="Banco de dados">Informação organizada.</Item>
@@ -32,12 +37,19 @@ export default function Camadas() {
         </>}
 
         /* amarelo — a declaracao grande sobre a imagem */
-        declaracao={<>Experiência e interface.<br />Lógica e funcionamento.</>}
+        /* Em spans, nao com <br/>: no telefone cada linha recebe o seu
+           proprio corpo para encher a largura, e isso exige que cada uma
+           seja um elemento. Em tela larga eles voltam a ser inline e o
+           desenho e o de sempre. */
+        declaracao={<><span className="cisao__ln">Experiência e interface.</span><span className="cisao__ln">Lógica e funcionamento.</span></>}
 
         /* vermelho — o cabecalho no painel da direita */
         kicker="Development"
         linhaMenor="A fachada é bonita."
-        linhaMaior={<>A estrutura precisa funcionar.</>}
+        /* O par da referencia: uma linha media e uma palavra em corpo
+           maximo. "funcionar." sozinha pede 72px para encher a largura —
+           e ela que faz o papel do UNKNOWN de la. */
+        linhaMaior={<><span className="cisao__ln-a">A estrutura precisa</span>{' '}<span className="cisao__ln-b">funcionar.</span></>}
         prosa="Não existe experiência premium quando a tecnologia por trás dela não acompanha. Por isso, o desenvolvimento faz parte da arquitetura desde o começo."
 
         /* azul — a nota mono no pe do painel */
@@ -49,7 +61,7 @@ export default function Camadas() {
 
         /* segundo ato: a declaracao troca por fade enquanto a imagem
            continua parada, e o cartao sobe do lado direito */
-        declaracaoDois={<>Front-end. Back-end.<br />APIs. Sistemas.</>}
+        declaracaoDois={<><span className="cisao__ln">Front-end. Back-end.</span><span className="cisao__ln">APIs. Sistemas.</span></>}
 
         cartao={
           <Cartao

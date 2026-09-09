@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useRef, useState, useEffect } from 'react';
+import { useCorpoJusto } from '../hooks/useCorpoJusto';
 
 /**
  * Cisao — a secao dividida 52/48, em dois atos com a imagem travada.
@@ -25,6 +26,7 @@ import React from 'react';
  */
 export default function Cisao({
   imagem,
+  palavras,
   selo,
   declaracao,
   declaracaoDois,
@@ -35,8 +37,27 @@ export default function Cisao({
   rodape,
   cartao,
 }) {
+  const raiz = useRef(null);
+
+  /* As linhas em corpo maximo sao MEDIDAS, nao fixadas. O calculo
+     estatico que eu tinha feito errava por arredondamento — "funcionar."
+     rendia 389px onde a conta dava 360, e vazava 29px pela borda. O hook
+     mede o texto de verdade e acerta o corpo. E o mesmo principio da
+     referencia: a linha enche a largura, e o numero e consequencia. */
+  const [ehTelefone, setEhTelefone] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(max-width: 820px)').matches
+  );
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 820px)');
+    const ao = (e) => setEhTelefone(e.matches);
+    mq.addEventListener('change', ao);
+    return () => mq.removeEventListener('change', ao);
+  }, []);
+
+  useCorpoJusto(raiz, '.cisao__ln, .cisao__ln-a, .cisao__ln-b', { ativo: ehTelefone });
+
   return (
-    <section className="cisao">
+    <section className="cisao" ref={raiz}>
       <div className="cisao__esq">
         {/* a unica peca que gruda */}
         <div
@@ -48,6 +69,23 @@ export default function Cisao({
         <div className="cisao__fios" aria-hidden="true">
           {Array.from({ length: 7 }, (_, i) => <i key={i} />)}
         </div>
+
+        {/* ── a camada que sobe sobre a imagem, so no telefone ──
+            Medida na referencia em 414px: uma coluna de palavras em 18px
+            a 20px da borda, com passo de 20px, e logo abaixo dela um
+            circulo de 43px que pisca como a luz de uma camera gravando.
+
+            As duas pecas cobrem so o canto superior esquerdo — a imagem
+            continua sendo o assunto, e elas leem como marcacao tecnica
+            por cima dela, nao como um painel que a substitui. */}
+        {palavras && (
+          <div className="cisao__marcacao" aria-hidden="true">
+            <ul className="cisao__palavras">
+              {palavras.map((p) => <li key={p}>{p}</li>)}
+            </ul>
+            <i className="cisao__rec" />
+          </div>
+        )}
 
         {/* camadas de texto: rolam por cima da imagem parada */}
         <div className="cisao__textos">
