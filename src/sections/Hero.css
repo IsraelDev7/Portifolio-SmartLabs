@@ -366,39 +366,123 @@
   }
 }
 
-/* ── telas estreitas de verdade ──
-   A regra de 900px acima ja existia, mas so mexia em margem e
-   alinhamento: o `position:absolute` do bloco do topo e o corpo do
-   texto massivo passavam intactos. Medido em 375px:
+/* ═══════════════════════════════════════════════════════════
+   TELEFONE — o heroi refeito sobre a leitura da referencia
+   ═══════════════════════════════════════════════════════════
 
-     .hero-massive-text  clamp(80px, 25vw, 150px) -> 94px
-                         "SMARTLABS" em 94px pede ~500px de linha, e a
-                         palavra se partia em tres pedacos atravessando
-                         o resto do heroi
-     .hero-block-top     left:66vw + width:38vw -> borda direita em
-                         389px numa tela de 369
+   A regra de 900px acima so mexia em margem e alinhamento. Medido em
+   414px antes desta: `.hero-massive-text` partia SMARTLABS em SMA/RTL/
+   ABS e espalhava os tres por 905px de altura em recuos de 25, 159 e
+   281px — atravessando headline, assinatura e botoes. E `.hero-block-top`
+   ficava em left:66vw + width:38vw, com a borda direita em 389px numa
+   tela de 369.
 
-   Abaixo de 560px o heroi deixa de ser uma composicao em camadas
-   sobrepostas e vira uma coluna: em 335px de faixa util nao ha espaco
-   para duas coisas disputarem o mesmo lugar. */
+   ── o que a referencia faz, medido no DOM dela em 414px ──
+   Toda linha de destaque tem o CORPO calibrado para ocupar exatamente a
+   largura util (374px), e nao um corpo fixo com o texto quebrando onde
+   der: "I break things" 62px, "to see WHAT" 72px, "THEY ARE MADE OF"
+   50px — tres corpos diferentes justamente para as tres medirem o mesmo.
+   E o que faz o bloco ler como pagina de revista em vez de titulo com
+   quebra automatica.
+
+   Os numeros 001-004 e as fases sao as duas pontas de linhas verticais
+   de 1px que atravessam a palavra em corpo maximo. Nos ja tinhamos essa
+   grade — ela estava sendo escondida aqui por engano.
+
+   Os corpos abaixo foram MEDIDOS nesta fonte, nao estimados: Space
+   Grotesk 800 e bem mais larga que a Inter da referencia, entao os
+   mesmos textos pedem corpos menores. */
+
 @media (max-width: 560px) {
-  .hero-massive-text {
-    /* 14vw = 52px em 375: as nove letras cabem numa linha so, que e a
-       condicao para a palavra continuar legivel como palavra. */
-    font-size: clamp(34px, 14vw, 56px);
-    padding: 9vh 5vw 6vh;
-    line-height: 0.85;
+
+  /* ── 1 · a palavra massiva de tela larga sai de cena ── */
+  .hero-massive-text { display: none; }
+
+  .marca-movel {
+    position: absolute;
+    top: 43.5%;
+    left: 0;
+    right: 0;
+    padding: 0 var(--content-padding);
+    z-index: 1;            /* atras do conteudo, na frente da foto */
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
   }
 
-  .hero-grid { display: none; }   /* a grade de numeros 001-004 nao cabe e nao carrega informacao */
+  .marca-movel__linha {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: 800;
+    color: var(--solda);
+    text-transform: uppercase;
+    letter-spacing: -0.05em;
+    /* 0.78 e a altura real das maiusculas nesta fonte: com line-height 1
+       sobraria uma faixa morta acima e abaixo de cada linha, e as duas
+       nao se encostariam como se encostam na referencia. */
+    line-height: 0.78;
+    white-space: nowrap;
+  }
 
+  /* Medidos para render exatos 374px de largura em 414px de tela. Em vw
+     para acompanharem telas vizinhas sem perder a justificacao:
+     121/414 = 29.2vw e 167/414 = 40.3vw. */
+  .marca-movel__linha--a { font-size: 29.2vw; }
+  .marca-movel__linha--b { font-size: 40.3vw; }
+
+  /* ── 2 · a grade de fases volta ──
+     Estava com `display:none` na versao anterior desta media query. Ela
+     e justamente o elemento da referencia que faltava: numeros em cima,
+     fases embaixo, e o fio de 1px ligando os dois por tras da palavra. */
+  /* `top:0; height:100%` porque os filhos ja se posicionam em `vh`
+     absolutos: com o container deslocado, os dois valores SOMAVAM e os
+     numeros iam parar em 627px — depois da palavra, quando na referencia
+     eles vem antes dela. */
+  .hero-grid {
+    display: flex;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    padding: 0 var(--content-padding);
+    z-index: 2;
+  }
+
+  .grid-line { background: transparent; }
+
+  /* O fio liga o numero a fase e PARA ali. Descendo ate o rodape ele
+     atravessaria a lista de servicos e o botao. */
+  .grid-line::before { top: 41.5vh; bottom: 26.5vh; }
+
+  /* Orcamento vertical dos 896px, medido peca a peca:
+       98   padding do topo
+       153  headline (69+65+44 com entrelinha 0.86)
+       ~60  assinatura
+       331  numeros            <- 37vh
+       355  marca SMART/LABS   <- 39.6%, 224px de altura
+       591  fases              <- 66vh, encostando na base da marca
+       ~620 lista de servicos
+       ~760 o botao
+     Sem a subheadline nao fecha: sao mais 70px que empurram a marca
+     para cima dos numeros. */
+  .grid-num { top: 40vh; font-size: 0.62rem; letter-spacing: 0.02em; }
+
+  .grid-phase-container { top: 69.5vh; }
+
+  .grid-phase { font-size: 0.56rem; letter-spacing: 0.01em; }
+
+  /* Em 4 colunas de ~85px, "FASE/DISCOVERY" nao cabe deitado. */
+  .grid-phase-container { transform: scale(0.86); transform-origin: left bottom; }
+
+  /* ── 3 · o conteudo vira coluna ── */
+  /* space-between, nao flex-start: o bloco de baixo precisa encostar no
+     rodape para abrir a faixa do meio onde a marca vive. Com flex-start
+     a lista subia para 483px, bem dentro da palavra. */
   .hero-content {
-    padding: 11vh 5vw 4vh 5vw;
-    justify-content: flex-end;
-    gap: var(--space-4);
+    padding: 7vh var(--content-padding) 4vh;
+    justify-content: space-between;
+    gap: var(--space-3);
   }
 
-  /* Sai do absoluto e entra na coluna, na ordem de leitura. */
   .hero-block-top {
     position: static;
     left: auto;
@@ -407,12 +491,69 @@
     max-width: none;
   }
 
-  .hero-headline { font-size: clamp(26px, 8vw, 34px); }
+  /* ── 4 · a headline justificada pelo corpo ──
+     Cada linha com o seu tamanho, todas medindo a largura util. Os
+     numeros vem da medicao: 69, 65 e 44px em 414px de tela, que em vw
+     sao 16.7, 15.7 e 10.6. A variacao de 57% entre a maior e a menor
+     fica proxima dos 44% da referencia — foi por isso que a quebra
+     ficou em "A FORMA DO / SEU NEGOCIO", e nao em "A FORMA / DO SEU
+     NEGOCIO", que dava 116%. */
+  .hero-headline { font-size: inherit; letter-spacing: -0.04em; }
 
-  .hero-subheadline { font-size: 0.85rem; }
+  .hh {
+    display: block;
+    line-height: 0.86;
+    white-space: nowrap;
+  }
 
-  /* O fundo perde forca para o texto poder ficar por cima dele sem
-     caixa: com a foto em brilho cheio, as letras Cal sobre a pele
-     clara do retrato caem abaixo do contraste minimo. */
-  .hero-bg-image { filter: brightness(0.55); }
+  .hh--1 { font-size: 16.7vw; }
+  .hh--2 { font-size: 15.7vw; }
+  .hh--3 { font-size: 10.6vw; }
+
+  /* Sai do heroi no telefone. A referencia vai direto da headline para
+     a assinatura, e no nosso orcamento vertical estes tres periodos sao
+     os 70px que faltam para a marca nao subir por cima dos numeros. O
+     argumento nao se perde: a secao seguinte abre com ele. */
+  .hero-subheadline { display: none; }
+
+  /* ── 5 · a assinatura ──
+     Na referencia: barra, nome em 18px na cor de destaque, funcao em
+     12px em branco, ambos recuados 28px da barra. */
+  .hero-author-container { margin-top: 0; }
+  .author-border { width: 4px !important; margin-right: 14px !important; }
+  .hero-author .author-name { font-size: 1.05rem; letter-spacing: -0.02em; }
+  .hero-author .author-role { font-size: 0.68rem; letter-spacing: 0.14em; }
+
+  /* ── 6 · o rodape do heroi ── */
+  .hero-block-bottom { margin-top: auto; }
+
+  .hero-services-index { font-size: 0.6rem; }
+
+  /* A lista media 275px de altura contra os ~110 da referencia: cinco
+     frases longas quebrando em duas linhas cada. Em 0.58rem cada uma
+     cabe numa linha so, e o bloco inteiro desce para ~90px — que e o
+     que libera a faixa do meio para a marca. O texto nao muda; muda o
+     corpo. */
+  .services-text p { font-size: 0.58rem; line-height: 1.4; margin-bottom: 0.28rem; }
+  .services-text p br { display: none; }
+
+  /* Um pedido de acao so. O outro esta escondido no JSX. */
+  .so-desktop { display: none; }
+
+  /* `align-items: stretch` no lugar do padrao: sem isso o botao herdava
+     a largura do irmao que agora esta escondido e comecava em x -10,
+     saindo pela borda esquerda. */
+  .hero-ctas {
+    flex-direction: column;
+    gap: 0;
+    align-items: stretch;
+    width: 100%;
+    margin: 0;
+  }
+  .hero-ctas > a { width: 100%; margin: 0; }
+
+  /* ── 7 · o fundo cede espaco para o texto ──
+     Com a foto em brilho cheio, as letras Cal sobre a pele clara do
+     retrato caem abaixo do contraste minimo. */
+  .hero-bg-image { filter: brightness(0.5); }
 }

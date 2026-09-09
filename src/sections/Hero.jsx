@@ -255,6 +255,21 @@ export default function Hero() {
         <div className="massive-line line-3" aria-label="ABS"><Letras texto="ABS" /></div>
       </div>
 
+      {/* ── a marca em corpo maximo, so no telefone ──
+          O `.hero-massive-text` acima parte "SMARTLABS" em SMA/RTL/ABS e
+          espalha os tres por 905px em recuos diferentes: e um desenho de
+          tela larga, e no telefone vira tres pedacos atravessando o
+          conteudo todo (foi o defeito do print).
+
+          Aqui a palavra volta a ser palavra, em duas linhas que enchem a
+          largura — 121px e 167px, medidos para dar exatamente os 374px
+          uteis. Fica atras da grade de fases, como "VERTICAL" fica na
+          referencia. */}
+      <div className="marca-movel" aria-hidden="true">
+        <span className="marca-movel__linha marca-movel__linha--a">SMART</span>
+        <span className="marca-movel__linha marca-movel__linha--b">LABS</span>
+      </div>
+
       {/* EXPLORE Text Sequence */}
       <div className="hero-explore-container">
         <div className="hero-explore-text font-display">
@@ -267,9 +282,16 @@ export default function Hero() {
         
         {/* Top Right Block */}
         <div className="hero-block-top">
+          {/* Tres linhas, nao duas. Em telas largas a 1 e a 2 correm
+              juntas e o desenho continua o de sempre; abaixo de 560px
+              cada uma vira bloco com CORPO PROPRIO, calibrado para
+              preencher a largura util — o mesmo principio tipografico da
+              referencia, onde as tres linhas tem 62, 72 e 50px
+              justamente para todas medirem o mesmo. */}
           <h2 className="hero-headline font-display" data-deriva="-0.40">
-            <span className="empilha text-solda">A FORMA DO SEU NEGÓCIO</span>
-            <span className="empilha text-cal">NO MUNDO DIGITAL.</span>
+            <span className="empilha text-solda hh hh--1">A FORMA DO</span>
+            <span className="empilha text-cal hh hh--2">SEU NEGÓCIO</span>
+            <span className="empilha text-cal hh hh--3">NO MUNDO DIGITAL.</span>
           </h2>
           <p className="hero-subheadline empilha" data-deriva="-0.30">
             Seu negócio pode ser excelente.<br/>
@@ -308,7 +330,10 @@ export default function Hero() {
           </div>
           
           <div className="hero-ctas">
-            <PlateButton href="#projetos">CONHECER A SMARTLABS</PlateButton>
+            {/* Some no telefone: numa tela onde o heroi ja ocupa a
+                altura inteira, dois pedidos de acao competem entre si e
+                nenhum ganha. Fica o que leva ao contato. */}
+            <span className="so-desktop"><PlateButton href="#projetos">CONHECER A SMARTLABS</PlateButton></span>
             <PlateButton href="#contato" variant="secondary">FALAR SOBRE MEU PROJETO</PlateButton>
           </div>
         </div>

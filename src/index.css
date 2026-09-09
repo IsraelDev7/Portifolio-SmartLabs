@@ -3697,9 +3697,14 @@ h3 {
      olhando telas largas.
 
      `!important` de novo pelo inline do JSX. */
-  .page-home section h2 { font-size: clamp(2rem, 9vw, 2.6rem) !important; }
-  .page-home section h3 { font-size: clamp(1.7rem, 7.5vw, 2.2rem) !important; }
-  .page-home section p  { font-size: 0.9rem !important; }
+  /* `:not(.hero-section *)` porque o heroi tem escala propria, medida
+     contra o orcamento vertical dele: sem a excecao, esta regra vencia
+     (é marcada) e devolvia os paragrafos da lista de servicos a 14.4px,
+     inflando o bloco de baixo em 160px e empurrando a lista para dentro
+     da marca. */
+  .page-home section:not(.hero-section) h2 { font-size: clamp(2rem, 9vw, 2.6rem) !important; }
+  .page-home section:not(.hero-section) h3 { font-size: clamp(1.7rem, 7.5vw, 2.2rem) !important; }
+  .page-home section:not(.hero-section) p  { font-size: 0.9rem !important; }
 
   .assinatura__marca,
   .pe__nome,
