@@ -3594,11 +3594,14 @@ h3 {
      luz de uma camera gravando: some por um instante curto e volta,
      com uma pausa longa entre os toques. Um fade simetrico leria como
      respiracao; o que faz pensar em gravacao e a assimetria. */
+  /* 8px: o circulo passa a acompanhar a lista em vez de flutuar no meio
+     do caminho. Com 78 ele caia em 217, ja dentro da faixa que agora e
+     do texto. */
   .cisao__rec {
     display: block;
     width: 43px;
     height: 43px;
-    margin-top: 78px;
+    margin-top: 8px;
     border-radius: 50%;
     background: var(--solda);
     animation: cisao-rec 1.6s steps(1, end) infinite;
@@ -3633,9 +3636,12 @@ h3 {
   /* A primeira camada ancora no ALTO da imagem, nao na base: e ali que
      fica o espaco livre da foto, e e o bloco de texto grande que precisa
      dele. A segunda continua embaixo, esperando as ondas. */
+  /* 29vh: o bloco de texto passa a comecar em 259px do topo da coluna,
+     contra os 117 de antes. E a faixa da imagem onde a maquete abre e o
+     texto tem fundo para pousar. */
   .cisao__camada {
     min-height: 100vh;
-    padding: 13vh 0 0;
+    padding: 29vh 0 0;
     justify-content: flex-start;
   }
 
@@ -3663,12 +3669,13 @@ h3 {
   .cisao .cisao__ondas {
     /* Medido: o bloco de texto de cima termina em 373px do topo da
        coluna, e o de baixo em 1756. A faixa cobre esse intervalo —
-       comeca logo abaixo de um e alcanca o outro. 45vh = 403px de
-       inicio, 152vh = 1362px de altura. Com 62vh ela nascia 370px
-       depois do texto, e o intervalo ficava com um trecho morto. */
-    top: 45vh;
+       comeca logo abaixo de um e alcanca o outro. Os valores acompanham
+       a descida do texto: com o bloco agora terminando em ~604, a faixa
+       parte de 60vh (538) e mede 138vh, alcancando 1774. Nos valores
+       anteriores (45vh) ela nascia em 403 e passava POR CIMA do texto. */
+    top: 60vh;
     bottom: auto;
-    height: 152vh;
+    height: 138vh;
   }
 
   /* Os 52px da referencia valem para as frases DELA. As nossas tem o
