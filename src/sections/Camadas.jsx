@@ -70,9 +70,11 @@ export default function Camadas() {
 
         /* segundo ato: a declaracao troca por fade enquanto a imagem
            continua parada, e o cartao sobe do lado direito */
+        /* Duas linhas e corpo fixo: este bloco nao entra no corpo
+           justo. Ele e o fecho do segundo ato, nao um titulo — em corpo
+           maximo competia com a declaracao de cima. */
         declaracaoDois={<>
-          <span className="cisao__ln">Front-end.</span>
-          <span className="cisao__ln">Back-end.</span>
+          <span className="cisao__ln">Front-end. Back-end.</span>
           <span className="cisao__ln">APIs. Sistemas.</span>
         </>}
 

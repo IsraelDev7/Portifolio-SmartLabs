@@ -3639,17 +3639,27 @@ h3 {
   /* 29vh: o bloco de texto passa a comecar em 259px do topo da coluna,
      contra os 117 de antes. E a faixa da imagem onde a maquete abre e o
      texto tem fundo para pousar. */
+  /* 72vh e nao 100: a trava nao precisa de uma tela inteira por camada
+     para funcionar. O que o sticky entrega e a sensacao de fundo parado
+     enquanto o conteudo passa — e isso acontece em qualquer percurso.
+     Com 100vh cada, a secao media 3048px por nada. */
   .cisao__camada {
-    min-height: 100vh;
+    min-height: 72vh;
     padding: 29vh 0 0;
     justify-content: flex-start;
   }
 
-  /* 4vh e nao 14: o padding maior deixava 125px de fundo liso entre o
-     "APIs. Sistemas." e o fim da coluna — o retangulo riscado no print. */
   .cisao__camada--dois {
+    min-height: 72vh;
     padding: 0 0 4vh;
     justify-content: flex-end;
+  }
+
+  /* Corpo fixo, fora da medicao: e o fecho do ato. */
+  .cisao__camada--dois .cisao__ln {
+    font-size: 2.1rem;
+    line-height: 1.06;
+    white-space: normal;
   }
 
   /* A coluna mede as duas camadas, e e essa altura que define quanto
@@ -3669,13 +3679,15 @@ h3 {
   .cisao .cisao__ondas {
     /* Medido: o bloco de texto de cima termina em 373px do topo da
        coluna, e o de baixo em 1756. A faixa cobre esse intervalo —
-       comeca logo abaixo de um e alcanca o outro. Os valores acompanham
-       a descida do texto: com o bloco agora terminando em ~604, a faixa
-       parte de 60vh (538) e mede 138vh, alcancando 1774. Nos valores
-       anteriores (45vh) ela nascia em 403 e passava POR CIMA do texto. */
+       comeca logo abaixo de um e alcanca o outro. Com as camadas em 72vh
+       o vao entre eles encolheu: a faixa parte de 60vh (538) e mede
+       83vh, fechando em ~1282 — logo depois do "APIs. Sistemas.", que
+       termina em 1255. Com 76vh ela parava em 1219, ANTES do texto, e
+       nao chegava a descobri-lo; com 138vh sobrava meio milhar de pixels
+       abaixo dele, e era parte do que fazia a secao parecer longa. */
     top: 60vh;
     bottom: auto;
-    height: 138vh;
+    height: 83vh;
   }
 
   /* Os 52px da referencia valem para as frases DELA. As nossas tem o

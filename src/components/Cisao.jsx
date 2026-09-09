@@ -55,7 +55,10 @@ export default function Cisao({
     return () => mq.removeEventListener('change', ao);
   }, []);
 
-  useCorpoJusto(raiz, '.cisao__ln, .cisao__ln-a, .cisao__ln-b', { ativo: ehTelefone });
+    /* So a PRIMEIRA camada entra no corpo justo. A segunda e o fecho do
+     ato e tem corpo fixo — medida no corpo maximo, ela competia com a
+     declaracao de cima em vez de fechar embaixo dela. */
+  useCorpoJusto(raiz, '.cisao__camada:first-child .cisao__ln, .cisao__ln-a, .cisao__ln-b', { ativo: ehTelefone });
 
   return (
     <section className="cisao" ref={raiz}>
