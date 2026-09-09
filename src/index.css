@@ -3676,18 +3676,18 @@ h3 {
      `.ondas { height: 34vh }` mora mais adiante no arquivo, e com a
      mesma especificidade a ultima regra vence — a faixa ficava presa em
      305px por mais que eu escrevesse 116vh aqui. */
+  /* ── ancoradas na BASE ──
+     Medido na referencia: as ondas dela nao sao um overlay no meio da
+     imagem — sao uma faixa propria de 627px (70vh) presa ao rodape da
+     secao, e o texto de fecho pousa SOBRE ela, a 104px do fim.
+
+     Era o que faltava aqui: com `top: 60vh` a faixa flutuava no vao e o
+     texto ficava abaixo dela, nunca em cima. Presa embaixo, ela cresce
+     do rodape para cima e o texto do segundo ato cai por dentro dela. */
   .cisao .cisao__ondas {
-    /* Medido: o bloco de texto de cima termina em 373px do topo da
-       coluna, e o de baixo em 1756. A faixa cobre esse intervalo —
-       comeca logo abaixo de um e alcanca o outro. Com as camadas em 72vh
-       o vao entre eles encolheu: a faixa parte de 60vh (538) e mede
-       83vh, fechando em ~1282 — logo depois do "APIs. Sistemas.", que
-       termina em 1255. Com 76vh ela parava em 1219, ANTES do texto, e
-       nao chegava a descobri-lo; com 138vh sobrava meio milhar de pixels
-       abaixo dele, e era parte do que fazia a secao parecer longa. */
-    top: 60vh;
-    bottom: auto;
-    height: 83vh;
+    top: auto;
+    bottom: 0;
+    height: 70vh;
   }
 
   /* Os 52px da referencia valem para as frases DELA. As nossas tem o
@@ -4107,7 +4107,10 @@ html { scrollbar-gutter: stable; }
   gap: 1px;
   padding: 0 2px;
   pointer-events: none;
-  z-index: 3;
+  /* Atras dos textos (que estao em 2) e na frente da imagem: e o texto
+     do segundo ato que pousa SOBRE a faixa, como na referencia. Em 3 as
+     barras passavam por cima das letras. */
+  z-index: 1;
   will-change: transform;
   /* Desbota para cima: sem a mascara a faixa termina num corte reto que
      denuncia o retangulo. Com ela, o sinal se dissolve no ar. */
