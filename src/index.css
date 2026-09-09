@@ -3675,11 +3675,19 @@ h3 {
   }
 
   .cisao__camada--dois .cisao__declaracao {
-    color: var(--aco);
-    /* A sombra escura da declaracao de cima existe para separar texto
-       claro de foto clara. Aqui e o contrario, e ela so sujaria o Aco
-       contra a nevoa. */
-    text-shadow: none;
+    color: var(--cal);
+    /* Tres sombras empilhadas, nao uma: a de 3px cola um contorno rente
+       a letra, a de 10px fecha os vaos entre barras vizinhas, e a de
+       28px escurece o campo inteiro em volta do bloco. Uma sombra unica
+       ou fica dura como borda ou se dilui antes de cobrir o vao.
+
+       Sobre as barras Cal este texto tem pouco contraste — e o problema
+       inverso do Aco, e conhecido. Se incomodar, o passo seguinte e
+       fechar o `gap` das barras nesta faixa. */
+    text-shadow:
+      0 1px 3px rgba(10, 10, 10, 0.95),
+      0 2px 10px rgba(10, 10, 10, 0.9),
+      0 4px 28px rgba(10, 10, 10, 0.75);
   }
 
   /* A coluna mede as duas camadas, e e essa altura que define quanto
