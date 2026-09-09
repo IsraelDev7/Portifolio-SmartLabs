@@ -32,23 +32,74 @@ gsap.registerPlugin(ScrollTrigger);
 
 const BARRAS = 96;
 
-/* Semente fixa: a faixa tem sempre o mesmo espectro. */
+/* Semente fixa: a faixa tem sempre o mesmo espectro. Com Math.random o
+   desenho mudaria a cada remedicao e o olho pega isso como cintilacao. */
 function alturas(n, semente = 1337) {
-  const fora = [];
   let s = semente;
-  for (let i = 0; i < n; i++) {
+  const rnd = () => {
     s = (s * 1664525 + 1013904223) % 4294967296;
-    const base = (s % 1000) / 1000;
+    return s / 4294967296;
+  };
 
-    /* Duas ondas lentas somadas ao sorteio: sozinho, o aleatorio vira
-       ruido uniforme e a faixa fica sem desenho. As senoides dao os
-       agrupamentos altos e baixos que fazem parecer um sinal. */
-    const env = 0.42
-      + 0.30 * Math.sin((i / n) * Math.PI * 3.1)
-      + 0.16 * Math.sin((i / n) * Math.PI * 7.7);
+  /* ── 1 · ruido bruto ──
+     Ponto de partida. Sozinho ele e chuvisco: cada barra ignora a
+     vizinha e a faixa vira uma escova de altura uniforme, sem desenho. */
+  const bruto = Array.from({ length: n }, () => rnd());
 
-    fora.push(Math.max(0.06, Math.min(1, env * (0.55 + base * 0.8))));
+  /* ── 2 · suavizacao ──
+     Media movel de tres. E ela que da CONTINUIDADE — cada barra passa a
+     saber onde a vizinha esta, e o topo da faixa vira uma linha que se
+     pode seguir com o olho, em vez de pontos soltos. Sem este passo nao
+     ha contorno de sinal, so ruido. */
+  const suave = bruto.map((_, i) => {
+    const a = bruto[(i - 1 + n) % n];
+    const b = bruto[i];
+    const c = bruto[(i + 1) % n];
+    return (a + b * 2 + c) / 4;
+  });
+
+  const fora = [];
+  for (let i = 0; i < n; i++) {
+    const t = i / n;
+
+    /* ── 3 · o envelope ──
+       Duas ondas de periodos primos entre si: elas nunca repetem o mesmo
+       par de fases dentro da faixa, entao a forma geral nao parece um
+       padrao ciclico.
+
+       O peso delas e BAIXO de proposito. Com 0.20 e 0.13 o envelope
+       mandava no desenho e a faixa ganhava platos longos — quinze barras
+       altas seguidas, depois quinze baixas. Um sinal nao tem platos:
+       tem eventos. Reduzido, o envelope so inclina o terreno e quem
+       desenha o contorno e o ruido. */
+    const env = 0.22
+      + 0.11 * Math.sin(t * Math.PI * 4.3)
+      + 0.09 * Math.sin(t * Math.PI * 9.7 + 1.7);
+
+    /* ── 4 · os picos ──
+       O que faz o desenho ler como SINAL e a excecao: uma barra em cada
+       nove sobe muito acima das vizinhas. Sem eles o contorno e apenas
+       ondulado; com eles, tem eventos.
+
+       O pico e estreito de proposito — uma barra, nao tres. Alargado,
+       viraria outro morro do envelope em vez de um transiente. */
+    const sorte = rnd();
+    const pico = sorte > 0.86 ? 0.26 + rnd() * 0.32 : 0;
+
+    /* ── 5 · o vale ──
+       O oposto: barras que quase encostam no chao. Sao elas que dao a
+       AMPLITUDE — um sinal que so varia entre 40% e 90% le como textura,
+       nao como leitura. Medido: com -0.20 o vale mais fundo parava em
+       30% da altura e o desenho ficava achatado no terco de baixo. */
+    const vale = sorte < 0.18 ? -0.28 : 0;
+
+    /* 0.72 contra os 0.46 de antes: e o ruido suavizado que passa a
+       mandar na altura de cada barra. E ele que tem a frequencia certa —
+       muda a cada barra ou duas, como o contorno desenhado. */
+    const h = env + suave[i] * 0.72 + pico + vale;
+    fora.push(Math.max(0.04, Math.min(1, h)));
   }
+
   return fora;
 }
 
