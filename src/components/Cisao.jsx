@@ -1,6 +1,9 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useCorpoJusto } from '../hooks/useCorpoJusto';
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
 import Ondas from './Ondas';
+import { GradeRipas, animarRipas } from './Persiana';
 
 /**
  * Cisao — a secao dividida 52/48, em dois atos com a imagem travada.
@@ -60,15 +63,30 @@ export default function Cisao({
      declaracao de cima em vez de fechar embaixo dela. */
   useCorpoJusto(raiz, '.cisao__camada:first-child .cisao__ln, .cisao__ln-a, .cisao__ln-b', { ativo: ehTelefone });
 
+  /* A persiana da imagem. O gatilho e a propria secao, e nao a peca
+     sticky: grudada no topo, ela entra na tela junto com a secao e um
+     gatilho nela dispararia cedo demais. */
+  useGSAP(() => {
+    const img = raiz.current && raiz.current.querySelector('.cisao__imagem');
+    if (!img) return;
+    return animarRipas(img, raiz.current);
+  }, { scope: raiz });
+
   return (
     <section className="cisao" ref={raiz}>
       <div className="cisao__esq">
         {/* a unica peca que gruda */}
+        {/* A mesma persiana das obras da Work: a foto se monta em ripas
+            que recolhem em ordem espalhada. Aqui a grade mora DENTRO da
+            peca sticky, senao ela ficaria parada enquanto a imagem
+            desliza por baixo. */}
         <div
           className="cisao__imagem"
           style={{ backgroundImage: `url(${imagem})` }}
           role="presentation"
-        />
+        >
+          <GradeRipas />
+        </div>
 
         <div className="cisao__fios" aria-hidden="true">
           {Array.from({ length: 7 }, (_, i) => <i key={i} />)}
@@ -84,7 +102,7 @@ export default function Cisao({
             por cima dela, nao como um painel que a substitui. */}
         {palavras && (
           <div className="cisao__marcacao" aria-hidden="true">
-            <ul className="cisao__palavras">
+            <ul className="cisao__palavras" data-anim="stagger">
               {palavras.map((p) => <li key={p}>{p}</li>)}
             </ul>
             <i className="cisao__rec" />
@@ -100,7 +118,7 @@ export default function Cisao({
                 <i className="cisao__ponto" aria-hidden="true" />
               </div>
             )}
-            {declaracao && <p className="cisao__declaracao">{declaracao}</p>}
+            {declaracao && <p className="cisao__declaracao" data-anim="stagger">{declaracao}</p>}
           </div>
 
           {/* As ondas sobem sobre a imagem PRESA e sao elas que
@@ -110,7 +128,7 @@ export default function Cisao({
           <Ondas className="cisao__ondas" gatilho={raiz.current} />
 
           <div className="cisao__camada cisao__camada--dois">
-            {declaracaoDois && <p className="cisao__declaracao">{declaracaoDois}</p>}
+            {declaracaoDois && <p className="cisao__declaracao" data-anim="stagger">{declaracaoDois}</p>}
           </div>
         </div>
       </div>
@@ -118,14 +136,14 @@ export default function Cisao({
       <div className="cisao__dir">
         <div className="cisao__ato">
           <header>
-            {kicker && <span className="cisao__kicker">{kicker}</span>}
-            {linhaMenor && <p className="cisao__menor">{linhaMenor}</p>}
-            {linhaMaior && <h2 className="cisao__maior">{linhaMaior}</h2>}
-            <i className="cisao__regua" aria-hidden="true" />
-            {prosa && <p className="cisao__prosa">{prosa}</p>}
+            {kicker && <span className="cisao__kicker" data-anim="rise">{kicker}</span>}
+            {linhaMenor && <p className="cisao__menor" data-anim="rise">{linhaMenor}</p>}
+            {linhaMaior && <h2 className="cisao__maior" data-anim="stagger">{linhaMaior}</h2>}
+            <i className="cisao__regua" data-anim="line" aria-hidden="true" />
+            {prosa && <p className="cisao__prosa" data-anim="rise">{prosa}</p>}
           </header>
 
-          {rodape && <div className="cisao__rodape">{rodape}</div>}
+          {rodape && <div className="cisao__rodape" data-anim="stagger">{rodape}</div>}
         </div>
 
         {/* O cartao para no topo do segundo ato. Abaixo dele fica vazio
@@ -157,10 +175,10 @@ export function Cartao({ imagem, kicker, titulo, children }) {
           role="presentation"
         />
       )}
-      {kicker && <span className="cisao__kicker">{kicker}</span>}
-      <h3 className="cartao__titulo">{titulo}</h3>
-      <i className="cisao__regua" aria-hidden="true" />
-      <div className="cartao__notas">{children}</div>
+      {kicker && <span className="cisao__kicker" data-anim="rise">{kicker}</span>}
+      <h3 className="cartao__titulo" data-anim="rise">{titulo}</h3>
+      <i className="cisao__regua" data-anim="line" aria-hidden="true" />
+      <div className="cartao__notas" data-anim="stagger">{children}</div>
     </article>
   );
 }

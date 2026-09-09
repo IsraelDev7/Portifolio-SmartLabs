@@ -1018,6 +1018,10 @@ h3 {
   background-size: cover;
   background-position: center;
   filter: grayscale(100%) brightness(0.5);
+  /* Contem a grade da persiana: as ripas sangram -0.5px para nao deixar
+     fio da foto piscando entre elas, e a ultima vazava meio pixel pela
+     direita — 409 de documento contra 408 de tela. */
+  overflow: hidden;
 }
 
 /* Sobe -100vh para cobrir a imagem e gruda junto com ela. */
