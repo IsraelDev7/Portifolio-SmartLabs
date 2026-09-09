@@ -3554,41 +3554,16 @@ h3 {
     pointer-events: none;
   }
 
-  /* ── o selo vira texto sobre a foto ──
-     Ele era um painel escuro com fundo proprio, e um retangulo opaco por
-     cima da imagem esconde justamente o que a imagem tinha para dizer.
-     Na referencia nao ha painel: o texto pousa direto sobre a foto, em
-     branco, e a legibilidade vem da sombra. */
+  /* ── o selo sai do telefone ──
+     Ele repetia, em corpo pequeno, os mesmos quatro rotulos que a coluna
+     de palavras ja mostra sobre a imagem — e ocupava justamente a faixa
+     onde a declaracao precisa crescer. Os pares continuam no painel da
+     direita, onde ha espaco para eles. */
   .cisao__selo {
-    position: static !important;
-    background: none !important;
-    border: none !important;
-    padding: 0 !important;
-    margin: 0 0 var(--space-3);
-    display: block;
+    display: none !important;
   }
 
-  .cisao__selo .cisao__item {
-    display: block;
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: 1.32rem;
-    line-height: 1.16;
-    letter-spacing: -0.045em;
-    text-transform: uppercase;
-    color: var(--cal);
-    text-shadow: 0 2px 16px rgba(10, 10, 10, 0.9);
-    margin-bottom: 0.34rem;
-  }
 
-  /* O rotulo em Solda continua marcando o comeco de cada par, mas agora
-     como parte da mesma linha grande — nao como etiqueta de um painel. */
-  .cisao__selo .cisao__item b {
-    display: block;
-    color: var(--solda);
-    font-size: 0.62em;
-    letter-spacing: 0.02em;
-  }
 
   /* O ponto do selo sai: ele existia para marcar o canto do painel que
      acabou de deixar de existir. */
@@ -3655,19 +3630,46 @@ h3 {
   /* Uma tela por camada — nao mais que isso. O desenho de tela larga
      usava a mesma medida, mas somava a altura da imagem por baixo; aqui
      a imagem esta presa e as duas camadas SAO o percurso. */
+  /* A primeira camada ancora no ALTO da imagem, nao na base: e ali que
+     fica o espaco livre da foto, e e o bloco de texto grande que precisa
+     dele. A segunda continua embaixo, esperando as ondas. */
   .cisao__camada {
     min-height: 100vh;
-    padding: 0 0 26vh;
-    justify-content: flex-end;
+    padding: 13vh 0 0;
+    justify-content: flex-start;
   }
 
-  .cisao__camada--dois { padding-bottom: 12vh; }
+  /* 4vh e nao 14: o padding maior deixava 125px de fundo liso entre o
+     "APIs. Sistemas." e o fim da coluna — o retangulo riscado no print. */
+  .cisao__camada--dois {
+    padding: 0 0 4vh;
+    justify-content: flex-end;
+  }
 
   /* A coluna mede as duas camadas, e e essa altura que define quanto
      tempo a imagem fica presa. */
   .cisao__esq { position: relative; }
 
-  .cisao__ondas { height: 42vh; }
+  /* ── as ondas ──
+     Comecam logo abaixo do bloco de texto e se estendem ate a faixa da
+     segunda declaracao. `top` no lugar de `bottom` porque o que define
+     onde elas nascem e o fim do texto de cima, nao a base da coluna —
+     ancoradas embaixo, elas mudavam de lugar toda vez que a altura das
+     camadas mudava. */
+  /* `.cisao .cisao__ondas` e nao so `.cisao__ondas`: o bloco base
+     `.ondas { height: 34vh }` mora mais adiante no arquivo, e com a
+     mesma especificidade a ultima regra vence — a faixa ficava presa em
+     305px por mais que eu escrevesse 116vh aqui. */
+  .cisao .cisao__ondas {
+    /* Medido: o bloco de texto de cima termina em 373px do topo da
+       coluna, e o de baixo em 1756. A faixa cobre esse intervalo —
+       comeca logo abaixo de um e alcanca o outro. 45vh = 403px de
+       inicio, 152vh = 1362px de altura. Com 62vh ela nascia 370px
+       depois do texto, e o intervalo ficava com um trecho morto. */
+    top: 45vh;
+    bottom: auto;
+    height: 152vh;
+  }
 
   /* Os 52px da referencia valem para as frases DELA. As nossas tem o
      dobro de caracteres — "Experiencia e interface." pede 33px para

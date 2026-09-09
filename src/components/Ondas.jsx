@@ -73,9 +73,17 @@ export default function Ondas({ className = '', gatilho }) {
       start: 'top top',
       end: 'bottom bottom',
       scrub: 0.4,
+      /* Parte de ZERO: o CSS ja posiciona a faixa exatamente entre os
+         dois textos, e qualquer deslocamento inicial a tira dali. Medido
+         com yPercent 18: ela nascia 245px abaixo do lugar, e o intervalo
+         entre as declaracoes ficava com um trecho sem sinal.
+
+         Sobe 30% da propria altura ao longo do percurso — o bastante
+         para a faixa varrer e descobrir o texto de baixo sem se afastar
+         tanto que deixe a base da coluna descoberta. */
       animation: gsap.fromTo(el,
-        { yPercent: 12 },
-        { yPercent: -104, ease: 'none' }),
+        { yPercent: 0 },
+        { yPercent: -30, ease: 'none' }),
       invalidateOnRefresh: false,
     });
 

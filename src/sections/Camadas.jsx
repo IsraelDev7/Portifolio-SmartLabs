@@ -41,7 +41,16 @@ export default function Camadas() {
            proprio corpo para encher a largura, e isso exige que cada uma
            seja um elemento. Em tela larga eles voltam a ser inline e o
            desenho e o de sempre. */
-        declaracao={<><span className="cisao__ln">Experiência e interface.</span><span className="cisao__ln">Lógica e funcionamento.</span></>}
+        /* Quatro linhas, nao duas: e assim que a referencia enche o
+           bloco — cinco linhas de corpos diferentes, cada uma medindo a
+           largura toda. Com duas linhas longas os corpos ficavam
+           pequenos e o texto nao ocupava o espaco. */
+        declaracao={<>
+          <span className="cisao__ln">Experiência</span>
+          <span className="cisao__ln">e interface.</span>
+          <span className="cisao__ln">Lógica e</span>
+          <span className="cisao__ln">funcionamento.</span>
+        </>}
 
         /* vermelho — o cabecalho no painel da direita */
         kicker="Development"
@@ -61,7 +70,11 @@ export default function Camadas() {
 
         /* segundo ato: a declaracao troca por fade enquanto a imagem
            continua parada, e o cartao sobe do lado direito */
-        declaracaoDois={<><span className="cisao__ln">Front-end. Back-end.</span><span className="cisao__ln">APIs. Sistemas.</span></>}
+        declaracaoDois={<>
+          <span className="cisao__ln">Front-end.</span>
+          <span className="cisao__ln">Back-end.</span>
+          <span className="cisao__ln">APIs. Sistemas.</span>
+        </>}
 
         cartao={
           <Cartao
