@@ -3513,7 +3513,10 @@ h3 {
     min-width: 0;
   }
 
-  .cisao__imagem,
+  /* A imagem NAO entra aqui: ela precisa continuar presa para dar
+     percurso as ondas. Foi este `!important`, escrito quando eu ainda
+     estava desligando toda trava do telefone, que a deixava com altura
+     zero — a regra vencia a que a declara sticky mais abaixo. */
   .cisao__fios,
   .cisao__selo {
     position: relative !important;
@@ -3521,11 +3524,19 @@ h3 {
     height: auto !important;
   }
 
-  /* ── a imagem ──
-     627px de altura na referencia, numa tela de 414: proporcao 1:1.51.
-     Largura cheia, sem recuo — e a peca que ancora a secao. */
+  /* ── a imagem trava ──
+     Ela volta a ser `sticky` no telefone: e a trava que da percurso para
+     as ondas subirem e descobrirem o segundo texto. Sem ela nao ha o que
+     percorrer — a faixa apareceria e sumiria no mesmo quadro.
+
+     O que gerava o vazio riscado nao era a trava, era a soma das
+     camadas: elas herdavam `min-height: 100vh` do desenho de tela larga
+     e somavam 1026px sobre uma imagem de 618. Agora a imagem ocupa a
+     tela inteira durante todo o percurso, e nao sobra fundo liso. */
   .cisao__imagem {
-    aspect-ratio: 414 / 627;
+    position: sticky;
+    top: 0;
+    height: 100vh;
     width: 100%;
   }
 
@@ -3539,9 +3550,49 @@ h3 {
     position: absolute;
     top: 59px;      /* medido: 10866 - 10807 */
     left: 20px;
-    z-index: 3;
+    z-index: 4;
     pointer-events: none;
   }
+
+  /* ── o selo vira texto sobre a foto ──
+     Ele era um painel escuro com fundo proprio, e um retangulo opaco por
+     cima da imagem esconde justamente o que a imagem tinha para dizer.
+     Na referencia nao ha painel: o texto pousa direto sobre a foto, em
+     branco, e a legibilidade vem da sombra. */
+  .cisao__selo {
+    position: static !important;
+    background: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 0 var(--space-3);
+    display: block;
+  }
+
+  .cisao__selo .cisao__item {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.32rem;
+    line-height: 1.16;
+    letter-spacing: -0.045em;
+    text-transform: uppercase;
+    color: var(--cal);
+    text-shadow: 0 2px 16px rgba(10, 10, 10, 0.9);
+    margin-bottom: 0.34rem;
+  }
+
+  /* O rotulo em Solda continua marcando o comeco de cada par, mas agora
+     como parte da mesma linha grande — nao como etiqueta de um painel. */
+  .cisao__selo .cisao__item b {
+    display: block;
+    color: var(--solda);
+    font-size: 0.62em;
+    letter-spacing: 0.02em;
+  }
+
+  /* O ponto do selo sai: ele existia para marcar o canto do painel que
+     acabou de deixar de existir. */
+  .cisao__ponto { display: none; }
 
   .cisao__palavras {
     list-style: none;
@@ -3584,14 +3635,39 @@ h3 {
     79%     { opacity: 1; }
   }
 
-  /* ── a declaracao sobre a base da imagem ──
-     Na referencia o titulo de 52px comeca 50px ANTES de a imagem
-     terminar: ele monta sobre a base dela e continua abaixo. E essa
-     sobreposicao que costura as duas metades — parando depois da foto,
-     viraria uma legenda. */
-  .cisao__textos { position: relative; z-index: 2; }
+  /* ── o vazio que sobrava ──
+     Cada camada herdava `min-height: 100vh` do desenho de tela larga:
+     duas delas somavam 1026px enquanto a imagem tinha 618, e os 488px
+     de diferenca eram fundo liso. Agora a altura vem do conteudo.
 
-  .cisao__camada { margin-top: -50px; }
+     A primeira camada sobe 50px sobre a base da imagem, como na
+     referencia; a segunda fica presa ao rodape da coluna, que e onde as
+     ondas a descobrem. */
+  /* Os textos sobem por cima da imagem presa. `-100vh` os traz para a
+     mesma faixa dela sem somar altura a secao. */
+  .cisao__textos {
+    position: relative;
+    margin-top: -100vh;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  /* Uma tela por camada — nao mais que isso. O desenho de tela larga
+     usava a mesma medida, mas somava a altura da imagem por baixo; aqui
+     a imagem esta presa e as duas camadas SAO o percurso. */
+  .cisao__camada {
+    min-height: 100vh;
+    padding: 0 0 26vh;
+    justify-content: flex-end;
+  }
+
+  .cisao__camada--dois { padding-bottom: 12vh; }
+
+  /* A coluna mede as duas camadas, e e essa altura que define quanto
+     tempo a imagem fica presa. */
+  .cisao__esq { position: relative; }
+
+  .cisao__ondas { height: 42vh; }
 
   /* Os 52px da referencia valem para as frases DELA. As nossas tem o
      dobro de caracteres — "Experiencia e interface." pede 33px para
@@ -3993,4 +4069,40 @@ html { scrollbar-gutter: stable; }
 
 @media (prefers-reduced-motion: reduce) {
   .mmv__ponto { transition: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ONDAS — o espectro que sobe sobre a imagem presa
+   ═══════════════════════════════════════════════════════════ */
+
+.ondas {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 34vh;
+  display: flex;
+  align-items: flex-end;
+  gap: 1px;
+  padding: 0 2px;
+  pointer-events: none;
+  z-index: 3;
+  will-change: transform;
+  /* Desbota para cima: sem a mascara a faixa termina num corte reto que
+     denuncia o retangulo. Com ela, o sinal se dissolve no ar. */
+  -webkit-mask-image: linear-gradient(to top, #000 8%, rgba(0,0,0,0.85) 42%, transparent 100%);
+  mask-image: linear-gradient(to top, #000 8%, rgba(0,0,0,0.85) 42%, transparent 100%);
+}
+
+.ondas i {
+  flex: 1 1 0;
+  min-width: 0;
+  background: var(--cal);
+  /* Barra de sinal nao tem canto: o topo reto e o que faz parecer
+     medicao, e nao gota. */
+  border-radius: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ondas { transform: none !important; }
 }

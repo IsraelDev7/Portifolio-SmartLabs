@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useCorpoJusto } from '../hooks/useCorpoJusto';
+import Ondas from './Ondas';
 
 /**
  * Cisao — a secao dividida 52/48, em dois atos com a imagem travada.
@@ -99,7 +100,13 @@ export default function Cisao({
             {declaracao && <p className="cisao__declaracao">{declaracao}</p>}
           </div>
 
-          <div className="cisao__camada">
+          {/* As ondas sobem sobre a imagem PRESA e sao elas que
+              descobrem a segunda declaracao. Ficam entre as duas
+              camadas: saem de baixo da primeira e param quando a
+              segunda ja esta no lugar. */}
+          <Ondas className="cisao__ondas" gatilho={raiz.current} />
+
+          <div className="cisao__camada cisao__camada--dois">
             {declaracaoDois && <p className="cisao__declaracao">{declaracaoDois}</p>}
           </div>
         </div>
