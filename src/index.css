@@ -3484,7 +3484,12 @@ h3 {
     border-bottom: 1px solid #222;
   }
 
-  .meia--figura { min-height: 62vw !important; }
+  /* `height` e nao `min-height`: o Mosaico dentro dela pede 80% de uma
+     altura DEFINIDA, e min-height e um piso, nao uma altura. */
+  .meia--figura {
+    min-height: 0 !important;
+    height: 78vw !important;
+  }
 
   /* ── a cisao ──
      Era `display:flex` com metades de 52/48 e TRES sticky dentro
@@ -3544,10 +3549,15 @@ h3 {
   /* ── a galeria de cinco camadas ──
      Ja tratada no bloco .sede; aqui so o Mosaico da secao 2, que era
      `width:70%` de uma metade que agora ocupa a tela inteira. */
-  .meia--figura .mosaico {
-    width: 86% !important;
-    height: auto !important;
-  }
+  /* So a largura. A altura fica com o `height: 80%` que vem do JSX:
+     o filho que carrega a foto tem `height: 100%`, e 100% de `auto`
+     resolve para ZERO — foi o que apagou a imagem do homem de costas.
+     Medido no defeito: mosaico com 351x0 e o canvas parado em 300x150,
+     o padrao do HTML, sinal de que `medir()` nunca rodou com caixa util.
+
+     O mesmo motivo pelo qual `min-height` nao substitui `height` na
+     galeria: porcentagem so resolve contra altura definida. */
+  .meia--figura .mosaico { width: 86% !important; }
 
   /* ── folga do rodape ──
      O botao do menu mora no canto inferior direito. Sem esta reserva
