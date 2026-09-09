@@ -3657,46 +3657,15 @@ h3 {
 
   /* ── o fecho, sobre as ondas ──
      Em Cal ele desaparecia: as barras sao Cal, e texto claro sobre campo
-     claro nao tem contraste nenhum. Em Aco ele volta a ler — mas so
-     onde HA barra. Entre uma barra e outra aparece a foto escura, e ali
-     o texto escuro sumiria de novo.
+     claro nao tem contraste nenhum. Em Aco ele le contra as barras.
 
-     Dai a nevoa: uma mancha clara e difusa por tras do bloco, que fecha
-     os vaos entre as barras e da ao texto um campo continuo para pousar.
-     Sem ela, cada letra ficaria legivel em faixas e invisivel em outras,
-     ao acaso do espectro. */
+     Sobe para z-index 4 — acima das ondas (1) e do resto da camada de
+     textos (2). Sem fundo por tras: o contraste vem so da cor. */
   .cisao__camada--dois {
     position: relative;
+    z-index: 4;
   }
 
-  .cisao__camada--dois::before {
-    content: "";
-    position: absolute;
-    /* Sem sangrar na horizontal: `right: -14%` empurrava a pagina e
-       criava scroll lateral. O esfumacado vem do proprio gradiente, que
-       termina transparente bem antes da borda — nao e preciso o
-       elemento ser maior que a caixa para a nevoa nao ter aresta.
-
-       Na vertical o sangramento continua: ali nao ha barra de rolagem
-       para estourar, e a mancha precisa passar do texto para cobrir os
-       vaos entre as barras acima e abaixo dele. */
-    left: 0;
-    right: 0;
-    top: -16%;
-    bottom: -30%;
-    background: radial-gradient(
-      ellipse 96% 66% at 50% 56%,
-      var(--cal) 0%,
-      rgba(245, 240, 232, 0.94) 34%,
-      rgba(245, 240, 232, 0.62) 58%,
-      rgba(245, 240, 232, 0) 84%
-    );
-    /* Atras do texto, na frente das ondas: `-1` resolve dentro do
-       contexto de empilhamento de `.cisao__textos` (z-index 2), entao a
-       nevoa nao desce ate a camada das barras (z-index 1). */
-    z-index: -1;
-    pointer-events: none;
-  }
 
   /* Corpo fixo, fora da medicao: e o fecho do ato. */
   .cisao__camada--dois .cisao__ln {
