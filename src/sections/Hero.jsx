@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
@@ -6,11 +6,27 @@ import PlateButton from '../components/PlateButton';
 import { useDeriva } from '../hooks/useDeriva';
 import Letras from '../components/Letras';
 import './Hero.css';
+import { useCorpoJusto } from '../hooks/useCorpoJusto';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Hero() {
   const container = useRef(null);
+
+  /* O corpo das linhas do heroi e MEDIDO, nao fixado: ver useCorpoJusto.
+     So no telefone — em tela larga a headline tem o desenho de sempre,
+     com quebra natural. */
+  const [ehTelefone, setEhTelefone] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(max-width: 560px)').matches
+  );
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 560px)');
+    const ao = (e) => setEhTelefone(e.matches);
+    mq.addEventListener('change', ao);
+    return () => mq.removeEventListener('change', ao);
+  }, []);
+
+  useCorpoJusto(container, '.hh, .marca-movel__linha', { ativo: ehTelefone });
 
   /* Deriva: cada peca anda uma fracao do scroll, e a divergencia entre
      elas — nao a velocidade — e o que da a sensacao de camadas.

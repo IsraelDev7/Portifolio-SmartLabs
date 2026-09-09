@@ -427,8 +427,12 @@
   /* Medidos para render exatos 374px de largura em 414px de tela. Em vw
      para acompanharem telas vizinhas sem perder a justificacao:
      121/414 = 29.2vw e 167/414 = 40.3vw. */
-  .marca-movel__linha--a { font-size: 29.2vw; }
-  .marca-movel__linha--b { font-size: 40.3vw; }
+  /* Sem corpo fixo aqui: o useCorpoJusto mede e escreve o valor. Os
+     numeros abaixo sao so o ponto de partida do primeiro quadro, antes
+     de a medicao rodar — se ficarem muito longe, a linha pisca de
+     tamanho ao assentar. */
+  .marca-movel__linha--a { font-size: 29vw; }
+  .marca-movel__linha--b { font-size: 40vw; }
 
   /* ── 2 · a grade de fases volta ──
      Estava com `display:none` na versao anterior desta media query. Ela
@@ -438,14 +442,22 @@
      absolutos: com o container deslocado, os dois valores SOMAVAM e os
      numeros iam parar em 627px — depois da palavra, quando na referencia
      eles vem antes dela. */
+  /* `space-between` empurrava a QUARTA linha para a borda direita, e o
+     numero dela (que fica 6px a direita da linha) parava em x 393 numa
+     tela de 414 — encostado, e cortado quando o texto e mais largo. Na
+     referencia as quatro linhas marcam o INICIO de quatro colunas
+     iguais, e a ultima sobra quase 90px ate a borda. */
   .hero-grid {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
     top: 0;
     height: 100%;
     width: 100%;
     padding: 0 var(--content-padding);
     z-index: 2;
   }
+
+  .grid-line { justify-self: start; }
 
   .grid-line { background: transparent; }
 
@@ -506,9 +518,10 @@
     white-space: nowrap;
   }
 
-  .hh--1 { font-size: 16.7vw; }
-  .hh--2 { font-size: 15.7vw; }
-  .hh--3 { font-size: 10.6vw; }
+  /* Idem: valores de partida. O corpo final vem da medicao. */
+  .hh--1 { font-size: 16.5vw; }
+  .hh--2 { font-size: 15.5vw; }
+  .hh--3 { font-size: 10.5vw; }
 
   /* Sai do heroi no telefone. A referencia vai direto da headline para
      a assinatura, e no nosso orcamento vertical estes tres periodos sao
@@ -526,6 +539,12 @@
 
   /* ── 6 · o rodape do heroi ── */
   .hero-block-bottom { margin-top: auto; }
+
+  /* O bloco desce sem mexer no fluxo: `translateY` no lugar de margem
+     porque o `.hero-block-bottom` esta ancorado no rodape — crescer a
+     caixa dele empurraria o botao para fora da tela em vez de descer a
+     lista. Assim a lista se afasta das fases e o botao fica onde esta. */
+  .hero-services-layout { transform: translateY(28px); }
 
   .hero-services-index { font-size: 0.6rem; }
 

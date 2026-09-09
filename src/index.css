@@ -3453,178 +3453,6 @@ h3 {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   MENU MOVEL — a navegacao em arco, no canto do polegar
-   ═══════════════════════════════════════════════════════════
-
-   So existe abaixo de 820px. Acima disso a barra do topo da conta dos
-   quatro links com folga, e um segundo ponto de navegacao flutuando na
-   tela seria ruido. */
-
-.mmv { display: none; }
-
-@media (max-width: 820px) {
-  .mmv {
-    display: block;
-    position: fixed;
-    /* env(safe-area-inset-*) e o que mantem o botao acima da barra de
-       gestos do iPhone. Sem isso ele fica exatamente onde o sistema
-       captura o swipe de "voltar ao inicio", e metade dos toques vira
-       um gesto do SO em vez de um clique no menu. */
-    right: calc(20px + env(safe-area-inset-right, 0px));
-    bottom: calc(20px + env(safe-area-inset-bottom, 0px));
-    z-index: 200;   /* acima da navbar (100) */
-  }
-
-  /* ── o veu ── */
-  .mmv__veu {
-    position: fixed;
-    inset: 0;
-    background: rgba(10, 10, 10, 0.82);
-    backdrop-filter: blur(3px);
-    opacity: 0;
-    visibility: hidden;
-    /* O veu e filho de um elemento no canto; sem sair do fluxo com
-       inset:0 ele cobriria so o proprio botao. */
-  }
-
-  /* ── o gatilho ── */
-  .mmv__botao {
-    position: relative;
-    z-index: 2;
-    /* 56px: acima dos 44 da WCAG 2.5.5. Aqui nao ha desconto de
-       hover — este alvo so existe onde a entrada e o dedo. */
-    width: 56px;
-    height: 56px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--cal);
-    border: none;
-    border-radius: 0;
-    cursor: pointer;
-    padding: 0;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  /* ── as tres barras que viram X ── */
-  .mmv__glifo {
-    position: relative;
-    display: block;
-    width: 22px;
-    height: 14px;
-  }
-
-  .mmv__glifo i {
-    position: absolute;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background: var(--aco);
-    transition: transform .32s cubic-bezier(0.16, 1, 0.3, 1),
-                opacity .18s linear;
-  }
-
-  .mmv__glifo i:nth-child(1) { top: 0; }
-  .mmv__glifo i:nth-child(2) { top: 6px; }
-  .mmv__glifo i:nth-child(3) { top: 12px; }
-
-  /* As barras de fora giram sobre a do meio, que some. Rotacionar as
-     tres deixaria um risco atravessado no cruzamento do X. */
-  .mmv__botao--aberto .mmv__glifo i:nth-child(1) { transform: translateY(6px) rotate(45deg); }
-  .mmv__botao--aberto .mmv__glifo i:nth-child(2) { opacity: 0; }
-  .mmv__botao--aberto .mmv__glifo i:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
-
-  /* ── a orbita ──
-     Ancorada no CENTRO do botao: os itens recebem x/y do GSAP em pixels
-     relativos a este ponto, entao a conta do arco nao precisa saber
-     onde o botao esta na tela. */
-  .mmv__orbita {
-    position: absolute;
-    right: 28px;    /* metade do botao */
-    bottom: 28px;
-    width: 0;
-    height: 0;
-    z-index: 1;
-  }
-
-  .mmv__item {
-    position: absolute;
-    /* translate(-50%,-50%) no CSS, deslocamento no GSAP: o GSAP escreve
-       transform e sobrescreveria o translate se ele morasse la. Com
-       margin negativa o centro do item cai no ponto do arco sem disputar
-       a mesma propriedade. */
-    left: 0;
-    top: 0;
-    margin: -26px 0 0 -26px;
-    width: 52px;
-    height: 52px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    background: var(--grafite);
-    border: 1px solid rgba(245, 240, 232, 0.20);
-    text-decoration: none;
-    opacity: 0;
-    visibility: hidden;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  .mmv__item--ativo {
-    border-color: var(--solda);
-    background: var(--chapa);
-  }
-
-  /* As tres barrinhas do monograma, em miniatura */
-  .mmv__marca {
-    display: flex;
-    align-items: flex-end;
-    gap: 2px;
-    height: 11px;
-  }
-
-  .mmv__marca i {
-    width: 3px;
-    background: var(--fumaca);
-    transition: background .2s linear;
-  }
-  .mmv__marca i:nth-child(1) { height: 5px; }
-  .mmv__marca i:nth-child(2) { height: 8px; }
-  .mmv__marca i:nth-child(3) { height: 11px; }
-
-  .mmv__item--ativo .mmv__marca i { background: var(--solda); }
-
-  /* O rotulo sai da caixa: "THOUGHTS" nao cabe dentro de 52px sem
-     encolher a fonte a ponto de nao se ler. Fora, ele pode ser mais
-     largo que o alvo sem obrigar o alvo a crescer. */
-  .mmv__rotulo {
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    margin-top: 6px;
-    font-family: var(--font-mono);
-    font-size: 0.56rem;
-    letter-spacing: 0.08em;
-    color: var(--cal);
-    white-space: nowrap;
-  }
-
-  .mmv__item--ativo .mmv__rotulo { color: var(--solda); }
-
-  /* ── a barra do topo perde os links ──
-     O logo fica: e a ancora para a home e a assinatura da marca. Os
-     quatro links saem porque somavam 482px numa tela de 375 — a origem
-     do scroll horizontal da pagina inteira. */
-  .nav-links-desktop { display: none !important; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .mmv__glifo i { transition: none; }
-}
-
-/* ═══════════════════════════════════════════════════════════
    MOBILE — o que a pagina precisa desfazer abaixo de 820px
    ═══════════════════════════════════════════════════════════
 
@@ -3786,4 +3614,165 @@ h3 {
    duplicata nao apareca cortada ao lado dela. */
 @media (prefers-reduced-motion: reduce) {
   .esteira__tira { transform: none !important; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MENU MOVEL — painel em vidro, sobre a leitura da referencia
+   ═══════════════════════════════════════════════════════════
+
+   Medido no DOM da vertical.framer.media em 414x896: itens em lista
+   vertical alinhada A DIREITA (todos terminando no mesmo x), 42px, 54px
+   entre linhas; abaixo de uma regua, os secundarios em 24px. O fundo e a
+   propria pagina desfocada.
+
+   So existe abaixo de 820px: acima disso a barra do topo da conta dos
+   links, e um segundo ponto de navegacao seria ruido. */
+
+.mmv { display: none; }
+
+/* Trava a pagina enquanto o painel esta aberto. Sem isto o dedo que
+   arrasta sobre o menu rola o conteudo por tras, e ao fechar a pagina
+   esta noutro lugar. */
+.mmv-travado, .mmv-travado body { overflow: hidden; }
+
+@media (max-width: 820px) {
+
+  .mmv { display: block; }
+
+  /* ── o gatilho ──
+     No canto SUPERIOR direito, como na referencia. E onde o olho procura
+     o menu, e aqui o alvo nao disputa espaco com o botao de contato que
+     fica no rodape do heroi. */
+  .mmv__botao {
+    position: fixed;
+    top: calc(14px + env(safe-area-inset-top, 0px));
+    right: calc(14px + env(safe-area-inset-right, 0px));
+    z-index: 220;
+    width: 46px;
+    height: 46px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Os dois circulos nascem sobrepostos: no repouso sao um so ponto.
+     `position:absolute` para poderem ocupar o mesmo lugar sem que o
+     layout os empurre um do outro. */
+  .mmv__ponto {
+    position: absolute;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: var(--cal);
+    will-change: transform;
+  }
+
+  /* ── o vidro ──
+     `backdrop-filter` no lugar de um fundo opaco: a pagina continua
+     visivel por tras, desfocada, que e o que a referencia faz. O tom
+     escuro por cima e o que garante o contraste do texto branco — so o
+     blur nao basta sobre uma foto clara. */
+  .mmv__veu {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: rgba(10, 10, 10, 0.72);
+    backdrop-filter: blur(18px) saturate(0.8);
+    -webkit-backdrop-filter: blur(18px) saturate(0.8);
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  /* Sem suporte a backdrop-filter, o fundo fecha de vez: um veu
+     translucido sobre a pagina nitida deixaria o texto ilegivel. */
+  @supports not (backdrop-filter: blur(1px)) {
+    .mmv__veu { background: rgba(10, 10, 10, 0.96); }
+  }
+
+  /* ── o painel ── */
+  .mmv__painel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 210;
+    width: 100%;
+    padding: calc(84px + env(safe-area-inset-top, 0px)) 24px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;   /* a lista alinhada a direita, como la */
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .mmv__painel > * { pointer-events: auto; }
+
+  .mmv__principais,
+  .mmv__secundarios {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    width: 100%;
+  }
+
+  .mmv__item {
+    display: block;
+    text-align: right;
+    text-decoration: none;
+    color: var(--cal);
+    font-family: var(--font-display);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: -0.04em;
+    /* 42px na referencia; aqui em vw para acompanhar telas vizinhas.
+       42/414 = 10.1vw. */
+    font-size: clamp(1.9rem, 10.1vw, 2.9rem);
+    line-height: 1.28;       /* 54px de passo em 42px de corpo */
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .mmv__item--menor {
+    font-size: clamp(1.05rem, 5.8vw, 1.6rem);
+    line-height: 1.5;
+    color: var(--fumaca);
+  }
+
+  .mmv__item--ativo { color: var(--solda); }
+
+  /* A mascara mora no span, nao no <a>: o link precisa manter a altura
+     inteira da linha como area de toque enquanto o texto e descoberto. */
+  .mmv__linha {
+    display: block;
+    clip-path: inset(0% 0% 100% 0%);
+    will-change: clip-path, transform;
+  }
+
+  /* A regua que separa os dois grupos, como na referencia. Cresce da
+     direita para a esquerda — do lado onde o texto esta ancorado. */
+  .mmv__regua {
+    display: block;
+    width: 62%;
+    height: 1px;
+    margin: 18px 0;
+    background: var(--cal);
+    transform: scaleX(0);
+    transform-origin: right center;
+  }
+
+  /* ── a barra do topo perde os links ──
+     Os quatro somavam 482px numa tela de 375 e eram a origem do scroll
+     horizontal da pagina inteira. */
+  .nav-links-desktop { display: none !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mmv__ponto { transition: none; }
 }
