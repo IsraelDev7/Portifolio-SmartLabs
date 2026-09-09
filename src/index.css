@@ -3632,7 +3632,18 @@ h3 {
 
 /* Trava a pagina enquanto o painel esta aberto. Sem isto o dedo que
    arrasta sobre o menu rola o conteudo por tras, e ao fechar a pagina
-   esta noutro lugar. */
+   esta noutro lugar.
+
+   `scrollbar-gutter: stable` reserva a calha da barra de rolagem para o
+   conteudo nao saltar lateralmente quando ela aparece e some entre
+   paginas de alturas diferentes. Medido: NAO impede o salto ao travar o
+   menu, porque a spec so honra `stable` com overflow scroll ou auto, e
+   aqui o overflow vira hidden. Fica pelo beneficio na navegacao normal.
+
+   O salto ao abrir o menu e inofensivo na pratica — conferido: o corpo
+   das linhas do heroi continua em 368px, sem reajuste visivel. */
+html { scrollbar-gutter: stable; }
+
 .mmv-travado, .mmv-travado body { overflow: hidden; }
 
 @media (max-width: 820px) {
@@ -3665,10 +3676,14 @@ h3 {
   /* Os dois circulos nascem sobrepostos: no repouso sao um so ponto.
      `position:absolute` para poderem ocupar o mesmo lugar sem que o
      layout os empurre um do outro. */
+  /* 26px no repouso — o circulo do print. Aberto ele encolhe para ~9px
+     (ESCALA_ABERTO no componente), que e o tamanho dos dois pontos da
+     referencia. Um circulo grande virando dois pequenos le como divisao;
+     dois do mesmo tamanho se afastando leriam como duplicacao. */
   .mmv__ponto {
     position: absolute;
-    width: 13px;
-    height: 13px;
+    width: 26px;
+    height: 26px;
     border-radius: 50%;
     background: var(--cal);
     will-change: transform;
@@ -3679,21 +3694,54 @@ h3 {
      visivel por tras, desfocada, que e o que a referencia faz. O tom
      escuro por cima e o que garante o contraste do texto branco — so o
      blur nao basta sobre uma foto clara. */
+  /* ── a barra que vira cortina ──
+     Este elemento e as duas coisas: recortado a 64px do topo, e a barra
+     translucida que fica sobre a pagina o tempo todo; recortado ate o
+     rodape, e o fundo do menu. Abrir o menu e so descer o recorte.
+
+     Fazer disso um elemento so, em vez de barra + veu separados, e o que
+     garante que a cortina saia exatamente de onde a barra termina — dois
+     elementos precisariam concordar sobre essa altura, e divergiriam no
+     dia em que uma das duas mudasse.
+
+     `visibility: visible` e opacidade cheia no repouso: o que esconde o
+     resto e o clip-path, nao a opacidade. */
   .mmv__veu {
     position: fixed;
     inset: 0;
     z-index: 200;
-    background: rgba(10, 10, 10, 0.72);
-    backdrop-filter: blur(18px) saturate(0.8);
-    -webkit-backdrop-filter: blur(18px) saturate(0.8);
-    opacity: 0;
-    visibility: hidden;
+    background: rgba(10, 10, 10, 0.55);
+    backdrop-filter: blur(9px) saturate(0.85);
+    -webkit-backdrop-filter: blur(9px) saturate(0.85);
+    opacity: 1;
+    visibility: visible;
+    clip-path: inset(0px 0px calc(100% - 64px) 0px);
+    /* No repouso a barra nao intercepta toque: o logo mora debaixo dela. */
+    pointer-events: none;
+  }
+
+  .mmv-travado .mmv__veu { pointer-events: auto; }
+
+  /* O fio que fecha a barra por baixo. Como e filho do proprio veu, ele
+     desce junto com a cortina e vira a borda inferior da tela — sem
+     precisar de uma segunda animacao para acompanha-lo. */
+  .mmv__veu::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 64px;
+    height: 1px;
+    background: rgba(245, 240, 232, 0.16);
   }
 
   /* Sem suporte a backdrop-filter, o fundo fecha de vez: um veu
      translucido sobre a pagina nitida deixaria o texto ilegivel. */
   @supports not (backdrop-filter: blur(1px)) {
-    .mmv__veu { background: rgba(10, 10, 10, 0.96); }
+    /* Sem blur, so o tom escuro segura o contraste — e ele precisa ser
+       bem mais forte. A barra em repouso fica mais presente, o que e
+       preferivel a um menu ilegivel. */
+    .mmv-travado .mmv__veu { background: rgba(10, 10, 10, 0.96); }
   }
 
   /* ── o painel ── */
@@ -3771,6 +3819,16 @@ h3 {
      Os quatro somavam 482px numa tela de 375 e eram a origem do scroll
      horizontal da pagina inteira. */
   .nav-links-desktop { display: none !important; }
+
+  /* ── o logo nao some quando o menu abre ──
+     Ele sobe para cima da cortina e continua ali, como na referencia,
+     onde "vertical" acompanha o menu aberto. O `mix-blend-mode:
+     difference` da barra e desligado: sobre o escuro da cortina ele
+     inverteria o logo para um cinza sujo. */
+  .mmv-travado nav {
+    z-index: 215 !important;
+    mix-blend-mode: normal !important;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

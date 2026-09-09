@@ -7,6 +7,7 @@ import { useDeriva } from '../hooks/useDeriva';
 import Letras from '../components/Letras';
 import './Hero.css';
 import { useCorpoJusto } from '../hooks/useCorpoJusto';
+import { aposCortina } from '../lib/cortina';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -27,6 +28,64 @@ export default function Hero() {
   }, []);
 
   useCorpoJusto(container, '.hh, .marca-movel__linha', { ativo: ehTelefone });
+
+  /* ── SMART desce, LABS sobe ──
+     As duas palavras nascem das bordas das proprias janelas e se
+     encontram no meio. O gesto e reversivel de proposito: a mesma
+     timeline que monta a marca a desmonta quando o leitor deixa o heroi,
+     e a remonta quando ele volta — entao o efeito nao e um enfeite de
+     carregamento, e o estado da secao.
+
+     `y` em px por funcao, e nao `yPercent`: o corpo da fonte e escrito
+     pelo useCorpoJusto no mesmo ciclo, e o yPercent seria convertido
+     usando a altura que o GSAP tinha em cache ANTES do ajuste — o mesmo
+     defeito que ja apareceu na deriva da galeria, onde a conta dava zero
+     e o transform saia `translate3d(0,0,0)`. Lendo a altura na hora, o
+     valor acompanha qualquer corpo. */
+  useGSAP(() => {
+    if (!ehTelefone) return;
+
+    const raiz = container.current;
+    const smart = raiz.querySelector('.marca-movel__linha--a');
+    const labs = raiz.querySelector('.marca-movel__linha--b');
+    if (!smart || !labs) return;
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      gsap.set([smart, labs], { y: 0 });
+      return;
+    }
+
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo(smart,
+      { y: () => -smart.offsetHeight },
+      { y: 0, duration: 1.05, ease: 'expo.out' }, 0)
+      .fromTo(labs,
+        { y: () => labs.offsetHeight },
+        { y: 0, duration: 1.05, ease: 'expo.out' }, 0);
+
+    /* Espera a cortina do preloader sair: a marca e a primeira coisa que
+       o heroi entrega, e entregar isso atras da cortina e nao entregar. */
+    const cancelar = aposCortina(() => tl.play());
+
+    /* `end: 'bottom 60%'` e nao 'bottom top': o reverso precisa comecar
+       enquanto a marca ainda esta na tela, senao o leitor rola, nao ve
+       nada acontecer, e ao voltar encontra a animacao ja pela metade. */
+    const st = ScrollTrigger.create({
+      trigger: raiz,
+      start: 'top top',
+      end: 'bottom 60%',
+      onLeave: () => tl.reverse(),
+      onEnterBack: () => tl.play(),
+      /* SEM `invalidateOnRefresh`: os `y: () => ...` leem offsetHeight, e
+         reavaliar isso a cada refresh realimentava o ciclo — o GSAP
+         escreve, o layout muda, o ScrollTrigger refaz o refresh, e o
+         navegador travava ao abrir o menu. As funcoes ja sao avaliadas na
+         criacao, e o corpo so muda quando a largura da tela muda, caso em
+         que o efeito inteiro e recriado. */
+    });
+
+    return () => { cancelar(); st.kill(); tl.kill(); };
+  }, { dependencies: [ehTelefone], scope: container });
 
   /* Deriva: cada peca anda uma fracao do scroll, e a divergencia entre
      elas — nao a velocidade — e o que da a sensacao de camadas.
@@ -281,9 +340,18 @@ export default function Hero() {
           largura — 121px e 167px, medidos para dar exatamente os 374px
           uteis. Fica atras da grade de fases, como "VERTICAL" fica na
           referencia. */}
+      {/* Cada palavra mora numa JANELA de `overflow:hidden`. A borda da
+          janela e a "linha imaginaria": SMART entra descendo pela borda
+          de cima da sua, LABS subindo pela de baixo da dele. Sem a
+          janela o texto apareceria vindo de fora do bloco, atravessando
+          o que estiver no caminho, em vez de nascer da linha. */}
       <div className="marca-movel" aria-hidden="true">
-        <span className="marca-movel__linha marca-movel__linha--a">SMART</span>
-        <span className="marca-movel__linha marca-movel__linha--b">LABS</span>
+        <span className="marca-movel__jan">
+          <span className="marca-movel__linha marca-movel__linha--a">SMART</span>
+        </span>
+        <span className="marca-movel__jan">
+          <span className="marca-movel__linha marca-movel__linha--b">LABS</span>
+        </span>
       </div>
 
       {/* EXPLORE Text Sequence */}

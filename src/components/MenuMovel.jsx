@@ -49,6 +49,10 @@ const SECUNDARIOS = [
    continuarem sendo o mesmo objeto que se dividiu. */
 const SEPARACAO = 9;
 
+/* O gatilho e um circulo GRANDE no repouso e dois pequenos quando aberto:
+   26px x 0.34 = ~9px cada, que e o tamanho dos dois pontos da referencia. */
+const ESCALA_ABERTO = 0.34;
+
 const PASSO_TEXTO = 0.055;
 
 export default function MenuMovel() {
@@ -85,21 +89,29 @@ export default function MenuMovel() {
 
     const reduz = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+    /* A cortina parte da base da barra: `inset(0 0 calc(100% - Hpx) 0)`
+       deixa visivel so a faixa do topo. Animar ate `inset(0)` e a
+       cortina descendo. Em px, nao em %, para a barra ter sempre a mesma
+       altura independente do tamanho da tela. */
+    const ALTURA_BARRA = 64;
+    const fechada = `inset(0px 0px calc(100% - ${ALTURA_BARRA}px) 0px)`;
+    const abertaTotal = 'inset(0px 0px 0px 0px)';
+
     const abrirDireto = () => {
-      gsap.set(veu.current, { autoAlpha: 1 });
+      gsap.set(veu.current, { autoAlpha: 1, clipPath: abertaTotal });
       gsap.set(painel.current, { autoAlpha: 1 });
       gsap.set(linhas, { clipPath: 'inset(0% 0% 0% 0%)', y: 0 });
       gsap.set(regua, { scaleX: 1 });
-      gsap.set(pontos[0], { y: -SEPARACAO });
-      gsap.set(pontos[1], { y: SEPARACAO });
+      gsap.set(pontos[0], { y: -SEPARACAO, scale: ESCALA_ABERTO });
+      gsap.set(pontos[1], { y: SEPARACAO, scale: ESCALA_ABERTO });
     };
 
     const fecharDireto = () => {
-      gsap.set(veu.current, { autoAlpha: 0 });
+      gsap.set(veu.current, { autoAlpha: 1, clipPath: fechada });
       gsap.set(painel.current, { autoAlpha: 0 });
       gsap.set(linhas, { clipPath: 'inset(0% 0% 100% 0%)', y: 0 });
       gsap.set(regua, { scaleX: 0 });
-      gsap.set(pontos, { y: 0 });
+      gsap.set(pontos, { y: 0, scale: 1 });
     };
 
     if (reduz) { aberto ? abrirDireto() : fecharDireto(); return; }
@@ -109,15 +121,17 @@ export default function MenuMovel() {
 
       const tl = gsap.timeline();
 
-      /* 1 · o circulo se parte. As duas metades saem de dentro do mesmo
-         ponto, entao a separacao e o primeiro sinal de que algo abriu —
-         antes mesmo de o painel existir. */
-      tl.to(pontos[0], { y: -SEPARACAO, duration: 0.34, ease: 'back.out(2.2)' }, 0)
-        .to(pontos[1], { y: SEPARACAO, duration: 0.34, ease: 'back.out(2.2)' }, 0);
+      /* 1 · o circulo GRANDE se parte em dois pequenos. Encolher junto
+         com a separacao e o que faz um virar dois: mantendo o tamanho,
+         seriam duas bolas se afastando; encolhendo, e o mesmo objeto se
+         dividindo. */
+      tl.to(pontos[0], { y: -SEPARACAO, scale: ESCALA_ABERTO, duration: 0.36, ease: 'back.out(2.2)' }, 0)
+        .to(pontos[1], { y: SEPARACAO, scale: ESCALA_ABERTO, duration: 0.36, ease: 'back.out(2.2)' }, 0);
 
-      /* 2 · o vidro entra por tras */
-      tl.to(veu.current, { autoAlpha: 1, duration: 0.32, ease: 'power2.out' }, 0.04)
-        .set(painel.current, { autoAlpha: 1 }, 0.04);
+      /* 2 · a cortina desce a partir da barra */
+      tl.set(veu.current, { autoAlpha: 1 }, 0)
+        .fromTo(veu.current, { clipPath: fechada }, { clipPath: abertaTotal, duration: 0.62, ease: 'power3.inOut' }, 0.02)
+        .set(painel.current, { autoAlpha: 1 }, 0.2);
 
       /* 3 · a persiana: cada linha e DESCOBERTA de baixo para cima. O `y`
          acompanha a mascara para a linha parecer subir para o lugar em
@@ -144,10 +158,13 @@ export default function MenuMovel() {
 
     tl.to(regua, { scaleX: 0, duration: 0.2, ease: 'power2.in' }, 0);
 
-    tl.to(veu.current, { autoAlpha: 0, duration: 0.3, ease: 'power2.in' }, 0.16)
-      .set(painel.current, { autoAlpha: 0 });
+    tl.set(painel.current, { autoAlpha: 0 }, 0.18);
 
-    tl.to(pontos, { y: 0, duration: 0.3, ease: 'back.in(1.8)' }, 0.2);
+    /* A cortina sobe de volta ate a barra — nao some. A barra continua
+       la depois, que e o estado de repouso. */
+    tl.to(veu.current, { clipPath: fechada, duration: 0.5, ease: 'power3.inOut' }, 0.16);
+
+    tl.to(pontos, { y: 0, scale: 1, duration: 0.32, ease: 'back.in(1.8)' }, 0.3);
   }, { dependencies: [aberto], scope: raiz });
 
   const item = (it, i, classe) => (
@@ -167,6 +184,10 @@ export default function MenuMovel() {
 
   return (
     <div className="mmv" ref={raiz}>
+      {/* A barra vive no topo o tempo todo, translucida. Ao abrir o menu
+          ela DESCE como cortina ate cobrir a tela — e ela que vira o
+          fundo do painel, em vez de um veu aparecendo por fade. Fechar
+          recolhe a cortina de volta a altura da barra. */}
       <div
         className="mmv__veu"
         ref={veu}
