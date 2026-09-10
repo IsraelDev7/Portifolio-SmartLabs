@@ -1196,12 +1196,15 @@ h3 {
 /* 33% da coluna e proporcao 3:4, medido no print da referencia. Antes
    estava em 62% e o cartao virava um bloco de imagem com legenda. */
 .cartao__imagem {
+  position: relative;   /* ancora a grade da persiana */
   width: 33%;
   aspect-ratio: 3 / 4;
   background-size: cover;
   background-position: center;
   filter: grayscale(100%);
   margin-bottom: var(--space-4);
+  /* Contem a sangria de -0.5px das ripas, que senao vaza pela direita. */
+  overflow: hidden;
 }
 
 /* 40px na referencia, nao 70px: o cartao e o segundo tempo da secao e
@@ -3783,6 +3786,16 @@ h3 {
   .cisao__prosa { font-size: 0.82rem; line-height: 1.55; }
 
   .cisao__ato { padding: var(--space-6) 24px var(--space-8); }
+
+  /* Largura cheia no telefone. Os 33% vem do desenho de tela larga, onde
+     a foto e uma nota ao lado do texto; numa coluna estreita ela vira um
+     selo perdido no canto. Em 1:1 ela ocupa o espaco sem empurrar o
+     texto para fora da tela — a foto e 3:4, entao o `cover` corta topo e
+     base, que e onde ela tem menos informacao. */
+  .cartao__imagem {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+  }
 
   /* ── a faixa ── */
   .faixa__sequencia { grid-template-columns: 1fr !important; }

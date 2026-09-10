@@ -166,14 +166,27 @@ export function Item({ rotulo, children }) {
 
 /** O cartao do segundo ato: imagem no topo, declaracao, notas em mono. */
 export function Cartao({ imagem, kicker, titulo, children }) {
+  const raiz = useRef(null);
+
+  /* A mesma persiana da imagem grande. O gatilho e o cartao inteiro e
+     nao a foto: o cartao entra na tela pela borda de baixo, e quando a
+     foto sozinha cruza o gatilho o texto abaixo dela ja esta lido. */
+  useGSAP(() => {
+    const img = raiz.current && raiz.current.querySelector('.cartao__imagem');
+    if (!img) return;
+    return animarRipas(img, raiz.current);
+  }, { scope: raiz });
+
   return (
-    <article className="cartao">
+    <article className="cartao" ref={raiz}>
       {imagem && (
         <div
           className="cartao__imagem"
           style={{ backgroundImage: `url(${imagem})` }}
           role="presentation"
-        />
+        >
+          <GradeRipas />
+        </div>
       )}
       {kicker && <span className="cisao__kicker" data-anim="rise">{kicker}</span>}
       <h3 className="cartao__titulo" data-anim="rise">{titulo}</h3>
