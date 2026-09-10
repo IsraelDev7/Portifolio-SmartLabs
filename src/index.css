@@ -1166,6 +1166,31 @@ h3 {
   color: var(--cal);
 }
 
+/* ── o fecho do segundo ato, sobre as ondas ──
+   Vale nas duas larguras, e por isso deixou a media query do telefone:
+   em tela larga o bloco tambem pousa DENTRO da faixa de barras, e o
+   problema de leitura e identico.
+
+   z-index 4 poe o texto acima das ondas (1) e do resto da camada de
+   textos (2). Sem fundo por tras: o contraste vem da cor e da sombra.
+
+   Tres sombras empilhadas, nao uma: a de 3px cola um contorno rente a
+   letra, a de 10px fecha os vaos entre barras vizinhas, e a de 28px
+   escurece o campo inteiro em volta do bloco. Uma sombra unica ou fica
+   dura como borda ou se dilui antes de cobrir o vao. */
+.cisao__camada--dois {
+  position: relative;
+  z-index: 4;
+}
+
+.cisao__camada--dois .cisao__declaracao {
+  color: var(--cal);
+  text-shadow:
+    0 1px 3px rgba(10, 10, 10, 0.95),
+    0 2px 10px rgba(10, 10, 10, 0.9),
+    0 4px 28px rgba(10, 10, 10, 0.75);
+}
+
 /* ── metade do painel ── */
 .cisao__dir {
   flex: 1;
@@ -3751,39 +3776,11 @@ h3 {
     justify-content: flex-end;
   }
 
-  /* ── o fecho, sobre as ondas ──
-     Em Cal ele desaparecia: as barras sao Cal, e texto claro sobre campo
-     claro nao tem contraste nenhum. Em Aco ele le contra as barras.
-
-     Sobe para z-index 4 — acima das ondas (1) e do resto da camada de
-     textos (2). Sem fundo por tras: o contraste vem so da cor. */
-  .cisao__camada--dois {
-    position: relative;
-    z-index: 4;
-  }
-
-
   /* Corpo fixo, fora da medicao: e o fecho do ato. */
   .cisao__camada--dois .cisao__ln {
     font-size: 2.1rem;
     line-height: 1.06;
     white-space: normal;
-  }
-
-  .cisao__camada--dois .cisao__declaracao {
-    color: var(--cal);
-    /* Tres sombras empilhadas, nao uma: a de 3px cola um contorno rente
-       a letra, a de 10px fecha os vaos entre barras vizinhas, e a de
-       28px escurece o campo inteiro em volta do bloco. Uma sombra unica
-       ou fica dura como borda ou se dilui antes de cobrir o vao.
-
-       Sobre as barras Cal este texto tem pouco contraste — e o problema
-       inverso do Aco, e conhecido. Se incomodar, o passo seguinte e
-       fechar o `gap` das barras nesta faixa. */
-    text-shadow:
-      0 1px 3px rgba(10, 10, 10, 0.95),
-      0 2px 10px rgba(10, 10, 10, 0.9),
-      0 4px 28px rgba(10, 10, 10, 0.75);
   }
 
   /* A coluna mede as duas camadas, e e essa altura que define quanto
@@ -4353,6 +4350,42 @@ html { scrollbar-gutter: stable; }
        proporcao ate 1920 e so entao para de crescer. */
     font-size: clamp(2rem, 8.4vw, 10rem);
     text-shadow: 0 2px 18px rgba(10, 10, 10, 0.6);
+  }
+
+  /* ── o fecho do segundo ato desce para o pe da coluna ──
+     Mesma mecanica da declaracao de cima: absoluto, ancorado embaixo.
+     Aqui a razao nao e min-content, e posicao — a camada e um flex
+     centrado, e em fluxo o bloco fica preso ao meio dela.
+
+     `left` e `right` sao medidos a partir da caixa de PADDING (e ela o
+     bloco de contencao de um absoluto), entao repetir os dois valores do
+     padding devolve exatamente a largura de conteudo da coluna. E ela
+     que decide onde a frase quebra.
+
+     O bloco pousa DENTRO da faixa de ondas — dai o z-index 4 e as tres
+     sombras que ele ja herda do nivel base. */
+  .cisao__camada--dois .cisao__declaracao {
+    position: absolute;
+    left: var(--content-padding);
+    right: var(--space-4);
+    bottom: 6vh;
+    /* 3.6vw = 52px em 1440. O pedido e "um pouco maior que o texto do
+       bloco da direita": o titulo do cartao mede 42px, entao este fecha
+       10 acima dele — perto o bastante para os dois lerem como a mesma
+       familia de voz, e acima o bastante para o fecho nao virar legenda.
+
+       Vinha de 86px, que e o corpo da declaracao de ABERTURA. Nesse
+       tamanho as duas frases competiam, e a de baixo quebrava em tres
+       linhas dentro da coluna. Em 52 ela cabe em duas.
+
+       O teto e baixo (3.4rem = 54px) porque a REFERENCIA e fixa: o
+       titulo do cartao mede 42px em qualquer largura. Com teto de
+       4.4rem este fecho ia a 69px em 1920 e virava 64% maior que o
+       titulo em vez de "um pouco" — a relacao pedida se perdia
+       justamente nas telas grandes. Travado em 54, ele fica entre 24% e
+       29% acima do titulo em toda a faixa. */
+    font-size: clamp(1.4rem, 3.6vw, 3.4rem);
+    line-height: 1.02;
   }
 
   /* ── por que cada linha vira bloco ──
