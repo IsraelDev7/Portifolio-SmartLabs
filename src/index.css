@@ -1721,21 +1721,58 @@ h3 {
    Sticky de 90vh em celular briga com a barra de endereco, que aparece e
    some e recalcula a altura no meio do percurso. */
 @media (max-width: 820px) {
+  /* ── a trava volta ──
+     Ela estava `static` desde a rodada em que desliguei toda trava do
+     telefone, e com isso a secao perdia o paralaxe inteiro: a foto
+     rolava junto com o texto e o veu deixava de subir sobre ela.
+
+     Em UMA celula, nao em duas linhas: foto e painel dividem a mesma
+     area do grid, com o painel ancorado na base. Empilhados, os dois
+     somariam mais que a tela e a peca presa nao caberia em 100vh. */
   .vitrine__trava {
-    position: static;
-    height: auto;
+    position: sticky;
+    top: 0;
+    height: 100vh;
     grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
   }
 
-  .vitrine__foto { aspect-ratio: 4 / 5; }
+  .vitrine__foto {
+    grid-area: 1 / 1;
+    aspect-ratio: auto;
+    height: 100%;
+  }
 
-  .vitrine__painel { padding: var(--space-6) var(--content-padding); gap: var(--space-8); }
+  .vitrine__painel {
+    grid-area: 1 / 1;
+    align-self: end;
+    padding: var(--space-6) var(--content-padding) var(--space-10);
+    gap: var(--space-5);
+    /* O painel pousa sobre a foto: sem um fundo que se feche para baixo,
+       o texto disputaria contraste com o rosto atras dele. */
+    background-image: linear-gradient(
+      180deg,
+      rgba(10, 10, 10, 0) 0%,
+      rgba(10, 10, 10, 0.72) 34%,
+      rgba(10, 10, 10, 0.94) 100%
+    );
+  }
 
+  /* ── a segunda camada, com transparencia ──
+     O gradiente e o que faz o veu SUBIR sobre a foto presa em vez de
+     apenas vir depois dela: as primeiras telas dele sao translucidas, e
+     por elas ainda se ve o rosto. Ele estava chapado em Aco solido, e a
+     secao virava dois blocos empilhados sem relacao. */
   .vitrine__veu {
-    min-height: 0;
-    padding: var(--space-8) var(--content-padding) var(--space-8);
-    background-image: none;
-    background-color: var(--aco);
+    min-height: 92vh;
+    padding: var(--space-12) var(--content-padding) var(--space-8);
+    background-image: linear-gradient(
+      180deg,
+      rgba(10, 10, 10, 0.62) 0%,
+      rgba(10, 10, 10, 0.90) 26%,
+      var(--aco) 56%
+    );
+    background-color: transparent;
   }
 
   .vitrine__conceito,
@@ -1744,7 +1781,16 @@ h3 {
     gap: var(--space-4);
   }
 
-  .vitrine__fios { display: none; }
+  /* ── o detalhe do canto esquerdo ──
+     As linhas empilhadas voltam. No desktop elas ficam a esquerda do
+     texto do conceito; aqui, com uma coluna so, ficam ACIMA dele — o
+     mesmo sinal, na unica margem que sobra. */
+  .vitrine__fios {
+    display: flex;
+    width: 72px;
+    gap: 6px;
+    margin-bottom: var(--space-3);
+  }
 
   .vitrine__thumb,
   .vitrine__projeto-dir { grid-column: 1; }
