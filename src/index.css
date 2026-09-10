@@ -3914,11 +3914,12 @@ h3 {
      galeria: porcentagem so resolve contra altura definida. */
   .meia--figura .mosaico { width: 86% !important; }
 
-  /* ── folga do rodape ──
-     O botao do menu mora no canto inferior direito. Sem esta reserva
-     ele fica por cima do ultimo link do rodape, e os dois competem pelo
-     mesmo toque. */
-  .pe { padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
+  /* A reserva de 96px que existia aqui era para o botao do menu, quando
+     ele morava no canto INFERIOR direito e cobriria o ultimo link. O
+     gatilho mudou para o topo na rodada seguinte e a reserva ficou orfa
+     — 96px de fundo liso no fim da pagina. Fica so o respiro da area
+     segura, para o conteudo nao encostar na barra de gestos. */
+  .pe { padding-bottom: env(safe-area-inset-bottom, 0px); }
 }
 
 /* ═══════════════════════════════════════════════════════════
