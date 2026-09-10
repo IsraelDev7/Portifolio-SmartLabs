@@ -543,6 +543,9 @@ h3 {
 }
 
 .nivel__barra {
+  /* Origem a esquerda: as barras sao horizontais, entao elas se
+     ESTENDEM da margem, nao crescem do centro. */
+  transform-origin: left center;
   display: block;
   width: 14px;
   height: 2px;
@@ -659,11 +662,25 @@ h3 {
 }
 
 /* A barra em Solda amarra a prosa a ficha. Sem ela as duas metades da
-   linha parecem dois assuntos soltos na mesma faixa. */
+   linha parecem dois assuntos soltos na mesma faixa.
+
+   Elemento e nao `border-left`: para a barra ser TRACADA de cima para
+   baixo e preciso escalar a partir de uma origem, e borda de CSS existe
+   inteira ou nao existe. */
 .modulo__texto {
-  border-left: 2px solid var(--solda);
+  position: relative;
   padding-left: var(--space-3);
   text-transform: none;
+}
+
+.modulo__barra {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background-color: var(--solda);
+  transform-origin: top center;
 }
 
 /* A hierarquia esta no TAMANHO, nao na cor: os tres niveis usam a mesma
