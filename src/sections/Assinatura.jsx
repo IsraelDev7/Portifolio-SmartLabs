@@ -1,9 +1,10 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Letras from '../components/Letras';
 import { Monogram } from '../components/Logo';
+import { useCorpoJusto } from '../hooks/useCorpoJusto';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -35,6 +36,23 @@ const CAOS = '01<>[]{}#*+=/\\ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 export default function Assinatura() {
   const alvo = useRef(null);
+
+  /* A marca em corpo medido, ANTES do useGSAP: a animacao de entrada das
+     letras usa `yPercent`, que o GSAP converte com a altura que tem em
+     cache quando o tween nasce. Se o corpo mudasse depois, a conta seria
+     feita sobre a altura pequena e as letras subiriam menos do que a
+     propria altura. */
+  const [ehTelefone, setEhTelefone] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(max-width: 820px)').matches
+  );
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 820px)');
+    const ao = (e) => setEhTelefone(e.matches);
+    mq.addEventListener('change', ao);
+    return () => mq.removeEventListener('change', ao);
+  }, []);
+
+  useCorpoJusto(alvo, '.assinatura__marca', { ativo: ehTelefone });
 
   useGSAP(() => {
     const raiz = alvo.current;
@@ -123,7 +141,7 @@ export default function Assinatura() {
   return (
     <section className="assinatura" ref={alvo}>
       <div className="assinatura__topo">
-        <p className="assinatura__coluna">
+        <p className="assinatura__coluna" data-anim="rise">
           Imagine um novo lead entrando no negócio. Ele preenche um formulário.
           A informação é capturada. Os dados são registrados. Uma mensagem é
           enviada. O atendimento é iniciado. O processo continua.
@@ -131,7 +149,7 @@ export default function Assinatura() {
         </p>
 
         {/* selo circular: texto correndo na borda, Nivel no centro */}
-        <div className="assinatura__selo" aria-hidden="true">
+        <div className="assinatura__selo" data-anim="rise" aria-hidden="true">
           <svg viewBox="0 0 200 200" className="assinatura__giro">
             <defs>
               <path
@@ -154,8 +172,8 @@ export default function Assinatura() {
           <Monogram className="assinatura__monograma" color="var(--cal)" size={76} />
         </div>
 
-        <p className="assinatura__coluna assinatura__coluna--dir">
-          <span className="assinatura__kicker">Automation</span>
+        <p className="assinatura__coluna assinatura__coluna--dir" data-anim="rise">
+          <span className="assinatura__kicker" data-anim="rise">Automation</span>
           Tudo que depende de trabalho manual repetitivo merece ser questionado.
           Conectamos processos para que informações avancem pelo sistema sem
           depender de alguém movimentando cada etapa.

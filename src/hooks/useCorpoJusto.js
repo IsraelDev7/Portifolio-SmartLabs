@@ -56,11 +56,17 @@ export function useCorpoJusto(escopo, seletor, { folga = 0, ativo = true } = {})
            (offsetWidth, rect, scrollWidth) que mede o texto e nao o bloco:
            os outros dois devolvem a largura da caixa, que e fixa, e
            compara-los com o alvo faz o corpo crescer a cada passada. */
-        el.style.fontSize = BASE + 'px';
+        /* `setProperty` com prioridade, e nao `style.fontSize`: a folha
+           tem regras marcadas para titulos no telefone
+           (`.page-home section h2 { font-size: ... !important }`), e uma
+           declaracao marcada vence o estilo inline sem prioridade. Sem o
+           terceiro argumento a medicao acontecia e era descartada — o
+           corpo voltava para o valor da folha. */
+        el.style.setProperty('font-size', BASE + 'px', 'important');
         const largura = el.scrollWidth;
         if (!largura) return;
 
-        el.style.fontSize = ((alvo / largura) * BASE) + 'px';
+        el.style.setProperty('font-size', ((alvo / largura) * BASE) + 'px', 'important');
       });
     };
 
@@ -100,7 +106,7 @@ export function useCorpoJusto(escopo, seletor, { folga = 0, ativo = true } = {})
       window.removeEventListener('load', ajustar);
       /* Devolve o controle ao CSS: sem isto, o corpo calculado para o
          telefone ficaria grudado no elemento ao voltar para o desktop. */
-      raiz.querySelectorAll(seletor).forEach((el) => { el.style.fontSize = ''; });
+      raiz.querySelectorAll(seletor).forEach((el) => { el.style.removeProperty('font-size'); });
     };
   }, [escopo, seletor, folga, ativo]);
 }

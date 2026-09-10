@@ -3823,9 +3823,17 @@ h3 {
   .page-home section:not(.hero-section):not(.cisao) h3 { font-size: clamp(1.7rem, 7.5vw, 2.2rem) !important; }
   .page-home section:not(.hero-section):not(.cisao) p  { font-size: 0.9rem !important; }
 
-  .assinatura__marca,
+  /* A marca sai desta regra: o corpo dela vem do useCorpoJusto, que a
+     faz encher a largura util. Presa em 2.4rem ela ocupava 205px de 360
+     e ficava perdida no canto. */
   .pe__nome,
   .vitrine__codigo { font-size: clamp(1.8rem, 8vw, 2.4rem) !important; }
+
+  .assinatura__marca {
+    white-space: nowrap;
+    text-align: center;
+    line-height: 0.9;
+  }
 
   .sobre__eu-cinza,
   .sobre__eu { font-size: clamp(2rem, 10vw, 2.8rem) !important; }
