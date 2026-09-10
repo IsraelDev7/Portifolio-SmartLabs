@@ -72,7 +72,7 @@ export default function Cisao({
     return animarRipas(img, raiz.current);
   }, { scope: raiz });
 
-  /* ── a declaracao em tela larga: entra em persiana, sai desbotando ──
+  /* ── a declaracao em tela larga: a mesma persiana nos dois sentidos ──
      So no desktop. No telefone a cascata generica do data-anim ja da
      conta, e as duas ligadas juntas poriam dois tweens disputando `y` e
      `opacity` nos mesmos spans.
@@ -84,9 +84,14 @@ export default function Cisao({
      quando a linha cruza a borda. E uma frase sendo dita.
 
      SAIDA por scrub — nao tem tempo proprio: obedece ao dedo. E o que
-     amarra o desvanecer a subida das ondas e da segunda declaracao,
+     amarra o fechamento a subida das ondas e da segunda declaracao,
      em vez de deixar os tres correndo em relogios separados. Rolando
-     de volta, o scrub refaz o caminho sozinho. */
+     de volta, o scrub refaz o caminho sozinho.
+
+     A saida e a mesma mascara da entrada percorrida ao contrario: a
+     linha e RECOBERTA e afunda os mesmos 46px de onde tinha subido. O
+     fade que estava aqui antes era outro gesto — o texto sumia sem
+     desfazer o movimento que o trouxe. */
   useGSAP(() => {
     const r = raiz.current;
     if (!r || ehTelefone) return;
@@ -112,6 +117,43 @@ export default function Cisao({
     const OCULTO = 'inset(-25% 0% 100% 0%)';
     const ABERTO = 'inset(-25% 0% -25% 0%)';
 
+    /* ── a ordem de criacao importa, e por isso a saida vem primeiro ──
+       As duas animacoes agora escrevem nas MESMAS propriedades dos
+       mesmos elementos — antes a saida mexia em `opacity` do <p> e nao
+       disputava nada.
+
+       Um `fromTo` sob ScrollTrigger grava o estado inicial no ato da
+       criacao. Se a saida fosse criada depois, ela deixaria as linhas
+       ABERTAS no carregamento e o texto apareceria pronto antes do seu
+       gatilho. Criando a saida primeiro, e a entrada — que nasce
+       fechada — quem tem a ultima palavra sobre o estado de repouso.
+
+       O `immediateRender: false` diz a mesma coisa por outro caminho:
+       nao escreva nada enquanto o gatilho nao andar. Os dois juntos
+       porque um sozinho depende de detalhe de implementacao. */
+    gsap.fromTo(linhas,
+      { clipPath: ABERTO, y: 0 },
+      {
+        clipPath: OCULTO, y: 46,
+        duration: 0.6, ease: 'none', stagger: 0.14,
+        immediateRender: false,
+        scrollTrigger: {
+          /* A segunda camada e o relogio: a persiana comeca a fechar
+             quando ela encosta na borda de baixo da tela e termina
+             quando chega a 45% da altura — o trecho em que as ondas
+             sobem e a segunda declaracao aparece. Uma faixa fixa em
+             pixels descasaria disso na primeira janela de outra altura.
+
+             `scrub` e nao `toggleActions`: sem tempo proprio, a persiana
+             obedece ao dedo e fecha no mesmo compasso da subida das
+             ondas. Voltando, ela reabre sozinha. */
+          trigger: doisEl,
+          start: 'top bottom',
+          end: 'top 45%',
+          scrub: 0.4,
+        },
+      });
+
     gsap.fromTo(linhas,
       { clipPath: OCULTO, y: 46 },
       {
@@ -126,21 +168,6 @@ export default function Cisao({
           toggleActions: 'restart none none reverse',
         },
       });
-
-    gsap.to(p, {
-      opacity: 0, ease: 'none',
-      scrollTrigger: {
-        /* A segunda camada e o relogio: o desvanecer comeca quando ela
-           encosta na borda de baixo da tela e termina quando chega a
-           45% da altura — que e o trecho em que as ondas sobem e a
-           segunda declaracao aparece. Uma faixa fixa em pixels
-           descasaria disso na primeira janela de outra altura. */
-        trigger: doisEl,
-        start: 'top bottom',
-        end: 'top 45%',
-        scrub: 0.4,
-      },
-    });
   }, { dependencies: [ehTelefone], scope: raiz });
 
   return (
