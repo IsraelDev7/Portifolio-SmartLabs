@@ -1102,6 +1102,52 @@ h3 {
   margin-top: 0.5rem;
 }
 
+/* ── a marcacao sobre a imagem: vocabulario comum ──
+   Nasceu dentro da media query do telefone e ficou presa la. O desktop
+   pede a mesma peca em outro corpo, e uma regra que so existe abaixo de
+   820px nao tem como servir os dois — o circulo do REC simplesmente nao
+   teria desenho nenhum em tela larga.
+
+   Aqui fica o que NAO muda entre as duas larguras: a familia, o peso, a
+   cor, a sombra e a batida do pisca. O que muda — corpo, entrelinha e
+   diametro — fica em cada media query, que vem depois desta e por isso
+   vence sem precisar de prioridade. */
+.cisao__palavras {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.cisao__palavras li {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.06em;
+  color: var(--cal);
+  text-transform: uppercase;
+  /* A sombra e o que segura a leitura sobre uma foto de contraste
+     imprevisivel: sem ela, uma palavra que calha sobre a parte clara
+     da maquete some. */
+  text-shadow: 0 1px 12px rgba(10, 10, 10, 0.85);
+}
+
+/* ── o REC ──
+   Pisca como a luz de uma camera gravando: some por um instante curto e
+   volta, com uma pausa longa entre os toques. Um fade simetrico leria
+   como respiracao; o que faz pensar em gravacao e a assimetria — e por
+   isso `steps(1, end)`, que corta em vez de interpolar. */
+.cisao__rec {
+  display: block;
+  border-radius: 50%;
+  background: var(--solda);
+  animation: cisao-rec 1.6s steps(1, end) infinite;
+}
+
+@keyframes cisao-rec {
+  0%,  62% { opacity: 1; }
+  63%, 78% { opacity: 0.18; }
+  79%     { opacity: 1; }
+}
+
 /* 5.6vw e o maior corpo em que FUNCIONAMENTO cabe inteiro na metade
    esquerda. A referencia usa 90px, calibrado em ingles, onde as
    palavras sao mais curtas. */
@@ -3648,48 +3694,19 @@ h3 {
      acabou de deixar de existir. */
   .cisao__ponto { display: none; }
 
-  .cisao__palavras {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
+  /* Medido na referencia em 414px: 18px de corpo, passo de 20. */
   .cisao__palavras li {
-    font-family: var(--font-display);
-    font-weight: 600;
-    font-size: 1.12rem;      /* 18px */
-    line-height: 20px;       /* passo medido na referencia */
-    letter-spacing: -0.06em;
-    color: var(--cal);
-    text-transform: uppercase;
-    /* A sombra e o que segura a leitura sobre uma foto de contraste
-       imprevisivel: sem ela, uma palavra que calha sobre a parte clara
-       da maquete some. */
-    text-shadow: 0 1px 12px rgba(10, 10, 10, 0.85);
+    font-size: 1.12rem;
+    line-height: 20px;
   }
 
-  /* ── o REC ──
-     43px na referencia, 121px abaixo da primeira palavra. Pisca como a
-     luz de uma camera gravando: some por um instante curto e volta,
-     com uma pausa longa entre os toques. Um fade simetrico leria como
-     respiracao; o que faz pensar em gravacao e a assimetria. */
-  /* 8px: o circulo passa a acompanhar a lista em vez de flutuar no meio
-     do caminho. Com 78 ele caia em 217, ja dentro da faixa que agora e
-     do texto. */
+  /* 43px na referencia. Os 8px de topo fazem o circulo acompanhar a
+     lista em vez de flutuar no meio do caminho: com 78 ele caia em 217,
+     ja dentro da faixa que agora e do texto. */
   .cisao__rec {
-    display: block;
     width: 43px;
     height: 43px;
     margin-top: 8px;
-    border-radius: 50%;
-    background: var(--solda);
-    animation: cisao-rec 1.6s steps(1, end) infinite;
-  }
-
-  @keyframes cisao-rec {
-    0%,  62% { opacity: 1; }
-    63%, 78% { opacity: 0.18; }
-    79%     { opacity: 1; }
   }
 
   /* ── o vazio que sobrava ──
@@ -4239,8 +4256,97 @@ html { scrollbar-gutter: stable; }
    regra. Ela deixa de existir no telefone em vez de competir la — que
    e tambem o que o pedido diz: so na versao desktop. */
 @media (min-width: 821px) {
-  .cisao__marcacao { display: none; }
+  /* O selo continua fora: os quatro rotulos que ele repetia agora estao
+     na marcacao, e o retangulo opaco cobria justamente a faixa da foto
+     que a declaracao ocupa. */
   .cisao__selo { display: none; }
+
+  /* ── a marcacao no canto superior esquerdo ──
+     A mesma peca do telefone, em corpo de tela larga. Ela e anotacao
+     tecnica POR CIMA da foto — nao um painel que a substitui — e por
+     isso mora no canto e deixa o resto da maquete livre.
+
+     `absolute` e nao `sticky`: tudo o que esta na frente da imagem rola,
+     e so a imagem fica presa. A marcacao sobe junto com as camadas de
+     texto, que e a leitura da secao inteira. */
+  .cisao__marcacao {
+    display: block;
+    position: absolute;
+    top: 88px;
+    left: 32px;
+    z-index: 4;          /* acima das camadas de texto, que estao em 2 */
+    pointer-events: none;
+  }
+
+  .cisao__palavras li {
+    font-size: 1.5rem;   /* 24px */
+    line-height: 28px;
+  }
+
+  .cisao__rec {
+    width: 48px;
+    height: 48px;
+    margin-top: 16px;
+  }
+
+  /* ── a declaracao desce para a faixa de baixo ──
+     `bottom: 10vh` e nao `justify-content: flex-end`: a frase precisa
+     sair do fluxo, e a razao e de largura, nao de altura.
+
+     Em fluxo, com as linhas em `nowrap`, o texto entrava no min-content
+     do flex item. `flex: 0 0 52%` fixa a BASE, mas nao o minimo: o
+     `min-width: auto` automatico dos itens flex deixa a coluna crescer
+     ate caber o conteudo. Medido: a coluna passou de 798 para 1002px,
+     empurrou o painel da direita para fora e criou barra horizontal.
+
+     Um elemento absoluto nao contribui para o min-content de ninguem. A
+     coluna volta aos 798 naturais, o painel fica onde estava, e o
+     transbordo da linha mais longa vira o que devia ser desde o inicio:
+     uma questao de pintura, nao de layout. */
+  .cisao__camada:first-child { position: relative; }
+
+  /* ── a face ──
+     A mesma do telefone: peso 700 e -0.06em. O peso 700 e o teto da
+     Space Grotesk, e o espacejamento negativo e o que faz as maiusculas
+     lerem como um bloco solido em vez de letras enfileiradas.
+
+     Em -0.005em (o valor anterior) a linha ficava leve e larga e
+     competia em cinza com a prosa do painel; fechada e em 700, ela volta
+     a ser a voz alta da secao. */
+  .cisao__camada:first-child .cisao__declaracao {
+    position: absolute;
+    left: var(--content-padding);
+    bottom: 10vh;
+    font-weight: 700;
+    letter-spacing: -0.06em;
+    line-height: 1.02;
+    /* 8.4vw e o corpo em que "funcionamento." mede 913px numa viewport
+       de 1440 — 224 alem da borda da coluna, que e a entrada no painel
+       pedida. Sendo vw, essa relacao vale em qualquer largura.
+
+       O teto e 10rem e nao 7.6: em 7.6 o corpo travava perto de 1500px
+       e a partir dali a linha voltava a caber dentro da coluna, ou seja,
+       o efeito sumia justamente nas telas maiores. 10rem segura a
+       proporcao ate 1920 e so entao para de crescer. */
+    font-size: clamp(2rem, 8.4vw, 10rem);
+    text-shadow: 0 2px 18px rgba(10, 10, 10, 0.6);
+  }
+
+  /* ── por que cada linha vira bloco ──
+     Como spans inline, a quebra era um acidente da largura da coluna:
+     crescendo o corpo, "Experiencia e interface." se reagrupava sozinha
+     e a frase perdia o desenho de quatro linhas.
+
+     Em bloco com `nowrap`, as quatro linhas sao as que a copy declara, e
+     a largura passa a ser CONSEQUENCIA do corpo — que e o que deixa a
+     linha mais longa passar da borda da coluna e entrar um pouco no
+     painel da direita, como pedido. Nada corta o transbordo: nenhum
+     ancestral tem overflow, e `.cisao__textos` esta em z-index 2,
+     enquanto o painel nao e posicionado e pinta por baixo. */
+  .cisao__camada:first-child .cisao__ln {
+    display: block;
+    white-space: nowrap;
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════
