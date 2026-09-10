@@ -4289,6 +4289,17 @@ html { scrollbar-gutter: stable; }
     margin-top: 16px;
   }
 
+  /* ── o rodape do painel desce ──
+     `space-between` ja o prende no pe do ato; o que o mantinha alto era
+     o respiro de 7vh. Em 2vh ele desce 45px numa janela de 900 e 63px
+     numa de 1270 — a descida desenhada no print.
+
+     `:not(--dois)` porque o segundo ato e o cartao: ele nao tem rodape
+     e nao tem por que perder o proprio respiro. */
+  .cisao__ato:not(.cisao__ato--dois) {
+    padding-bottom: 2vh;
+  }
+
   /* ── a declaracao desce para a faixa de baixo ──
      `bottom: 10vh` e nao `justify-content: flex-end`: a frase precisa
      sair do fluxo, e a razao e de largura, nao de altura.
@@ -4316,7 +4327,19 @@ html { scrollbar-gutter: stable; }
   .cisao__camada:first-child .cisao__declaracao {
     position: absolute;
     left: var(--content-padding);
-    bottom: 10vh;
+    /* 12vh e nao 10: sobe 2vh para abrir passagem ao rodape do painel,
+       que desce 5vh no mesmo movimento. Medido em 1440x900, a colisao
+       era de 176x83px — a ultima linha ocupava x 58-970 / y 703-857 e o
+       rodape x 794-1386 / y 754-837, e o texto grande passava por cima
+       de "APIs" e "Sistemas personalizados".
+
+       Os dois valores andam juntos de proposito: mexer so num deles
+       resolve numa altura de janela e volta a bater noutra. Com este par
+       Os 12px fixos somados sao o piso da folga. Sendo os dois valores
+       em vh, a distancia entre eles encolhe junto com a janela: medida,
+       caia para 14px numa de 780 — positiva, mas fina demais para uma
+       linha de 121px. A parcela fixa nao encolhe com nada. */
+    bottom: calc(12vh + 12px);
     font-weight: 700;
     letter-spacing: -0.06em;
     line-height: 1.02;

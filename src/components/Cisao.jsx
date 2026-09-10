@@ -72,6 +72,77 @@ export default function Cisao({
     return animarRipas(img, raiz.current);
   }, { scope: raiz });
 
+  /* ── a declaracao em tela larga: entra em persiana, sai desbotando ──
+     So no desktop. No telefone a cascata generica do data-anim ja da
+     conta, e as duas ligadas juntas poriam dois tweens disputando `y` e
+     `opacity` nos mesmos spans.
+     
+     Sao dois gestos com naturezas diferentes, e essa diferenca e o
+     ponto:
+
+     ENTRADA por toggleActions — acontece de uma vez, no tempo dela,
+     quando a linha cruza a borda. E uma frase sendo dita.
+
+     SAIDA por scrub — nao tem tempo proprio: obedece ao dedo. E o que
+     amarra o desvanecer a subida das ondas e da segunda declaracao,
+     em vez de deixar os tres correndo em relogios separados. Rolando
+     de volta, o scrub refaz o caminho sozinho. */
+  useGSAP(() => {
+    const r = raiz.current;
+    if (!r || ehTelefone) return;
+
+    const p = r.querySelector('.cisao__camada:first-child .cisao__declaracao');
+    const doisEl = r.querySelector('.cisao__camada--dois');
+    if (!p || !doisEl) return;
+
+    const linhas = gsap.utils.toArray(p.querySelectorAll('.cisao__ln'));
+    if (!linhas.length) return;
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      gsap.set(linhas, { clearProps: 'all' });
+      gsap.set(p, { opacity: 1 });
+      return;
+    }
+
+    /* Os -25% em cima e embaixo NAO sao folga decorativa. Com
+       `line-height: 1.02` num corpo de 121px, o desenho da letra
+       transborda a caixa da linha: medido, o texto ocupa 154px onde a
+       caixa tem 123. Um `inset(0 ...)` cortaria acentos em cima e a
+       perna do "g" embaixo — o "Lógica e" perderia os dois. */
+    const OCULTO = 'inset(-25% 0% 100% 0%)';
+    const ABERTO = 'inset(-25% 0% -25% 0%)';
+
+    gsap.fromTo(linhas,
+      { clipPath: OCULTO, y: 46 },
+      {
+        clipPath: ABERTO, y: 0,
+        duration: 0.9, ease: 'expo.out', stagger: 0.09,
+        scrollTrigger: {
+          /* O gatilho e o proprio bloco, nao a secao: a declaracao mora
+             no PE da primeira camada, e um gatilho na secao a faria
+             animar cerca de 900px antes de aparecer. */
+          trigger: p,
+          start: 'top 88%',
+          toggleActions: 'restart none none reverse',
+        },
+      });
+
+    gsap.to(p, {
+      opacity: 0, ease: 'none',
+      scrollTrigger: {
+        /* A segunda camada e o relogio: o desvanecer comeca quando ela
+           encosta na borda de baixo da tela e termina quando chega a
+           45% da altura — que e o trecho em que as ondas sobem e a
+           segunda declaracao aparece. Uma faixa fixa em pixels
+           descasaria disso na primeira janela de outra altura. */
+        trigger: doisEl,
+        start: 'top bottom',
+        end: 'top 45%',
+        scrub: 0.4,
+      },
+    });
+  }, { dependencies: [ehTelefone], scope: raiz });
+
   return (
     <section className="cisao" ref={raiz}>
       <div className="cisao__esq">
@@ -118,7 +189,15 @@ export default function Cisao({
                 <i className="cisao__ponto" aria-hidden="true" />
               </div>
             )}
-            {declaracao && <p className="cisao__declaracao" data-anim="stagger">{declaracao}</p>}
+            {/* O data-anim so no telefone: em tela larga esta linha tem
+                coreografia propria, logo acima, e as duas ligadas
+                disputariam `y` e `opacity` nos mesmos spans. */}
+            {declaracao && (
+              <p
+                className="cisao__declaracao"
+                {...(ehTelefone ? { 'data-anim': 'stagger' } : {})}
+              >{declaracao}</p>
+            )}
           </div>
 
           {/* As ondas sobem sobre a imagem PRESA e sao elas que
