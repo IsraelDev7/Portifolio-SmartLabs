@@ -17,6 +17,7 @@ import Home from './pages/Home'
 import Work from './pages/Work'
 import About from './pages/About'
 import Thoughts from './pages/Thoughts'
+import Artigo from './pages/Artigo'
 import Contact from './pages/Contact'
 
 // A wrapper to initialize Lenis inside Router context if needed
@@ -50,6 +51,10 @@ export default function App() {
               <Route path="/work" element={<Work />} />
               <Route path="/about" element={<About />} />
               <Route path="/thoughts" element={<Thoughts />} />
+              {/* A leitura de uma ideia. Fica DEPOIS da rota da listagem:
+                  o react-router casa por especificidade, mas manter a
+                  ordem legível evita dúvida de quem for mexer. */}
+              <Route path="/thoughts/:slug" element={<Artigo />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/privacidade" element={<Privacidade />} />
               <Route path="/termos" element={<Termos />} />

@@ -40,11 +40,12 @@ const CASOS = [
     area: 'Psicanálise',
     cliente: '[ nome do cliente ]',
     foto: null,
+    slug: 'a-estrutura-vem-antes-da-estetica',
     titulo: 'A estrutura vem antes da estética.',
     resumo:
       'Interface bonita sobre arquitetura frágil não sobrevive ao primeiro pico de volume. O que sustenta a experiência premium é o que ninguém vê.',
     imagem: '/images/ideia-estrutura.jpg',
-    para: '/work',
+    para: '/thoughts/a-estrutura-vem-antes-da-estetica',
   },
   {
     area: 'Fitness',
