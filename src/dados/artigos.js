@@ -116,6 +116,79 @@ export const ARTIGOS = [
 
     fecho: 'Obrigado por ler',
   },
+  {
+    slug: 'automacao-nao-e-economizar-tempo',
+    indice: '02',
+    area: 'Automação',
+    data: '29 de setembro de 2026',
+    dataCurta: 'SET 2026',
+    leitura: '3 minutos',
+    autor: 'Israel Passos',
+    titulo: 'Automação não é economizar tempo.',
+    subtitulo:
+      'É remover dependência. O ganho não está nos minutos poupados — está no processo continuar sem a pessoa que sempre fazia aquela etapa.',
+    resumo:
+      'Todo negócio tem uma pessoa que é o gargalo, e quase sempre é a melhor do time. Automatizar é parar de precisar dela para o que é repetição.',
+    capa: '/images/ideia-dependencia.jpg',
+    capaAlt: 'Vigas de sustentação encaixadas umas nas outras',
+
+    abertura: [
+      'Todo negócio tem uma pessoa que é o gargalo. Quase sempre é a melhor pessoa do time.',
+      'E o problema nunca aparece enquanto ela está lá. Aparece na semana de férias, no feriado, no dia do médico.',
+    ],
+
+    blocos: [
+      {
+        lado: 'esq',
+        titulo: 'A conta que ninguém faz.',
+        paragrafos: [
+          'Quando alguém calcula automação, calcula minutos: "são vinte por dia, sete horas por mês". É a métrica errada — ela some no dia em que o processo simplesmente não roda.',
+          'O custo real não é o tempo gasto. É o orçamento que esperou até segunda porque quem responde estava de folga. Esse lead não aparece em relatório nenhum: ele não vira número, vira silêncio.',
+        ],
+        codigo: 'tempo economizado:   7 h/mês\nlead perdido no feriado:   1',
+      },
+      {
+        lado: 'dir',
+        imagemPrimeiro: true,
+        imagem: '/images/work-automacao.jpg',
+        imagemAlt: 'Esteira industrial com peças em sequência',
+        titulo: 'Onde eu procuro a dependência.',
+        paragrafos: [
+          '**Etapa que só uma pessoa sabe fazer.** Se a resposta para "e se ela faltar?" for um nome, ali tem ponto único de falha.',
+          '**Informação que mora na cabeça de alguém.** Preço que varia por caso, critério de desconto, qual fornecedor chamar. Isso é regra — e regra escrita é regra que executa sozinha.',
+          '**Passo que depende de alguém lembrar.** Lembrar não escala. Agendamento, sim.',
+        ],
+      },
+      {
+        lado: 'esq',
+        titulo: 'Cada setor esconde a dependência num lugar.',
+        paragrafos: [
+          'A pergunta é sempre a mesma — **o que para se essa pessoa sumir por uma semana?** O que muda é onde a resposta se esconde.',
+        ],
+        setores: [
+          ['Saúde e estética',
+           'A recepção é a memória do negócio: quem retorna, quem faltou, quem ficou de pensar. Sem registro próprio, a agenda do mês depende de quem atendeu no mês passado.'],
+          ['Consultoria',
+           'A proposta sai do zero toda vez porque o critério nunca saiu da cabeça do sócio. Escrever a régua rende mais que trocar de ferramenta.'],
+          ['Serviço de campo e paisagismo',
+           'O orçamento depende da visita, e a visita depende da agenda de uma pessoa só. Qualificar antes da visita é o que devolve a semana.'],
+          ['E-commerce',
+           'O estoque real mora numa planilha que alguém atualiza à noite. No primeiro pico de venda ela atrasa — e a loja vende o que não tem.'],
+        ],
+      },
+      {
+        lado: 'esq',
+        titulo: 'Automatizar não é dispensar a pessoa.',
+        paragrafos: [
+          'É parar de precisar dela para o que é repetição. Quem trata automação como corte costuma automatizar a parte errada: a que exige julgamento.',
+          'O teste cabe numa frase. **Tire qualquer pessoa do processo por uma semana.** O que parar é dependência — e dependência custa sempre mais caro que a ferramenta que a resolve.',
+          'Tempo economizado é consequência. O que se compra de verdade é um processo que não tem refém.',
+        ],
+      },
+    ],
+
+    fecho: 'Obrigado por ler',
+  },
 ];
 
 /** Busca por slug — usado pela rota /thoughts/:slug. */

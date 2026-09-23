@@ -51,11 +51,12 @@ const CASOS = [
     area: 'Fitness',
     cliente: '[ nome do cliente ]',
     foto: null,
+    slug: 'automacao-nao-e-economizar-tempo',
     titulo: 'Automação não é economizar tempo. É remover dependência.',
     resumo:
       'O ganho real não está nos minutos poupados. Está em o processo continuar quando a pessoa que sempre fazia aquela etapa não está.',
     imagem: '/images/ideia-dependencia.jpg',
-    para: '/work',
+    para: '/thoughts/automacao-nao-e-economizar-tempo',
   },
   {
     area: 'Arquitetura',

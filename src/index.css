@@ -2986,6 +2986,101 @@ h3 {
   .rp__peca:hover { transform: none; }
 }
 
+/* ── partilha: os icones, e a falha no hover ──
+   Mesma caixa de 44px do RedesPixel (WCAG 2.5.5) e mesmo glifo em
+   traco de 1.5. O que muda e o gatilho: la e scroll, aqui e o cursor.
+
+   A falha e CSS de proposito. Cinco icones com timeline propria seriam
+   cinco timelines vivas numa pagina de LEITURA, cujo ticker ja carrega
+   a persiana da imagem. `steps()` entrega o mesmo corte seco de graca.
+
+   A gramatica e a do componente Falha: nada interpola. As duas copias
+   fantasma se separam do original como canal de cor que perdeu o
+   registro, e voltam em salto — defeito que fica ligado deixa de ser
+   defeito e vira textura. */
+.pt {
+  list-style: none;
+  margin: 0.9rem 0 0 -10px;   /* o glifo alinha com o rotulo, nao a caixa */
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.pt__peca {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  color: var(--cal);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  transition: color 200ms ease;
+}
+.pt__peca:hover { color: var(--solda); }
+.pt__peca:focus-visible { outline: 2px solid var(--solda); outline-offset: 2px; }
+
+/* A pilha: as tres copias ocupam a MESMA celula da grade, empilhadas.
+   Sem isso os fantasmas empurrariam o layout ao aparecer. */
+.pt__pilha { display: grid; width: 22px; height: 22px; }
+.pt__glifo { grid-area: 1 / 1; display: block; }
+.pt__glifo svg { width: 22px; height: 22px; display: block; }
+
+.pt__glifo--a, .pt__glifo--b { opacity: 0; }
+.pt__glifo--a { color: var(--solda); }
+.pt__glifo--b { color: var(--fumaca); }
+
+.pt__peca:hover .pt__glifo       { animation: pt-falha 0.5s steps(1, end) infinite; }
+.pt__peca:hover .pt__glifo--a    { animation: pt-fantasma-a 0.5s steps(1, end) infinite; }
+.pt__peca:hover .pt__glifo--b    { animation: pt-fantasma-b 0.5s steps(1, end) infinite; }
+
+/* O original quase nao se mexe: e ele que mantem o icone legivel
+   enquanto os fantasmas fazem o barulho. Dois quadros de recorte
+   horizontal — a fatia que "perdeu o sinal". */
+@keyframes pt-falha {
+  0%, 44%, 100% { transform: translate(0, 0); clip-path: none; }
+  48%           { transform: translate(1px, -1px); clip-path: inset(34% 0 38% 0); }
+  56%           { transform: translate(-1px, 1px); clip-path: none; }
+  72%           { transform: translate(0, 0); clip-path: inset(8% 0 72% 0); }
+  78%           { transform: translate(0, 0); clip-path: none; }
+}
+
+@keyframes pt-fantasma-a {
+  0%            { opacity: 0; transform: translate(0, 0); clip-path: inset(0 0 62% 0); }
+  14%           { opacity: 1; transform: translate(-3px, 1px); clip-path: inset(0 0 62% 0); }
+  30%           { opacity: 1; transform: translate(2px, -2px); clip-path: inset(46% 0 18% 0); }
+  46%           { opacity: 1; transform: translate(-2px, 2px); clip-path: inset(18% 0 54% 0); }
+  60%, 100%     { opacity: 0; transform: translate(0, 0); }
+}
+
+@keyframes pt-fantasma-b {
+  0%, 18%       { opacity: 0; transform: translate(0, 0); }
+  22%           { opacity: 1; transform: translate(3px, 2px); clip-path: inset(52% 0 0 0); }
+  38%           { opacity: 1; transform: translate(-3px, -1px); clip-path: inset(0 0 48% 0); }
+  52%           { opacity: 1; transform: translate(2px, 0); clip-path: inset(30% 0 30% 0); }
+  66%, 100%     { opacity: 0; transform: translate(0, 0); }
+}
+
+/* Copiado: o icone ja troca de glifo no componente; aqui ele so para
+   de falhar e assume a cor de acento, porque confirmacao que pisca nao
+   le como confirmacao. */
+.pt__peca--copiar.e-copiado { color: var(--solda); }
+.pt__peca--copiar.e-copiado .pt__glifo { animation: none; }
+.pt__peca--copiar.e-copiado .pt__glifo--a,
+.pt__peca--copiar.e-copiado .pt__glifo--b { opacity: 0; animation: none; }
+
+/* O caminho estatico de verdade: sem movimento nenhum, e o hover
+   continua sinalizado pela cor. */
+@media (prefers-reduced-motion: reduce) {
+  .pt__peca:hover .pt__glifo,
+  .pt__peca:hover .pt__glifo--a,
+  .pt__peca:hover .pt__glifo--b { animation: none; }
+  .pt__peca:hover .pt__glifo--a,
+  .pt__peca:hover .pt__glifo--b { opacity: 0; }
+}
+
 /* ── formulario ── */
 .contato__forma {
   display: flex;
@@ -4766,24 +4861,19 @@ html { scrollbar-gutter: stable; }
   text-transform: uppercase;
 }
 
-.art__partilha { margin-top: clamp(2.5rem, 5vw, 4rem); }
-.art__partilha ul {
-  list-style: none; margin: 0.9rem 0 0; padding: 0;
-  display: flex; flex-wrap: wrap; gap: 0.6rem;
+.art__assinatura-corpo { min-width: 0; }
+/* O rotulo de partilha vive DENTRO da coluna de texto da assinatura,
+   como na referencia. Fora dela a fileira de icones voltava para a
+   margem da pagina e o bloco perdia o eixo que o selo quadrado abre. */
+.art__partilha-rotulo { margin-top: clamp(1.8rem, 3.4vw, 2.8rem); }
+
+/* O filete: fronteira entre "este artigo acabou" e "o proximo comeca
+   aqui". Sem ele o bloco Proximo le como rodape da assinatura. */
+.art__filete {
+  display: block; height: 1px;
+  background: rgba(245, 240, 232, 0.22);
+  margin: clamp(2.2rem, 4.5vw, 3.6rem) 0 0;
 }
-.art__partilha a {
-  display: inline-block;
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--cal);
-  text-decoration: none;
-  border: 1px solid var(--linha);
-  padding: 0.5rem 0.9rem;
-  transition: background-color .18s, border-color .18s, color .18s;
-}
-.art__partilha a:hover { background: var(--solda); border-color: var(--solda); color: var(--cal); }
 
 /* ── proximo ── */
 .art__proximo {
@@ -4820,7 +4910,22 @@ html { scrollbar-gutter: stable; }
   font-weight: 700;
   /* 200px em 1597 = 12.5vw. Cinza claro sobre Cal: presente sem
      competir com o que vem embaixo. */
+  /* O corpo vem do useCorpoJusto; o clamp fica como valor do primeiro
+     quadro, antes de a fonte carregar. `nowrap` e requisito do hook:
+     sem ele o scrollWidth mede a linha ja quebrada e o calculo erra. */
   font-size: clamp(2.6rem, 12.5vw, 12.5rem);
+  white-space: nowrap;
+  /* ── por que `width: max-content` ──
+     O hook mede o texto por `scrollWidth`. Num <h2> block a caixa ja
+     ocupa a linha inteira, entao um texto MENOR que ela nao transborda
+     e o scrollWidth devolve a largura da CAIXA — o hook calculava
+     1386/1386 e concluia que ja estava justo. O texto real media 972:
+     414px de sobra, e o titulo ficava no meio da largura.
+
+     Com `max-content` a caixa passa a ter o tamanho do texto, e as
+     duas medidas voltam a ser a mesma coisa. */
+  width: max-content;
+  max-width: 100%;
   line-height: 0.92;
   letter-spacing: -0.07em;
   text-transform: uppercase;
@@ -4832,10 +4937,15 @@ html { scrollbar-gutter: stable; }
 .art__pente i { flex: 1; background: rgba(10, 10, 10, 0.12); }
 
 .art__lista { list-style: none; margin: 0; padding: 0; }
+
+/* A linha da referencia e imagem + texto, nao um indice numerico. A
+   miniatura faz o trabalho que o numero nao fazia: em lista de tres
+   ou quatro ideias, o que distingue uma da outra a distancia de um
+   relance e a foto, nao o "02". */
 .art__linha {
   display: grid;
-  grid-template-columns: 4rem 1fr 3rem;
-  gap: 1.5rem;
+  grid-template-columns: clamp(9rem, 16vw, 15rem) 1fr 3rem;
+  gap: clamp(1.2rem, 3vw, 2.4rem);
   align-items: center;
   padding: clamp(1.4rem, 2.6vw, 2.2rem) 0;
   border-top: 1px solid rgba(10, 10, 10, 0.16);
@@ -4845,8 +4955,20 @@ html { scrollbar-gutter: stable; }
 }
 .art__lista li:last-child .art__linha { border-bottom: 1px solid rgba(10, 10, 10, 0.16); }
 .art__linha:hover { background: rgba(10, 10, 10, 0.04); }
-.art__linha-selo { font-family: var(--font-mono); font-size: 0.8rem; color: var(--solda); }
-.art__linha-corpo { display: flex; flex-direction: column; gap: 0.3rem; }
+
+/* 4:3 e nao 3:4: deitada, a miniatura ocupa menos altura por linha e a
+   lista inteira cabe numa tela — que e o ponto de uma lista de
+   escolha. As imagens do CORPO do artigo continuam em 3:4. */
+.art__linha-foto {
+  display: block;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--chapa);
+}
+.art__linha-foto .art__foto { display: block; }
+
+.art__linha-corpo { display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; }
+.art__linha-corpo .art__data { margin: 0; }
 .art__linha-titulo {
   font-family: var(--font-display);
   font-weight: 700;
@@ -4854,6 +4976,15 @@ html { scrollbar-gutter: stable; }
   line-height: 1.04;
   letter-spacing: -0.04em;
   text-transform: uppercase;
+}
+.art__linha-resumo {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: rgba(10, 10, 10, 0.7);
+  max-width: 52ch;
 }
 .art__linha-seta { font-size: 1.4rem; justify-self: end; transition: transform .2s; }
 .art__linha:hover .art__linha-seta { transform: translateX(6px); }
@@ -4884,8 +5015,16 @@ html { scrollbar-gutter: stable; }
   .art__p { max-width: 100%; }
   .art__fecho { margin-left: -20px; margin-right: -20px; padding-left: 20px; padding-right: 20px; }
   .art__assinatura { flex-direction: column; gap: 1.1rem; }
-  .art__assinatura-marca { width: 84px; height: 84px; }
   .art__proximo { margin-left: 0; text-align: left; }
-  .art__linha { grid-template-columns: 2.6rem 1fr 1.6rem; gap: 0.9rem; }
+  /* A linha vira pilha: a miniatura por cima, o texto por baixo. Em
+     375 a foto de 9rem deixaria ~13rem para um titulo em caixa alta —
+     o titulo quebraria em cinco linhas ao lado de uma imagem baixa. */
+  .art__linha { grid-template-columns: 1fr; gap: 0.9rem; }
+  .art__linha-foto { aspect-ratio: 16 / 9; }
+  .art__linha-seta { display: none; }
+  .art__assinatura-marca { width: 84px; height: 84px; }
+  /* O hook e desligado no componente abaixo de 820px (ele limpa o que
+     escreveu ao sair), entao aqui basta devolver a quebra de linha. */
+  .art__mais-titulo { white-space: normal; width: auto; }
   .art__pente { height: 22px; gap: 4px; }
 }

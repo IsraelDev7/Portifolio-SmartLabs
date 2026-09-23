@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 /**
  * useCorpoJusto — ajusta o CORPO da fonte para a linha preencher a
@@ -29,13 +29,51 @@ import { useEffect } from 'react';
    precisa, e nao tao alto que o navegador precise sintetizar metricas. */
 const BASE = 200;
 
+/**
+ * `ativo` aceita booleano OU funcao.
+ *
+ * Com funcao, a condicao e reavaliada a CADA ajuste — inclusive nos
+ * disparos do ResizeObserver aqui dentro. Foi o que resolveu o titulo
+ * "MAIS IDEIAS": a versao anterior guardava a faixa num estado do React
+ * alimentado por `matchMedia('change')`, e ao mudar a largura da janela
+ * sem recarregar o evento nao chegava ao listener. O corpo calculado
+ * para a faixa antiga ficava grudado, e como o hook escreve inline com
+ * prioridade, nenhuma regra da folha conseguia corrigir.
+ *
+ * O ResizeObserver abaixo ja observa exatamente a mudanca que importa.
+ * Perguntar a ele e mais curto e mais confiavel que espelhar a mesma
+ * informacao num estado paralelo.
+ *
+ * Quando a funcao devolve falso, o corpo inline e REMOVIDO — o controle
+ * volta para o CSS em vez de congelar no ultimo valor calculado.
+ */
 export function useCorpoJusto(escopo, seletor, { folga = 0, ativo = true } = {}) {
+  /* ── por que a funcao vai por ref ──
+     `ativo` entra nas dependencias do efeito. Uma funcao declarada no
+     JSX do chamador tem identidade nova a cada render, entao ela
+     derrubaria e remontaria o efeito — com o ResizeObserver — em todo
+     render. A ref guarda sempre a versao mais recente sem participar da
+     comparacao de dependencias.
+
+     Booleano continua na lista: ali a identidade E o valor, e mudar de
+     faixa PRECISA reconstruir o efeito. */
+  const ativoRef = useRef(ativo);
+  ativoRef.current = ativo;
+
+  const ehFuncao = typeof ativo === 'function';
+
   useEffect(() => {
     const raiz = escopo.current;
-    if (!raiz || !ativo) return;
+    const ligado = () => {
+      const a = ativoRef.current;
+      return typeof a === 'function' ? a() : a;
+    };
+    if (!raiz || (!ehFuncao && !ativo)) return;
 
     const ajustar = () => {
+      const on = ligado();
       raiz.querySelectorAll(seletor).forEach((el) => {
+        if (!on) { el.style.removeProperty('font-size'); return; }
         const pai = el.parentElement;
         if (!pai) return;
 
@@ -108,5 +146,7 @@ export function useCorpoJusto(escopo, seletor, { folga = 0, ativo = true } = {})
          telefone ficaria grudado no elemento ao voltar para o desktop. */
       raiz.querySelectorAll(seletor).forEach((el) => { el.style.removeProperty('font-size'); });
     };
-  }, [escopo, seletor, folga, ativo]);
+    /* `ehFuncao` no lugar de `ativo` quando ele e funcao: ver a nota
+     da ref acima. */
+  }, [escopo, seletor, folga, ehFuncao ? true : ativo, ehFuncao]);
 }

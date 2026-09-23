@@ -7,6 +7,8 @@ import { usePageMotion } from '../hooks/usePageMotion';
 import TransitionLink from '../components/TransitionLink';
 import { Monogram } from '../components/Logo';
 import { GradeRipas, animarRipas } from '../components/Persiana';
+import Partilha from '../components/Partilha';
+import { useCorpoJusto } from '../hooks/useCorpoJusto';
 import { acharArtigo, outrosArtigos } from '../dados/artigos';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -54,6 +56,32 @@ export default function Artigo() {
 
      A referencia usa corpo fixo e deixa a frase quebrar sozinha. E o
      que faz o titulo ter o mesmo tamanho em todos os artigos. */
+
+  /* "MAIS IDEIAS" e a UNICA linha desta pagina com corpo medido.
+     Ver a nota no JSX: uma linha, peso uniforme, trabalho de ocupar a
+     largura inteira. Fora desse caso a medicao faz o corpo depender do
+     numero de palavras em vez do desenho da pagina.
+
+     ── por que desligar no telefone, e nao sobrescrever no CSS ──
+     O hook grava `font-size` INLINE e com prioridade. Estilo inline
+     marcado vence qualquer regra da folha, inclusive outra marcada:
+     a media query do telefone perdia, o titulo ficava em 285px numa
+     tela de 375 e era cortado pelo `overflow-x: clip` da pagina — sem
+     rolagem horizontal para denunciar.
+
+     Desligar e a correcao certa porque o hook limpa o que escreveu ao
+     ser desativado, e ai o CSS volta a mandar. Enquadrar "MAIS IDEIAS"
+     na largura de um telefone daria letra de 14px de altura: a linha
+     quebra em duas, que e o desenho certo para essa largura. */
+  /* A condicao vai como FUNCAO: o hook a reavalia a cada ajuste, junto
+     com o ResizeObserver que ele ja mantem. Espelhar a faixa num estado
+     do React alimentado por `matchMedia('change')` nao funcionou — o
+     evento nao chegava ao mudar a largura da janela, e o corpo da faixa
+     anterior ficava preso num estilo inline marcado, que nenhuma regra
+     da folha consegue corrigir. */
+  useCorpoJusto(alvo, '.art__mais-titulo', {
+    ativo: () => !window.matchMedia('(max-width: 820px)').matches,
+  });
 
   useGSAP(() => {
     const r = alvo.current;
@@ -265,48 +293,56 @@ export default function Artigo() {
       </div>
 
       {/* ══════ FECHO ══════ */}
+      {/* A referencia encaixa o rotulo de compartilhar DENTRO da coluna
+          de texto da assinatura, e nao abaixo do bloco inteiro: o selo
+          quadrado a esquerda abre uma coluna, e tudo que e sobre o
+          artigo — data, titulo, autor, partilha — desce alinhado nela.
+          Fora dela, a linha de icones voltava para a margem da pagina e
+          o bloco perdia o eixo. */}
       <section className="art__fecho">
         <h2 className="art__fecho-titulo">{artigo.fecho}</h2>
 
         <div className="art__assinatura">
           <div className="art__assinatura-marca">
-            <Monogram color="var(--solda)" size={20} />
+            <Monogram color="var(--solda)" size={34} />
           </div>
-          <div>
+
+          <div className="art__assinatura-corpo">
             <p className="art__data">{artigo.dataCurta}</p>
             <h3 className="art__assinatura-titulo">{artigo.titulo}</h3>
             <p className="art__rotulo">Por {artigo.autor}</p>
+
+            <p className="art__rotulo art__partilha-rotulo">Compartilhar</p>
+            <Partilha
+              url={`https://smartlabs.ai/thoughts/${artigo.slug}`}
+              titulo={artigo.titulo}
+            />
           </div>
         </div>
 
-        <div className="art__partilha">
-          <p className="art__rotulo">Compartilhar</p>
-          <ul>
-            {[
-              ['LinkedIn', `https://www.linkedin.com/sharing/share-offsite/?url=`],
-              ['WhatsApp', `https://api.whatsapp.com/send?text=`],
-              ['X', `https://twitter.com/intent/tweet?url=`],
-              ['Telegram', `https://t.me/share/url?url=`],
-            ].map(([nome, base]) => (
-              <li key={nome}>
-                <a href={base + encodeURIComponent(`https://smartlabs.ai/thoughts/${artigo.slug}`)}
-                   target="_blank" rel="noopener noreferrer">{nome}</a>
-              </li>
-            ))}
-          </ul>
-        </div>
-
+        {/* O filete separa a assinatura do que vem A SEGUIR. Na
+            referencia ele e a fronteira entre "este artigo acabou" e
+            "o proximo comeca aqui" — sem ele o bloco Proximo le como
+            rodape da assinatura. */}
         {proximo && (
-          <TransitionLink className="art__proximo" to={`/thoughts/${proximo.slug}`}>
-            <span className="art__proximo-selo">Próximo</span>
-            <span className="art__proximo-titulo">{proximo.titulo}</span>
-            <span className="art__rotulo">Por {proximo.autor}</span>
-          </TransitionLink>
+          <>
+            <i className="art__filete" aria-hidden="true" />
+            <TransitionLink className="art__proximo" to={`/thoughts/${proximo.slug}`}>
+              <span className="art__proximo-selo">Próximo</span>
+              <span className="art__proximo-titulo">{proximo.titulo}</span>
+              <span className="art__rotulo">Por {proximo.autor}</span>
+            </TransitionLink>
+          </>
         )}
       </section>
 
       {/* ══════ MAIS IDEIAS ══════ */}
       <section className="art__mais">
+        {/* Corpo MEDIDO, nao fixado. Aqui a medicao cabe — e uma linha
+            so, de peso uniforme, cujo trabalho e ocupar a largura
+            inteira (na referencia "MORE THOUGHTS" vai de borda a
+            borda). E o caso oposto ao do titulo do artigo, que tem tres
+            linhas de pesos diferentes e por isso usa corpo fixo. */}
         <h2 className="art__mais-titulo" aria-label="Mais ideias">Mais ideias</h2>
         <div className="art__pente" aria-hidden="true">
           {Array.from({ length: 64 }, (_, i) => <i key={i} />)}
@@ -316,12 +352,24 @@ export default function Artigo() {
           {outros.map((o) => (
             <li key={o.slug}>
               <TransitionLink className="art__linha" to={`/thoughts/${o.slug}`}>
-                <span className="art__linha-selo">{o.indice}</span>
+                {/* A imagem entra como `.art__foto`: e essa a classe que
+                    o `animarRipas` la em cima varre. Um seletor novo
+                    aqui exigiria lembrar de registra-lo la — e e assim
+                    que uma imagem nasce sem animacao. */}
+                <span className="art__linha-foto">
+                  <span className="art__foto" style={{ backgroundImage: `url(${o.capa})` }}
+                        role="img" aria-label={o.capaAlt || ''}>
+                    <GradeRipas />
+                  </span>
+                </span>
+
                 <span className="art__linha-corpo">
-                  <span className="art__data">{o.dataCurta}</span>
-                  <span className="art__linha-titulo">{o.titulo}</span>
+                  <span className="art__data">{o.dataCurta} — {o.area}</span>
+                  <span className="art__linha-titulo" data-anim="rise">{o.titulo}</span>
+                  <span className="art__linha-resumo" data-anim="rise">{o.resumo}</span>
                   <span className="art__rotulo">{o.leitura} de leitura</span>
                 </span>
+
                 <span className="art__linha-seta" aria-hidden="true">→</span>
               </TransitionLink>
             </li>
