@@ -189,6 +189,79 @@ export const ARTIGOS = [
 
     fecho: 'Obrigado por ler',
   },
+  {
+    slug: 'ia-nao-e-o-produto-e-a-camada',
+    indice: '03',
+    area: 'Inteligência',
+    data: '6 de outubro de 2026',
+    dataCurta: 'OUT 2026',
+    leitura: '3 minutos',
+    autor: 'Israel Passos',
+    titulo: 'IA não é o produto. É a camada.',
+    subtitulo:
+      'Quando a inteligência chega como produto separado, alguém precisa aprender a operá-la. E esse alguém já tem um trabalho.',
+    resumo:
+      'A pergunta não é se usar IA. É onde ela entra — e onde ela não deve entrar. A régua calcula; o modelo redige.',
+    capa: '/images/ideia-camada.jpg',
+    capaAlt: 'Camadas de material sobrepostas, com a junção aparente',
+
+    abertura: [
+      'Todo mundo quer "colocar IA" no negócio. Quase ninguém pergunta onde ela entra.',
+      'E é essa resposta que decide se a ferramenta vai estar em uso em março ou abandonada em fevereiro.',
+    ],
+
+    blocos: [
+      {
+        lado: 'esq',
+        titulo: 'Produto separado é mais uma coisa para aprender.',
+        paragrafos: [
+          'Painel novo, aba à parte, mais um login. Toda vez que a inteligência chega assim, ela cobra um pedágio: alguém precisa lembrar de abrir, colar o dado, copiar a saída e voltar para onde o trabalho realmente acontece.',
+          'Camada é o contrário. Ela some dentro do fluxo que já existia — a pessoa continua respondendo o WhatsApp, só que a resposta já chega escrita.',
+        ],
+        codigo: 'produto:  abrir → colar → copiar → voltar\ncamada:   a saída já está onde o trabalho acontece',
+      },
+      {
+        lado: 'dir',
+        imagemPrimeiro: true,
+        imagem: '/images/camada-interface.jpg',
+        imagemAlt: 'Interface técnica sobreposta a uma superfície de metal',
+        titulo: 'Onde a IA não deve entrar.',
+        paragrafos: [
+          '**Onde a resposta precisa ser sempre a mesma.** Preço, elegibilidade, diagnóstico técnico. Isso é régua, não conversa: um motor de regras com pontuação dá o mesmo resultado para a mesma entrada, é auditável linha a linha por quem entende do assunto, responde na hora e custa zero.',
+          '**Onde errar tem consequência.** Um modelo que inventa uma recomendação técnica para quem está decidindo uma contratação não é um erro engraçado.',
+          '**Onde ninguém vai conferir.** Saída que ninguém lê é saída que ninguém corrige — e que vai errar por meses sem ninguém saber.',
+        ],
+      },
+      {
+        lado: 'esq',
+        titulo: 'Cada setor tem uma camada diferente.',
+        paragrafos: [
+          'A pergunta certa não é "onde cabe IA aqui". É **em que ponto do fluxo a pessoa hoje escreve do zero algo que já poderia estar escrito.**',
+        ],
+        setores: [
+          ['Saúde e estética',
+           'A camada é a triagem. O formulário vira anamnese estruturada e a equipe recebe o caso já classificado, em vez de um "oi, quanto custa?" para responder do zero.'],
+          ['Consultoria',
+           'A camada é a leitura. O que o lead escreveu vira resumo com contexto e objeção provável antes da primeira reunião acontecer.'],
+          ['Serviço de campo e paisagismo',
+           'A camada é o diagnóstico. Algumas perguntas respondidas na página viram um laudo com prioridade e faixa de investimento — calculado pela régua, redigido pelo modelo.'],
+          ['E-commerce',
+           'A camada é o pós-venda. Pergunta repetida sobre prazo e troca respondida na hora, com o dado real do pedido, e não com texto genérico.'],
+        ],
+      },
+      {
+        lado: 'esq',
+        titulo: 'A régua calcula. O modelo redige.',
+        paragrafos: [
+          'É a divisão que eu uso em tudo: decisão determinística, linguagem natural só na apresentação. Os números saem de uma régua que o especialista escreveu e consegue conferir; o modelo pega o resultado e escreve o texto que a pessoa vai ler.',
+          'A vantagem aparece quando dá errado. Se o laudo saiu torto, dá para apontar **qual regra** errou e corrigir a regra. Com o modelo decidindo, resta torcer por um palpite melhor na próxima.',
+          'IA que aparece no organograma é produto. IA que some dentro do trabalho é camada. Só a segunda continua em uso em março.',
+        ],
+      },
+    ],
+
+    fecho: 'Obrigado por ler',
+  },
 ];
 
 /** Busca por slug — usado pela rota /thoughts/:slug. */

@@ -62,11 +62,12 @@ const CASOS = [
     area: 'Arquitetura',
     cliente: '[ nome do cliente ]',
     foto: null,
+    slug: 'ia-nao-e-o-produto-e-a-camada',
     titulo: 'IA não é o produto. É a camada.',
     resumo:
       'Quando a inteligência entra como produto separado, alguém precisa aprender a operá-la. Quando entra como camada, ela some dentro do fluxo que já existia.',
     imagem: '/images/ideia-camada.jpg',
-    para: '/work',
+    para: '/thoughts/ia-nao-e-o-produto-e-a-camada',
   },
   {
     area: '[ quarto segmento ]',
