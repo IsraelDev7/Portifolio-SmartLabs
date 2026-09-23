@@ -4692,6 +4692,45 @@ html { scrollbar-gutter: stable; }
   overflow: hidden;   /* as ripas sangram -0.5px para nao piscar fio */
 }
 
+/* ── a lista por setor ──
+   Formato escolhido pelo modo de leitura, nao pela estetica: ninguem
+   le esta secao de cima a baixo. A pessoa varre procurando o proprio
+   negocio, para e le UMA entrada. Por isso o rotulo vai em mono, em
+   Solda, curto o bastante para ser reconhecido de relance, e a
+   resposta vem logo abaixo em uma frase fechada — sem depender das
+   vizinhas para fazer sentido.
+
+   O filete entre as entradas faz o trabalho que o espaco em branco
+   faria com o dobro da altura. Numa pagina que acabou de perder tres
+   imagens por excesso de rolagem, custo vertical importa. */
+.art__setores {
+  margin: 0 0 1.4rem;
+  max-width: 62ch;
+  border-top: 1px solid rgba(10, 10, 10, 0.16);
+}
+.art__setores > div {
+  padding: 0.9rem 0;
+  border-bottom: 1px solid rgba(10, 10, 10, 0.16);
+}
+.art__setores dt {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--solda);
+  margin-bottom: 0.35rem;
+}
+.art__setores dd {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.98rem;
+  line-height: 1.5;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: rgba(10, 10, 10, 0.86);
+}
+.art__setores dd b { font-weight: 700; color: var(--aco); }
+
 /* ── fecho ── */
 .art__fecho {
   margin: clamp(4rem, 9vw, 8rem) -24px 0;
@@ -4830,8 +4869,18 @@ html { scrollbar-gutter: stable; }
   .art__pautas { display: none; }
   .art__subtitulo { max-width: 100%; }
   .art__meta { gap: 2rem; }
-  .art__corpo { grid-template-columns: 1fr; column-gap: 0; }
-  .art__bloco, .art__bloco--dir { grid-column: 1; }
+  /* Uma coluna so. As duas colunas deixam de existir como caixa
+     (`display: contents`) e os blocos viram filhos diretos da grade —
+     senao a pilha sairia "tudo da esquerda, depois tudo da direita", e
+     o fecho do artigo cairia no meio da leitura. `order` devolve a
+     ordem em que os blocos foram escritos no arquivo de dados.
+
+     O vao passa a ser `row-gap`: com `display: contents` o
+     `:last-child` de cada coluna deixa de coincidir com o ultimo bloco
+     da pilha, e a margem zerada abriria buraco no lugar errado. */
+  .art__corpo { grid-template-columns: 1fr; column-gap: 0; row-gap: clamp(3rem, 7vw, 6rem); }
+  .art__coluna { display: contents; }
+  .art__bloco, .art__bloco:last-child { order: var(--ordem, 0); margin-bottom: 0; }
   .art__p { max-width: 100%; }
   .art__fecho { margin-left: -20px; margin-right: -20px; padding-left: 20px; padding-right: 20px; }
   .art__assinatura { flex-direction: column; gap: 1.1rem; }

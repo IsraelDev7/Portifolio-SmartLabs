@@ -203,9 +203,18 @@ export default function Artigo() {
       <div className="art__corpo">
         {['esq', 'dir'].map((lado) => (
           <div className={`art__coluna art__coluna--${lado}`} key={lado}>
-            {artigo.blocos.filter((b) => b.lado === lado).map((b, i) => {
+            {artigo.blocos
+              .map((b, i) => ({ b, i }))          /* guarda o indice do array */
+              .filter(({ b }) => b.lado === lado)
+              .map(({ b, i }) => {
               return (
-                <section className="art__bloco" key={i}>
+                /* `--ordem` so e usada no telefone. La as colunas viram
+                   `display: contents` e todos os blocos caem na mesma
+                   pilha — em ordem de DOM, que e "tudo da esquerda,
+                   depois tudo da direita". Isso jogaria o fecho para o
+                   meio da leitura. Com `order`, o telefone le na ordem
+                   em que os blocos foram escritos no arquivo de dados. */
+                <section className="art__bloco" style={{ '--ordem': i }} key={i}>
                   {b.imagemPrimeiro && b.imagem && (
                     <figure className="art__figura">
                       <div className="art__foto" style={{ backgroundImage: `url(${b.imagem})` }}
@@ -223,6 +232,21 @@ export default function Artigo() {
 
                   {b.codigo && (
                     <pre className="art__codigo" data-anim="rise"><code>{b.codigo}</code></pre>
+                  )}
+
+                  {/* Os setores: lista de definição, não parágrafo. O
+                      leitor não lê isto — ele VARRE procurando o
+                      próprio negócio. Rótulo curto em mono à esquerda
+                      do olho, uma frase inteira de resposta abaixo. */}
+                  {b.setores && (
+                    <dl className="art__setores" data-anim="rise">
+                      {b.setores.map(([nome, texto], k) => (
+                        <div key={k}>
+                          <dt>{nome}</dt>
+                          <dd>{comEnfase(texto)}</dd>
+                        </div>
+                      ))}
+                    </dl>
                   )}
 
                   {!b.imagemPrimeiro && b.imagem && (

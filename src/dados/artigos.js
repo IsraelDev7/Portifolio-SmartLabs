@@ -3,113 +3,113 @@
  *
  * Os textos moram aqui, separados do componente que os desenha. O
  * motivo é prático: a página do artigo tem layout fixo — colunas
- * alternadas, imagens em 3:4, abertura em corpo grande — e o conteúdo
- * muda toda semana. Misturar os dois faria cada texto novo exigir
- * mexer em JSX.
+ * independentes, imagem em 3:4, abertura em corpo grande — e o
+ * conteúdo muda toda semana. Misturar os dois faria cada texto novo
+ * exigir mexer em JSX.
+ *
+ * ── o que este caderno é, e o que ele não é ──
+ * Aqui mora o PENSAMENTO, não o portfólio. A seção Work mostra as
+ * obras; esta mostra o raciocínio que as gera. Por isso nenhum cliente
+ * é nomeado: os casos entram por SETOR, porque o que se aprende num
+ * projeto só serve a outro quando vira critério — e critério é do
+ * nicho, não da pessoa.
  *
  * ── a forma de um artigo ──
- * Medida na referência (vertical.framer.media), em viewport de 1597:
+ * Medida na referência (vertical.framer.media), viewport de 1597:
  *
  *   abertura   parágrafos em 40px, caixa alta, largura total
- *   blocos     alternam lado: coluna esquerda, depois direita
+ *   blocos     duas colunas que fluem INDEPENDENTES, sem se esperar
  *   imagem     631x858 — razão 3:4, a largura exata da coluna
  *
- * Cada bloco declara `lado` — e as duas colunas fluem de forma
- * INDEPENDENTE, empilhando o que lhes cabe sem deixar buraco. Foi o
- * erro da primeira versão: com `grid-column` numa grade única, cada
- * bloco ocupava uma linha inteira e a célula oposta ficava vazia.
+ * ── por que só UMA imagem no corpo ──
+ * A referência usa uma. Quatro imagens num texto de três minutos
+ * empurram o argumento para baixo da dobra e transformam leitura em
+ * rolagem. A imagem que ficou abre a coluna direita e alinha com o
+ * topo do texto da esquerda: ela existe para dar ritmo à diagramação,
+ * não para ilustrar o que a frase já disse.
  *
- * `imagemPrimeiro` inverte a ordem dentro do bloco. Na referência a
- * coluna esquerda abre com texto e fecha com imagem; a direita faz o
- * contrário. É essa alternância cruzada que tira o ritmo de tabela e
- * faz a página parecer diagramada.
+ * `imagemPrimeiro` inverte a ordem dentro do bloco. `setores` rende
+ * uma lista compacta — é o formato que o leitor varre em dois
+ * segundos e encontra o próprio negócio.
  */
 
 export const ARTIGOS = [
   {
     slug: 'a-estrutura-vem-antes-da-estetica',
     indice: '01',
-    area: 'Development',
+    area: 'Engenharia',
     data: '22 de setembro de 2026',
     dataCurta: 'SET 2026',
-    leitura: '5 minutos',
+    leitura: '3 minutos',
     autor: 'Israel Passos',
     titulo: 'A estrutura vem antes da estética.',
     subtitulo:
-      'Um site pode estar no ar, bonito e rápido — e não entregar um único contato. Descobri isso auditando o meu próprio trabalho.',
+      'Um site pode estar no ar, bonito e rápido — e não entregar um único contato.',
     resumo:
-      'Interface bonita sobre arquitetura frágil não sobrevive ao primeiro pico de volume. O que sustenta a experiência premium é justamente o que ninguém vê.',
+      'O que sustenta uma experiência premium é justamente a parte que ninguém vê. E cada setor cobra isso de um jeito diferente.',
     capa: '/images/ideia-estrutura.jpg',
     capaAlt: 'Estrutura de concreto armado com a ferragem exposta antes da concretagem',
 
     abertura: [
       'Todo mundo elogia a fachada. Quase ninguém pergunta se o prédio fica de pé.',
-      'E o problema com fachada é que ela não avisa quando a estrutura cede. O site continua abrindo, continua bonito, continua rápido. O que parou de funcionar foi a parte que ninguém olha.',
-      'Eu descobri isso do jeito mais desconfortável possível: auditando um site que eu mesmo tinha entregue.',
+      'E fachada não avisa quando a estrutura cede. O site continua abrindo, continua bonito. O que parou de funcionar é a parte que ninguém olha.',
     ],
 
     blocos: [
       {
         lado: 'esq',
-        titulo: 'O site respondia 200. A captura estava morta.',
+        titulo: 'Sistema que falha calado.',
         paragrafos: [
-          'Uma landing page de consultoria, no ar havia meses. Abria em menos de dois segundos, desenho impecável, formulário respondendo "enviado" com uma animação bem-feita.',
-          'Rodei uma verificação de rotina no endereço da API. Voltou isto:',
-          'A função sem servidor estava quebrando em toda invocação. Não em alguns casos, não sob carga — em todas. Desde o primeiro dia.',
-          'Na prática: nenhum clique foi registrado, nenhum contato do formulário chegou à planilha, nenhum e-mail de boas-vindas saiu. E o relatório diário que deveria chegar no WhatsApp do cliente às 23h nunca chegou, porque o agendamento também morria na mesma linha.',
+          'Site que cai, alguém liga no mesmo dia. Site que falha calado acumula prejuízo em silêncio — e ninguém sabe desde quando.',
+          'A falha mais cara que eu encontro não derruba nada. O formulário responde **"enviado"**, a animação roda bonita, e nenhum registro existe do outro lado.',
         ],
-        codigo: 'GET /api/clicks\n\nA server error has occurred\nFUNCTION_INVOCATION_FAILED',
-        imagem: '/images/ideia-estrutura.jpg',
-        imagemAlt: 'Detalhe da ferragem de uma laje antes da concretagem',
+        codigo: 'POST /api/leads   →   200 OK\nregistros gravados:   0',
       },
       {
         lado: 'dir',
-        /* Abre com imagem: na referência a coluna direita começa com a
-           foto, alinhada ao topo do texto da coluna esquerda. */
+        /* A única imagem do corpo. Abre a coluna direita e alinha com o
+           topo do texto da esquerda — é o que tira o ritmo de tabela. */
         imagemPrimeiro: true,
         imagem: '/images/camada-estrutura.jpg',
         imagemAlt: 'Camadas de concreto aparente com a estrutura metálica à mostra',
-        titulo: 'A causa era uma linha de configuração.',
+        titulo: 'Três regras, antes de desenhar qualquer tela.',
         paragrafos: [
-          'O `package.json` declarava `"type": "module"`. Isso faz o Node tratar todo arquivo `.js` como módulo ES. Os três endpoints, porém, usavam `require` e `module.exports` — a sintaxe do sistema antigo.',
-          'Em módulo ES, `require` simplesmente não existe. A função morre antes da primeira linha útil.',
-          'Não é um erro difícil. É um erro **invisível**: o site é estático e continua sendo servido normalmente; só a camada de API quebra. E como o formulário respondia sucesso sem conferir a resposta, nada na tela denunciava o problema.',
-          'Uma linha de configuração contra meses de contatos perdidos.',
+          '**A entrega espera confirmação.** A tela só diz "enviado" depois que o registro existe. Se não existe, mostra o erro e oferece o WhatsApp como saída.',
+          '**Todo endpoint tem pulso.** Um endereço que responde se o serviço subiu e se as credenciais estão no lugar — sem gravar nada.',
+          '**Falha vira registro.** Canal que cai aparece no log com nome e motivo. É assim que se descobre antes do cliente descobrir pela ausência de resultado.',
         ],
       },
       {
         lado: 'esq',
-        titulo: 'Por que a fachada não avisou.',
+        titulo: 'Cada setor cobra isso de um jeito.',
         paragrafos: [
-          'A pergunta que importa não é "como isso aconteceu". É "por que ninguém percebeu".',
-          'Porque não havia nada configurado para perceber. Nenhuma verificação de saúde, nenhum alerta, nenhum teste. O único sinal possível seria o cliente estranhar a ausência de contatos — e, num negócio que também recebe por telefone e indicação, isso demora.',
-          'Sistema que falha calado é pior que sistema que cai. Quando cai, alguém liga no mesmo dia. Quando falha calado, o prejuízo se acumula em silêncio e ninguém sabe desde quando.',
+          'Estrutura não significa a mesma coisa em todo nicho. O que muda é **onde a decisão de compra trava** — e é exatamente ali que a engenharia precisa estar.',
         ],
-        imagem: '/images/ideia-vazamento.jpg',
-        imagemAlt: 'Junta de concreto com infiltração visível',
-      },
-      {
-        lado: 'dir',
-        titulo: 'O que passou a ser obrigatório aqui.',
-        imagem: '/images/ideia-dependencia.jpg',
-        imagemAlt: 'Vigas de sustentação encaixadas umas nas outras',
-        paragrafos: [
-          'Três coisas, e nenhuma é cara:',
-          '**Toda entrega espera confirmação antes de responder.** O formulário só diz "enviado" depois que o registro existe. Se não existe, a tela mostra o erro e oferece o WhatsApp como saída.',
-          '**Todo endpoint tem uma verificação de saúde.** Um `GET` que devolve se o serviço subiu e se as credenciais estão configuradas — sem gravar nada. Foi exatamente esse endereço que, depois do conserto, revelou o segundo problema: as variáveis de ambiente nunca tinham sido preenchidas em produção.',
-          '**Falha vira registro estruturado.** Se um canal cai, aparece no log com nome e motivo. É assim que se descobre um serviço quebrado antes do cliente descobrir pela ausência de resultado.',
+        setores: [
+          ['Saúde e estética',
+           'A decisão é íntima e demora. Excelência aqui é anamnese antes do orçamento: o lead chega ao WhatsApp já respondido, e a equipe já sabe o que ele tem.'],
+          ['Consultoria',
+           'Ninguém compra hora de reunião — compra a certeza de ter sido entendido. A página precisa provar entendimento antes de pedir o contato.'],
+          ['Serviço de campo e paisagismo',
+           'Orçamento cego queima a agenda. Um punhado de perguntas certas filtra quem ainda não tem projeto e entrega o resto já diagnosticado.'],
+          ['E-commerce',
+           'O gargalo nunca é a vitrine, é o caminho do carrinho ao webhook. Pagamento que confirma sem mudar o estado do pedido não é venda: é reclamação.'],
         ],
       },
       {
+        /* Fecha à ESQUERDA, e não na direita. A coluna direita carrega a
+           única imagem (832px de altura contra 301 do bloco de texto
+           equivalente): mandar o fecho para lá deixava 641px de branco
+           no pé da esquerda. Com ele aqui a diferença cai para ~200.
+
+           E o corte cai bem no sentido: a esquerda passa a ser o
+           ARGUMENTO de ponta a ponta, a direita o MÉTODO. */
         lado: 'esq',
         titulo: 'Estética não é o oposto de estrutura.',
-        imagem: '/images/camada-arquiteto.jpg',
-        imagemAlt: 'Fachada concluída, com a estrutura já invisível por dentro',
         paragrafos: [
-          'Nada disso é argumento contra design. O site continua tendo que ser bonito — é ele que faz a pessoa ficar tempo suficiente para virar contato.',
-          'O ponto é de ordem. Estética é o que traz a pessoa até o formulário. Estrutura é o que garante que o preenchimento chegue a algum lugar. Investir só na primeira é pagar tráfego para um balde furado.',
-          'Fachada bonita num prédio que funciona é arquitetura.',
-          'Fachada bonita num prédio que não funciona é cenário.',
+          'Nada disso é argumento contra design. É ele que faz a pessoa ficar tempo suficiente para virar contato.',
+          'O ponto é de ordem. Estética traz a pessoa até o formulário. Estrutura garante que o preenchimento chegue a algum lugar. Investir só na primeira é pagar tráfego para um balde furado.',
+          'Fachada bonita num prédio que funciona é arquitetura. Num prédio que não funciona, é cenário.',
         ],
       },
     ],
