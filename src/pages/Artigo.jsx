@@ -6,6 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { usePageMotion } from '../hooks/usePageMotion';
 import TransitionLink from '../components/TransitionLink';
 import { Monogram } from '../components/Logo';
+import { GradeRipas, animarRipas } from '../components/Persiana';
 import { acharArtigo, outrosArtigos } from '../dados/artigos';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -84,29 +85,30 @@ export default function Artigo() {
       });
     }
 
-    /* ── a capa ──
-       Sobe de dentro de uma mascara e a imagem deriva por dentro dela
-       enquanto a pagina rola. Sem a deriva, a foto e um retangulo
-       parado no meio da leitura. */
+    /* ── as imagens: a mesma persiana da secao Work ──
+       Nao e um efeito parecido: e a MESMA funcao. `animarRipas` vive
+       em components/Persiana e ja serve a Work e a Cisao. Escrever
+       uma copia aqui criaria dois lugares para corrigir quando o
+       timing mudar — e eles divergem na primeira correcao feita so
+       em um deles.
+
+       Cada figura e seu proprio gatilho: as imagens estao espalhadas
+       pela leitura, e um gatilho unico faria todas abrirem quando a
+       primeira cruzasse a borda. */
+    const limpezas = gsap.utils.toArray(r.querySelectorAll('.art__foto'))
+      .map((fig) => animarRipas(fig, fig));
+
+    /* A capa ganha, alem da persiana, uma deriva interna: sem ela a
+       foto e um retangulo parado no meio da leitura. */
     const capa = r.querySelector('.art__capa');
     if (capa) {
-      gsap.from(capa, {
-        clipPath: 'inset(100% 0% 0% 0%)', duration: 1.2, ease: 'expo.out',
-        scrollTrigger: { trigger: capa, start: 'top 88%' },
-      });
-      gsap.fromTo(capa.querySelector('img'),
-        { yPercent: -6 }, { yPercent: 6, ease: 'none',
+      gsap.fromTo(capa.querySelector('.art__foto'),
+        { backgroundPositionY: '44%' },
+        { backgroundPositionY: '56%', ease: 'none',
           scrollTrigger: { trigger: capa, start: 'top bottom', end: 'bottom top', scrub: true } });
     }
 
-    /* ── as imagens dos blocos ──
-       Mesma mecanica da capa, em escala menor. */
-    gsap.utils.toArray(r.querySelectorAll('.art__figura')).forEach((fig) => {
-      gsap.from(fig, {
-        clipPath: 'inset(100% 0% 0% 0%)', duration: 1, ease: 'expo.out',
-        scrollTrigger: { trigger: fig, start: 'top 88%' },
-      });
-    });
+    return () => limpezas.forEach((f) => f && f());
   }, { scope: alvo, dependencies: [slug] });
 
   if (!artigo) return <Navigate to="/404" replace />;
@@ -175,7 +177,14 @@ export default function Artigo() {
 
       {/* ══════ CAPA ══════ */}
       <figure className="art__capa">
-        <img src={artigo.capa} alt={artigo.capaAlt} />
+        <div
+          className="art__foto"
+          style={{ backgroundImage: `url(${artigo.capa})` }}
+          role="img"
+          aria-label={artigo.capaAlt}
+        >
+          <GradeRipas />
+        </div>
       </figure>
 
       {/* ══════ ABERTURA ══════ */}
@@ -186,25 +195,48 @@ export default function Artigo() {
       </section>
 
       {/* ══════ CORPO ══════ */}
+      {/* Duas colunas que fluem de forma INDEPENDENTE. A primeira
+          versao usava uma grade unica com `grid-column`, e cada bloco
+          ocupava uma linha inteira: a celula oposta ficava vazia e a
+          pagina enchia de buraco. Empilhando por coluna, cada lado
+          desce sem intervalo. */}
       <div className="art__corpo">
-        {artigo.blocos.map((b, i) => (
-          <section className={`art__bloco art__bloco--${b.lado}`} key={i}>
-            <h3 className="art__bloco-titulo" data-anim="rise">{b.titulo}</h3>
+        {['esq', 'dir'].map((lado) => (
+          <div className={`art__coluna art__coluna--${lado}`} key={lado}>
+            {artigo.blocos.filter((b) => b.lado === lado).map((b, i) => {
+              return (
+                <section className="art__bloco" key={i}>
+                  {b.imagemPrimeiro && b.imagem && (
+                    <figure className="art__figura">
+                      <div className="art__foto" style={{ backgroundImage: `url(${b.imagem})` }}
+                           role="img" aria-label={b.imagemAlt || ''}>
+                        <GradeRipas />
+                      </div>
+                    </figure>
+                  )}
 
-            {b.paragrafos.map((p, j) => (
-              <p className="art__p" data-anim="rise" key={j}>{comEnfase(p)}</p>
-            ))}
+                  <h3 className="art__bloco-titulo" data-anim="rise">{b.titulo}</h3>
 
-            {b.codigo && (
-              <pre className="art__codigo" data-anim="rise"><code>{b.codigo}</code></pre>
-            )}
+                  {b.paragrafos.map((t, j) => (
+                    <p className="art__p" data-anim="rise" key={j}>{comEnfase(t)}</p>
+                  ))}
 
-            {b.imagem && (
-              <figure className="art__figura">
-                <img src={b.imagem} alt={b.imagemAlt || ''} />
-              </figure>
-            )}
-          </section>
+                  {b.codigo && (
+                    <pre className="art__codigo" data-anim="rise"><code>{b.codigo}</code></pre>
+                  )}
+
+                  {!b.imagemPrimeiro && b.imagem && (
+                    <figure className="art__figura">
+                      <div className="art__foto" style={{ backgroundImage: `url(${b.imagem})` }}
+                           role="img" aria-label={b.imagemAlt || ''}>
+                        <GradeRipas />
+                      </div>
+                    </figure>
+                  )}
+                </section>
+              );
+            })}
+          </div>
         ))}
       </div>
 

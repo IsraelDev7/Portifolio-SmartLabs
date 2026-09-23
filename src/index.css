@@ -4579,7 +4579,7 @@ html { scrollbar-gutter: stable; }
   overflow: hidden;
   background: var(--chapa);
 }
-.art__capa img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.art__capa .art__foto { width: 100%; height: 100%; }
 
 /* ── abertura ── */
 .art__abertura {
@@ -4604,13 +4604,29 @@ html { scrollbar-gutter: stable; }
   grid-template-columns: 1fr 1fr;
   /* 160 de 1597 = 10% — o vao medido na referencia */
   column-gap: 10%;
+  align-items: start;
   margin: clamp(4rem, 9vw, 8rem) 0 0;
 }
-/* Os blocos NAO fluem em duas colunas paralelas: cada um ocupa um lado
-   e a pagina desce em ziguezague. E o que permite uma imagem alta de
-   um lado enquanto o texto continua do outro. */
-.art__bloco { grid-column: 1; margin-bottom: clamp(3rem, 7vw, 6rem); }
-.art__bloco--dir { grid-column: 2; }
+
+/* ── por que duas colunas INDEPENDENTES ──
+   A primeira versao punha todos os blocos numa grade unica e mandava
+   cada um para a coluna 1 ou 2 com `grid-column`. O efeito colateral:
+   cada bloco cria a PROPRIA LINHA da grade, e a celula do outro lado
+   fica vazia — a pagina enchia de buraco entre um bloco e o seguinte.
+
+   Empilhando por coluna, cada lado desce sem intervalo e as duas
+   correm no proprio ritmo. E o que a referencia faz: a esquerda abre
+   com texto e fecha com imagem, a direita comeca com imagem e o texto
+   vem depois, e nenhuma das duas espera a outra. */
+.art__coluna { display: flex; flex-direction: column; }
+
+/* A coluna direita comeca mais alto: na referencia a primeira imagem
+   dela alinha com o TOPO do texto da esquerda, sem o respiro que o
+   titulo do bloco esquerdo consome. */
+.art__coluna--dir { padding-top: 0; }
+
+.art__bloco { margin-bottom: clamp(3rem, 7vw, 6rem); }
+.art__bloco:last-child { margin-bottom: 0; }
 
 .art__bloco-titulo {
   margin: 0 0 1.2rem;
@@ -4665,7 +4681,16 @@ html { scrollbar-gutter: stable; }
   overflow: hidden;
   background: var(--chapa);
 }
-.art__figura img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* A foto e um div com background, e nao um <img>, porque a persiana da
+   Work precisa de um elemento que contenha a grade de ripas por cima
+   sem alterar a caixa da imagem. Mesma montagem da Cisao. */
+.art__foto {
+  width: 100%; height: 100%;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  overflow: hidden;   /* as ripas sangram -0.5px para nao piscar fio */
+}
 
 /* ── fecho ── */
 .art__fecho {

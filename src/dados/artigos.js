@@ -14,9 +14,15 @@
  *   blocos     alternam lado: coluna esquerda, depois direita
  *   imagem     631x858 — razão 3:4, a largura exata da coluna
  *
- * Cada bloco declara `lado` porque a alternância não é automática: às
- * vezes dois blocos seguem do mesmo lado para abrir espaço a uma
- * imagem grande, como acontece lá.
+ * Cada bloco declara `lado` — e as duas colunas fluem de forma
+ * INDEPENDENTE, empilhando o que lhes cabe sem deixar buraco. Foi o
+ * erro da primeira versão: com `grid-column` numa grade única, cada
+ * bloco ocupava uma linha inteira e a célula oposta ficava vazia.
+ *
+ * `imagemPrimeiro` inverte a ordem dentro do bloco. Na referência a
+ * coluna esquerda abre com texto e fecha com imagem; a direita faz o
+ * contrário. É essa alternância cruzada que tira o ritmo de tabela e
+ * faz a página parecer diagramada.
  */
 
 export const ARTIGOS = [
@@ -58,6 +64,11 @@ export const ARTIGOS = [
       },
       {
         lado: 'dir',
+        /* Abre com imagem: na referência a coluna direita começa com a
+           foto, alinhada ao topo do texto da coluna esquerda. */
+        imagemPrimeiro: true,
+        imagem: '/images/camada-estrutura.jpg',
+        imagemAlt: 'Camadas de concreto aparente com a estrutura metálica à mostra',
         titulo: 'A causa era uma linha de configuração.',
         paragrafos: [
           'O `package.json` declarava `"type": "module"`. Isso faz o Node tratar todo arquivo `.js` como módulo ES. Os três endpoints, porém, usavam `require` e `module.exports` — a sintaxe do sistema antigo.',
@@ -80,6 +91,8 @@ export const ARTIGOS = [
       {
         lado: 'dir',
         titulo: 'O que passou a ser obrigatório aqui.',
+        imagem: '/images/ideia-dependencia.jpg',
+        imagemAlt: 'Vigas de sustentação encaixadas umas nas outras',
         paragrafos: [
           'Três coisas, e nenhuma é cara:',
           '**Toda entrega espera confirmação antes de responder.** O formulário só diz "enviado" depois que o registro existe. Se não existe, a tela mostra o erro e oferece o WhatsApp como saída.',
@@ -90,6 +103,8 @@ export const ARTIGOS = [
       {
         lado: 'esq',
         titulo: 'Estética não é o oposto de estrutura.',
+        imagem: '/images/camada-arquiteto.jpg',
+        imagemAlt: 'Fachada concluída, com a estrutura já invisível por dentro',
         paragrafos: [
           'Nada disso é argumento contra design. O site continua tendo que ser bonito — é ele que faz a pessoa ficar tempo suficiente para virar contato.',
           'O ponto é de ordem. Estética é o que traz a pessoa até o formulário. Estrutura é o que garante que o preenchimento chegue a algum lugar. Investir só na primeira é pagar tráfego para um balde furado.',
