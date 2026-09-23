@@ -5,7 +5,6 @@ import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { usePageMotion } from '../hooks/usePageMotion';
 import TransitionLink from '../components/TransitionLink';
-import { Monogram } from '../components/Logo';
 import { GradeRipas, animarRipas } from '../components/Persiana';
 import Partilha from '../components/Partilha';
 import { useCorpoJusto } from '../hooks/useCorpoJusto';
@@ -303,9 +302,26 @@ export default function Artigo() {
         <h2 className="art__fecho-titulo">{artigo.fecho}</h2>
 
         <div className="art__assinatura">
-          <div className="art__assinatura-marca">
-            <Monogram color="var(--solda)" size={34} />
-          </div>
+          {/* O retrato, e nao o monograma. A referencia usa a foto do
+              autor; a marca ja assina a pagina inteira no topo, entao
+              repeti-la aqui nao acrescenta nada — e um rosto, sim. E a
+              MESMA imagem da secao Sobre, no padrao da casa: fundo Aco,
+              luz de recorte em Solda.
+
+              Vai como `.art__foto` para a persiana desta pagina cobri-la
+              junto com as outras — uma classe nova exigiria lembrar de
+              registra-la la em cima, e e assim que uma imagem nasce sem
+              animacao. */}
+          <figure className="art__assinatura-marca">
+            <div
+              className="art__foto"
+              style={{ backgroundImage: 'url(/images/retrato.jpg)' }}
+              role="img"
+              aria-label={`Retrato de ${artigo.autor}`}
+            >
+              <GradeRipas />
+            </div>
+          </figure>
 
           <div className="art__assinatura-corpo">
             <p className="art__data">{artigo.dataCurta}</p>
@@ -328,7 +344,22 @@ export default function Artigo() {
           <>
             <i className="art__filete" aria-hidden="true" />
             <TransitionLink className="art__proximo" to={`/thoughts/${proximo.slug}`}>
-              <span className="art__proximo-selo">Próximo</span>
+              {/* A chapa e um BOTAO, entao o movimento tem que ler como
+                  acao, e nao como defeito: aqui nada de `steps` nem de
+                  falha — a chapa inverte de Solda para Cal subindo, e a
+                  palavra rola, que e a gramatica de hover ja usada nos
+                  links do site (RollLink).
+
+                  Duas copias da palavra: a de cima sai por cima da
+                  janela enquanto a de baixo entra no lugar dela. A
+                  segunda e `aria-hidden` para o leitor de tela nao
+                  anunciar "proximo proximo". */}
+              <span className="art__proximo-selo">
+                <span className="art__proximo-rolo">
+                  <i>Próximo</i>
+                  <i aria-hidden="true">Próximo</i>
+                </span>
+              </span>
               <span className="art__proximo-titulo">{proximo.titulo}</span>
               <span className="art__rotulo">Por {proximo.autor}</span>
             </TransitionLink>

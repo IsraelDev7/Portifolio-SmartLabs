@@ -4846,11 +4846,21 @@ html { scrollbar-gutter: stable; }
 .art__fecho .art__rotulo { color: rgba(245, 240, 232, 0.5); }
 
 .art__assinatura { display: flex; gap: 1.5rem; align-items: flex-start; }
+/* 3:4, a mesma razao das imagens do corpo — e a proporcao que a
+   referencia usa no retrato do autor. Quadrado de 120px cortava a foto
+   no pescoco e transformava um retrato em avatar de perfil. */
 .art__assinatura-marca {
-  flex: 0 0 auto; width: 120px; height: 120px;
-  display: grid; place-items: center;
-  background: var(--aco); border: 1px solid var(--linha);
+  flex: 0 0 auto;
+  width: clamp(104px, 11vw, 152px);
+  aspect-ratio: 3 / 4;
+  margin: 0;
+  overflow: hidden;
+  background: var(--aco);
+  border: 1px solid var(--linha);
 }
+/* O rosto vive no terco superior do arquivo; centrar na vertical
+   cortaria a testa. */
+.art__assinatura-marca .art__foto { background-position: center 22%; }
 .art__assinatura-titulo {
   margin: 0 0 0.6rem;
   font-family: var(--font-display);
@@ -4884,7 +4894,9 @@ html { scrollbar-gutter: stable; }
 .art__proximo-selo {
   /* A referencia usa uma caixa de acento com o rotulo em corpo grande.
      La e verde acido; aqui e Solda, que ja e a cor de acento da marca. */
+  position: relative;
   display: inline-block;
+  overflow: hidden;
   background: var(--solda);
   color: var(--cal);
   font-family: var(--font-display);
@@ -4894,6 +4906,57 @@ html { scrollbar-gutter: stable; }
   letter-spacing: -0.06em;
   text-transform: uppercase;
   padding: 0.14em 0.3em 0.2em;
+}
+
+/* ── a chapa inverte, e a palavra rola ──
+   Isto e um BOTAO, entao o movimento tem que ler como ACAO. Nada de
+   `steps` nem de falha aqui: a gramatica de defeito e dos icones de
+   partilha, que nao levam a lugar nenhum. O que leva a algum lugar se
+   move liso e numa direcao so.
+
+   Cal sobe por baixo do texto e o texto vira Aco — a mesma inversao
+   que o resto do site usa para dizer "isto esta armado". */
+.art__proximo-selo::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: var(--cal);
+  transform: scaleY(0);
+  transform-origin: center bottom;
+  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.art__proximo:hover .art__proximo-selo::before,
+.art__proximo:focus-visible .art__proximo-selo::before { transform: scaleY(1); }
+
+/* A janela de uma linha. `1.05em` e nao `1em` porque o acento do O de
+   "PRÓXIMO" sobe acima da altura das maiusculas: com 1em ele encosta
+   na borda do recorte. */
+.art__proximo-rolo {
+  position: relative;   /* acima do ::before */
+  z-index: 1;
+  display: block;
+  overflow: hidden;
+  height: 1.05em;
+  line-height: 1.05;
+}
+.art__proximo-rolo i {
+  display: block;
+  font-style: normal;
+  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1), color 260ms ease;
+}
+.art__proximo:hover .art__proximo-rolo i,
+.art__proximo:focus-visible .art__proximo-rolo i {
+  transform: translateY(-100%);
+  color: var(--aco);
+}
+
+.art__proximo:focus-visible { outline: 2px solid var(--solda); outline-offset: 6px; }
+
+/* O caminho estatico de verdade: a chapa ainda inverte, porque a cor e
+   a informacao. O que sai e o deslocamento. */
+@media (prefers-reduced-motion: reduce) {
+  .art__proximo-selo::before { transition: none; }
+  .art__proximo-rolo i { transition: color 160ms ease; }
+  .art__proximo:hover .art__proximo-rolo i { transform: none; }
 }
 .art__proximo-titulo {
   display: block; max-width: 22rem; margin: 0.9rem 0 0.35rem;
@@ -5022,7 +5085,7 @@ html { scrollbar-gutter: stable; }
   .art__linha { grid-template-columns: 1fr; gap: 0.9rem; }
   .art__linha-foto { aspect-ratio: 16 / 9; }
   .art__linha-seta { display: none; }
-  .art__assinatura-marca { width: 84px; height: 84px; }
+  .art__assinatura-marca { width: 96px; }
   /* O hook e desligado no componente abaixo de 820px (ele limpa o que
      escreveu ao sair), entao aqui basta devolver a quebra de linha. */
   .art__mais-titulo { white-space: normal; width: auto; }
