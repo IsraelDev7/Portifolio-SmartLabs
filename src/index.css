@@ -3318,19 +3318,16 @@ h3 {
   color: var(--cal);
 }
 
-.ideias__autor img,
-.ideias__sem-foto {
+/* `.ideias__sem-foto` saiu junto com o placeholder de cliente: a
+   assinatura agora e do autor, e a foto dele existe. Moldura tracejada
+   marcando "falta o rosto" nao tem mais o que marcar. */
+.ideias__autor img {
   width: 44px;
   height: 44px;
   object-fit: cover;
-  display: grid;
-  place-items: center;
+  object-position: center 22%;   /* o mesmo enquadramento do rodape do artigo */
   flex: none;
 }
-
-/* Enquanto nao chega a foto do cliente, o lugar dela fica MARCADO.
-   Vazio e melhor que um rosto qualquer fingindo ser alguem. */
-.ideias__sem-foto { border: 1px dashed var(--linha); }
 
 /* ── as figuras ── */
 /* ── a peca clicavel ──

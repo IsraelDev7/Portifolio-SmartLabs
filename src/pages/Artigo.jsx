@@ -8,7 +8,7 @@ import TransitionLink from '../components/TransitionLink';
 import { GradeRipas, animarRipas } from '../components/Persiana';
 import Partilha from '../components/Partilha';
 import { useCorpoJusto } from '../hooks/useCorpoJusto';
-import { acharArtigo, outrosArtigos } from '../dados/artigos';
+import { acharArtigo, outrosArtigos, proximoArtigo } from '../dados/artigos';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -141,7 +141,7 @@ export default function Artigo() {
   if (!artigo) return <Navigate to="/404" replace />;
 
   const outros = outrosArtigos(slug);
-  const proximo = outros[0] || null;
+  const proximo = proximoArtigo(slug);
 
   /* Divide em palavras para a revelação em cascata. Cada palavra ganha
      uma janela com `overflow: hidden` e um <i> que sobe de dentro. */

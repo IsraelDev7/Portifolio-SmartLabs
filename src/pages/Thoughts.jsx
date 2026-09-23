@@ -30,16 +30,25 @@ gsap.registerPlugin(ScrollTrigger);
  * Cisao e do pente do rodape.
  */
 
-/* Quatro depoimentos. Nomes, fotos e falas ficam como PLACEHOLDER de
-   proposito: depoimento de cliente e declaracao de terceiro, e inventar
-   um — nome, rosto ou frase — e propaganda enganosa (CDC art. 37, e o
-   CONAR trata review fabricada como publicidade ilicita). A estrutura
-   fica pronta; o conteudo entra quando o Israel mandar o real. */
+/* Quatro IDEIAS, e nao quatro depoimentos.
+
+   A primeira versao desta lista era de depoimento de cliente, com nome
+   e foto como placeholder de proposito — inventar depoimento e
+   propaganda enganosa (CDC art. 37; o CONAR trata review fabricada como
+   publicidade ilicita). O placeholder resolvia o risco legal e criava
+   outro problema: ficava "[ nome do cliente ]" em tela.
+   
+   A secao mudou de funcao no caminho. Aqui e o caderno do que o Israel
+   PENSA — as obras ficam na Work —, entao a assinatura de cada peca e
+   dele, sobre um texto dele. Some o placeholder e some o risco legal
+   junto, porque nao ha mais declaracao de terceiro nenhuma.
+   
+   A `area` espelha a do artigo em dados/artigos.js: a listagem e a
+   pagina do artigo dizem a mesma coisa sobre a mesma peca. */
 const CASOS = [
   {
-    area: 'Psicanálise',
-    cliente: '[ nome do cliente ]',
-    foto: null,
+    area: 'Engenharia',
+    autor: 'Israel Passos',
     slug: 'a-estrutura-vem-antes-da-estetica',
     titulo: 'A estrutura vem antes da estética.',
     resumo:
@@ -48,9 +57,8 @@ const CASOS = [
     para: '/thoughts/a-estrutura-vem-antes-da-estetica',
   },
   {
-    area: 'Fitness',
-    cliente: '[ nome do cliente ]',
-    foto: null,
+    area: 'Automação',
+    autor: 'Israel Passos',
     slug: 'automacao-nao-e-economizar-tempo',
     titulo: 'Automação não é economizar tempo. É remover dependência.',
     resumo:
@@ -59,9 +67,8 @@ const CASOS = [
     para: '/thoughts/automacao-nao-e-economizar-tempo',
   },
   {
-    area: 'Arquitetura',
-    cliente: '[ nome do cliente ]',
-    foto: null,
+    area: 'Inteligência',
+    autor: 'Israel Passos',
     slug: 'ia-nao-e-o-produto-e-a-camada',
     titulo: 'IA não é o produto. É a camada.',
     resumo:
@@ -70,14 +77,14 @@ const CASOS = [
     para: '/thoughts/ia-nao-e-o-produto-e-a-camada',
   },
   {
-    area: '[ quarto segmento ]',
-    cliente: '[ nome do cliente ]',
-    foto: null,
+    area: 'Aquisição',
+    autor: 'Israel Passos',
+    slug: 'trafego-sem-estrutura-vaza',
     titulo: 'Tráfego sem estrutura vaza.',
     resumo:
       'Investir em aquisição antes de a operação aguentar o volume é pagar para descobrir onde o sistema quebra. Aquisição e tecnologia são o mesmo projeto.',
     imagem: '/images/ideia-vazamento.jpg',
-    para: '/work',
+    para: '/thoughts/trafego-sem-estrutura-vaza',
   },
 ];
 
@@ -235,14 +242,13 @@ export default function Thoughts() {
                 <i className="ideias__barra" data-regua aria-hidden="true" />
                 <p className="ideias__resumo" data-sobe>{c.resumo}</p>
 
-                {/* a assinatura e do CLIENTE: rosto e nome de quem falou */}
+                {/* A assinatura e do AUTOR — o mesmo retrato do rodape do
+                    artigo, para a listagem e a leitura assinarem igual.
+                    `alt` vazio: o nome vem escrito ao lado, e repeti-lo
+                    na imagem faria o leitor de tela anunciar duas vezes. */}
                 <div className="ideias__autor" data-sobe>
-                  {c.foto
-                    ? <img src={c.foto} alt="" width="44" height="44" />
-                    : <span className="ideias__sem-foto" aria-hidden="true">
-                        <Monogram color="var(--fumaca)" size={18} />
-                      </span>}
-                  <span>{c.cliente}</span>
+                  <img src="/images/retrato.jpg" alt="" width="44" height="44" />
+                  <span>{c.autor}</span>
                 </div>
               </article>
 

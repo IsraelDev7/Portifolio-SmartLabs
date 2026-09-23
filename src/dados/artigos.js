@@ -262,11 +262,102 @@ export const ARTIGOS = [
 
     fecho: 'Obrigado por ler',
   },
+  {
+    slug: 'trafego-sem-estrutura-vaza',
+    indice: '04',
+    area: 'Aquisição',
+    data: '13 de outubro de 2026',
+    dataCurta: 'OUT 2026',
+    leitura: '3 minutos',
+    autor: 'Israel Passos',
+    titulo: 'Tráfego sem estrutura vaza.',
+    subtitulo:
+      'Verba em campanha antes de a operação aguentar o volume não é investimento. É pagar para descobrir onde o sistema quebra.',
+    resumo:
+      'A plataforma diz 40 cliques, o dono diz 3 contatos, e ninguém sabe onde foram os outros 37. Aquisição e tecnologia são o mesmo projeto.',
+    capa: '/images/ideia-vazamento.jpg',
+    capaAlt: 'Junta de concreto com infiltração visível',
+
+    abertura: [
+      'Antes de programar, eu comprava tráfego. Aprendi cedo que anúncio bom para página ruim é a forma mais rápida de perder dinheiro com competência.',
+      'O que eu não sabia na época é que o problema quase nunca está no anúncio.',
+    ],
+
+    blocos: [
+      {
+        lado: 'esq',
+        titulo: 'A conta que não fecha.',
+        paragrafos: [
+          'A plataforma diz quarenta cliques. O dono diz que recebeu três contatos. Ninguém consegue dizer onde foram os outros trinta e sete — e a reunião termina culpando o criativo.',
+          'Não era o criativo. Entre o clique e o contato existem cinco ou seis passos, e na maioria dos sites nenhum deles deixa registro. Isso não é otimizar campanha. É **adivinhar com orçamento**.',
+        ],
+        codigo: 'plataforma:              40 cliques\nplanilha do cliente:      3 contatos\nregistro do que houve:    nenhum',
+      },
+      {
+        lado: 'dir',
+        imagemPrimeiro: true,
+        imagem: '/images/work-performance.jpg',
+        imagemAlt: 'Painel de medição com leitura em tempo real',
+        titulo: 'O mínimo para o tráfego não vazar.',
+        paragrafos: [
+          '**Cada clique guarda de onde veio.** Seção, rótulo e origem. Sem isso não dá para cruzar *qual bloco gerou interesse* com *qual lead entrou* — e é esse cruzamento que corta criativo que traz clique sem contato.',
+          '**O dado é seu, não da plataforma.** Registro próprio, no seu banco. Marcador que some quando o navegador bloqueia não é medição, é esperança.',
+          '**A entrega confirma antes de dizer que entregou.** Formulário que responde "enviado" sem conferir transforma verba em silêncio — e o silêncio demora meses para ser notado.',
+        ],
+      },
+      {
+        lado: 'esq',
+        titulo: 'Cada setor vaza num lugar diferente.',
+        paragrafos: [
+          'A pergunta não é "como trazer mais gente". É **onde o interesse morre depois do clique** — porque é sempre no mesmo ponto, e é sempre um ponto que a campanha não alcança.',
+        ],
+        setores: [
+          ['Saúde e estética',
+           'Vaza na demora. O anúncio roda 24 horas, a recepção atende das 9 às 18. O lead da meia-noite já falou com outra clínica antes de alguém abrir o WhatsApp.'],
+          ['Consultoria',
+           'Vaza na indefinição. A pessoa clica, lê, concorda — e não encontra o que perguntar. Sem uma próxima ação óbvia, interesse vira aba fechada.'],
+          ['Serviço de campo e paisagismo',
+           'Vaza na agenda. Todo lead vira visita, visita consome a semana, e metade não tinha projeto. Filtrar antes da visita é o que devolve capacidade.'],
+          ['E-commerce',
+           'Vaza no checkout. O tráfego chega, o carrinho enche, e um passo a mais que o necessário derruba justamente a conversão que a campanha pagou para conseguir.'],
+        ],
+      },
+      {
+        lado: 'esq',
+        titulo: 'Aquisição e tecnologia são o mesmo projeto.',
+        paragrafos: [
+          'A separação entre os dois é herança de organograma, não de realidade. Quem faz o anúncio não fala com quem faz o site; o site entrega o formulário e considera o trabalho feito; e alguém otimiza no escuro, com o número que a plataforma quis mostrar.',
+          'Quando os dois lados são o mesmo projeto, a pergunta muda. Deixa de ser *quanto custa o clique* e passa a ser **quanto custa o contato que virou cliente** — que é a única métrica que o dono do negócio sente no fim do mês.',
+          'O resto é tráfego caro para um balde furado.',
+        ],
+      },
+    ],
+
+    fecho: 'Obrigado por ler',
+  },
 ];
 
 /** Busca por slug — usado pela rota /thoughts/:slug. */
 export function acharArtigo(slug) {
   return ARTIGOS.find((a) => a.slug === slug) || null;
+}
+
+/**
+ * O SEGUINTE na sequência, dando a volta no fim.
+ *
+ * A primeira versão do botão Próximo usava `outrosArtigos(slug)[0]`, que
+ * é sempre o primeiro do array menos o atual — ou seja, o 01 para todos
+ * os outros. Quem entrasse pelo 02 voltava ao 01 e nunca alcançava o 03
+ * nem o 04 por ali, que é exatamente o trabalho desse botão.
+ *
+ * Devolve `null` com menos de dois artigos: com um só, `(0+1) % 1` é 0 e
+ * o artigo apontaria para si mesmo.
+ */
+export function proximoArtigo(slug) {
+  if (ARTIGOS.length < 2) return null;
+  const i = ARTIGOS.findIndex((a) => a.slug === slug);
+  if (i < 0) return null;
+  return ARTIGOS[(i + 1) % ARTIGOS.length];
 }
 
 /** Os outros, para a faixa "mais ideias" no pé do artigo. */
