@@ -17,6 +17,7 @@ import Home from './pages/Home'
 import Work from './pages/Work'
 import About from './pages/About'
 import Thoughts from './pages/Thoughts'
+import Projeto from './pages/Projeto';
 import Artigo from './pages/Artigo'
 import Contact from './pages/Contact'
 
@@ -54,7 +55,8 @@ export default function App() {
               {/* A leitura de uma ideia. Fica DEPOIS da rota da listagem:
                   o react-router casa por especificidade, mas manter a
                   ordem legível evita dúvida de quem for mexer. */}
-              <Route path="/thoughts/:slug" element={<Artigo />} />
+              <Route path="/work/:slug" element={<Projeto />} />
+          <Route path="/thoughts/:slug" element={<Artigo />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/privacidade" element={<Privacidade />} />
               <Route path="/termos" element={<Termos />} />
