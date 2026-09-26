@@ -6182,7 +6182,13 @@ html { scrollbar-gutter: stable; }
   /* `difference` sobre foto em tela pequena derruba o contraste em
      trechos claros, e aqui o texto é o argumento. Volta ao normal. */
   .prj__fecho-texto { mix-blend-mode: normal; }
-  .prj__marca { max-width: 100%; }
+  /* ── alvo de toque ──
+     Medido em 375: 25px de conteudo + 5.8 de respiro = 31px de altura.
+     Abaixo dos 44px da WCAG 2.5.5 — e num botao que e a unica saida da
+     faixa para o projeto vivo. No desktop ele ja da 45, porque a fonte
+     e maior; o que encolheu no telefone foi a letra, e o respiro veio
+     junto. 0.6em devolve a proporcao: 25 + 19.2 = 44.2px. */
+  .prj__marca { max-width: 100%; padding: 0.6em 0; }
   .prj__partilha { padding-left: 20px; padding-right: 20px; }
 
   /* O hook é desligado abaixo de 820 e limpa o corpo que escreveu; aqui

@@ -217,6 +217,170 @@ export const PROJETOS = [
       url: 'https://bruno-conselheiro-bio.vercel.app/',
     },
   },
+
+  /* ══════════════════════════════════════════════════════════════
+     DANILA SOUZA
+
+     ── por que esta página não é a do Bruno com outro nome ──
+     Nos outros trabalhos a entrega para no código. Aqui ela atravessa:
+     o mesmo profissional escreveu a página E o livro, e traduziu as
+     duas outras edições. É o único projeto do portfólio em que a
+     palavra entregue é tão produto quanto a página.
+
+     ── o cuidado que o assunto exige ──
+     O tema é violência psicológica. Isso impõe um limite à copy desta
+     página: ela fala do que foi CONSTRUÍDO — páginas, idiomas,
+     formulário, registro —, nunca de desfecho para quem procurou
+     ajuda. Prometer resultado clínico ou segurança a vítima é claim
+     que não me cabe fazer, e num assunto destes o exagero não é só
+     impreciso: é cruel. A mesma régua que me impediu de inventar
+     depoimento na obra do Bruno vale aqui, mais apertada.
+
+     ── de onde vêm as imagens ──
+     Das páginas dela e da capa do livro, em resolução original. O
+     herói repete o enquadramento da obra anterior — eixo do rosto na
+     borda direita — e desce para quase monocromático, porque as duas
+     páginas precisam ler como a mesma obra.
+     ══════════════════════════════════════════════════════════════ */
+  {
+    slug: 'danila-souza',
+    indice: '02',
+    ano: '2026',
+
+    /* ── herói ── */
+    chamada: 'Três idiomas, um assunto que não admite descuido.',
+    titulo: ['DANILA', 'SOUZA'],
+    heroImagem: '/images/obra-danila-heroi.jpg',
+    heroAlt: 'Retrato de Danila Souza, da página dela',
+    lateralEsq: 'Psicanálise · Editorial',
+    lateralDir: 'Set 2026',
+    heroTexto:
+      'Uma psicanalista que atende mulheres saindo de relações abusivas, e um livro sobre isso. Escrevi o código das duas páginas e também o texto das edições em inglês e espanhol — é o único trabalho aqui em que a entrega atravessou do navegador para a página impressa.',
+
+    /* ── ficha ── */
+    nome: 'DANILA SOUZA',
+    subtitulo: 'DO CÓDIGO À TRADUÇÃO, A MESMA MÃO NAS DUAS PONTAS.',
+    declaracao:
+      'UM SITE, UM LINK NA BIO E UM LIVRO QUE PASSOU A FALAR TRÊS IDIOMAS.',
+    linkVivo: { rotulo: 'PROJETO NO AR', texto: 'DUAS PÁGINAS E UM LIVRO', url: null },
+    ficha: [
+      { valor: ['Site institucional', 'Link na bio', 'Redação e tradução', 'Gestão de tráfego'], rotulo: 'TIPO DE TRABALHO' },
+      { valor: ['Psicanálise', 'Editorial'], rotulo: 'SETOR' },
+      { valor: ['Brasil', 'PT · EN · ES'], rotulo: 'PRAÇA' },
+      { valor: ['Set 2026'], rotulo: 'ENTREGUE' },
+    ],
+
+    /* ── a nota do fecho ── */
+    introducao: {
+      destaque: 'Três idiomas, um só livro',
+      resto: 'Quando quem traduz é quem construiu a página, a promessa não se perde no caminho entre duas mãos. As três edições saíram com a mesma voz.',
+    },
+
+    /* ── capítulos ── */
+    capitulos: [
+      {
+        rotulo: '(O assunto)',
+        declaracao: 'QUEM CHEGA AQUI ESTÁ ADMITINDO UMA COISA DIFÍCIL.',
+        sub: 'UM SITE SOBRE VIOLÊNCIA PSICOLÓGICA TEM UM REQUISITO QUE NENHUMA LANDING COMUM TEM.',
+        corpo:
+          'O formulário da página não se chama "fale conosco" e não pede assunto: chama-se Mapa de Clareza e pede onde a pessoa está. Texto assim se escreve uma vez só — quem contou o que está vivendo não reescreve porque a tela engoliu. Então a confirmação só aparece depois que o registro existe de verdade, e quando falha, mostra o erro em vez de fingir que recebeu.',
+        listaTitulo: 'O QUE O TEMA IMPÔS AO DESENHO',
+        lista: [
+          'Os depoimentos da página dizem, em letra visível, que nomes e detalhes foram alterados. Sigilo declarado vale mais que sigilo presumido — e é o que separa prova social de exposição de paciente.',
+          'A primeira dobra nomeia a dor antes de oferecer qualquer coisa. Quem se reconhece na descrição continua; quem não se reconhece sai sem ter dado nada.',
+          'Nenhum contador de urgência, nenhuma escassez. Pressa é a gramática de quem vende curso — no assunto dela, é a gramática do agressor.',
+        ],
+        imagem: '/images/obra-danila-silencio.jpg',
+        legenda: 'O retrato que abre a página dela: a identidade que se desfaz é o próprio assunto.',
+      },
+      {
+        rotulo: '(A palavra)',
+        declaracao: 'ESCREVI O CÓDIGO. TAMBÉM ESCREVI O LIVRO.',
+        sub: 'CHEGA DE ME DEIXAR POR ÚLTIMO SAIU EM PORTUGUÊS, INGLÊS E ESPANHOL — AS TRÊS EDIÇÕES PRONTAS.',
+        corpo:
+          'O título não tem equivalente literal em inglês nem em espanhol. "Chega de me deixar por último" é uma frase que alguém diz para si mesma depois de anos se colocando no fim da fila — traduzir isso é reescrever a decisão, não procurar as palavras numa lista. Cada edição precisou achar a frase que faz uma leitora daquele idioma reconhecer a própria vida na capa.',
+        corpoExtra:
+          'A vantagem de o tradutor ser o mesmo que construiu a página é a única que interessa aqui: o vocabulário não diverge. O que a landing chama de reconstrução, o livro chama de reconstrução, e a edição em espanhol não inventa um terceiro termo. Em texto que trata de identidade, sinônimo solto custa confiança.',
+        imagem: '/images/obra-danila-livro.jpg',
+        legenda: 'A capa da edição brasileira. As outras duas estão prontas, aguardando publicação na Amazon e nas bibliotecas.',
+      },
+      {
+        rotulo: '(A operação)',
+        declaracao: 'O ANÚNCIO TRAZ. O REGISTRO GUARDA.',
+        sub: 'O CLIQUE CHEGA ETIQUETADO, E O QUE ACONTECE DEPOIS NÃO MORA NO PAINEL DE UM TERCEIRO.',
+        corpo:
+          'O link da bio carrega a origem no próprio endereço — rede, meio e qual peça trouxe a pessoa. Isso não é enfeite de URL: é o que permite saber, no fim do mês, se o público veio do anúncio ou do perfil, e qual argumento estava na peça que funcionou. Com tráfego pago rodando, um canal que não registra a origem é dinheiro gasto sem leitura.',
+        listaTitulo: 'POR QUE BANCO PRÓPRIO, E NÃO SÓ O PAINEL DO ANÚNCIO',
+        lista: [
+          'O painel da plataforma mostra o clique. Ele não mostra o que a pessoa escreveu depois, e é esse texto que diz se a campanha atraiu quem devia.',
+          'Registro próprio não some quando a conta de anúncio é pausada, trocada ou bloqueada — e conta de anúncio é a peça mais frágil do arranjo.',
+          'Num assunto sensível, o que a pessoa escreveu fica em base controlada por ela, e não espalhado em ferramenta de terceiro que ninguém auditou.',
+        ],
+        imagem: '/images/obra-danila-metodo.jpg',
+        legenda: 'Mente e corpo: a imagem que a própria página usa para falar do método.',
+      },
+    ],
+
+    /* ── resultados ── */
+    resultados: {
+      rotulo: '(Resultados)',
+      declaracao: 'O QUE A OBRA PRONTA ENTREGA.',
+      sub: 'DUAS PÁGINAS NO AR, UM LIVRO EM TRÊS IDIOMAS E UM CANAL QUE SABE DE ONDE VEIO CADA PESSOA.',
+      imagens: [
+        '/images/obra-danila-livro.jpg',
+        '/images/obra-danila-metodo.jpg',
+        '/images/obra-danila-silencio.jpg',
+        '/images/obra-danila-retrato.jpg',
+      ],
+      imagemAlt: 'Peças da obra, em sequência',
+
+      /* Mesma regra da obra anterior: o lugar do depoimento existe, o
+         depoimento inventado não. O texto é um fato em terceira
+         pessoa, que não dá para ler como fala dela. */
+      registro: {
+        rotulo: 'Registro',
+        frase: 'O trabalho saiu do navegador.',
+        texto:
+          'Começou como site e link na bio. Terminou com três edições de um livro — duas delas escritas por quem tinha sido contratado para programar. Escopo não cresce assim por acaso.',
+        cartao: {
+          foto: '/images/obra-danila-retrato.jpg',
+          texto: 'Do site ao livro: as edições em inglês e espanhol foram escritas pelo mesmo profissional que construiu as páginas.',
+          assina: 'Danila Souza',
+          org: 'Psicanálise · Autora',
+        },
+      },
+
+      blocos: [
+        {
+          titulo: 'O TEXTO CHEGA INTEIRO',
+          texto:
+            'O Mapa de Clareza não pede nome e e-mail: pede o que está acontecendo. A tela só confirma depois que o registro existe — e quando falha, mostra o erro em vez de engolir uma confissão.',
+        },
+        {
+          titulo: 'A PORTA POR ONDE ELA ENTROU',
+          texto:
+            'São duas: o site e o link da bio. Cada visita carrega rede, meio e peça de origem, então dá para separar quem veio do anúncio de quem veio do perfil — e saber qual argumento trouxe qual pessoa.',
+        },
+        {
+          titulo: 'O LIVRO NÃO DEPENDE DE MIM PARA EXISTIR',
+          texto:
+            'As três edições estão prontas e entregues. Publicar na Amazon e nas bibliotecas é passo dela, no tempo dela — a tradução não fica presa a uma agenda minha.',
+        },
+      ],
+    },
+
+    /* ── fecho ── */
+    fecho: {
+      texto:
+        'COMEÇOU COMO SITE E TERMINOU COM UM LIVRO EM TRÊS IDIOMAS. O TEXTO É DELA E O MANUSCRITO NÃO É MEU PARA PUBLICAR — MAS CONTO COMO FOI FEITO NUMA CONVERSA.',
+      esteira: 'Projeto no ar',
+      /* O endereço limpo, sem os parâmetros de campanha do link que o
+         Israel mandou: `utm_*` e `fbclid` são rastro de UM clique num
+         anúncio dele. Republicar isso aqui sujaria a medição dela e
+         ainda contaria a estranho por onde aquele clique passou. */
+      url: 'https://danila-souza-link-bio.vercel.app/',
+    },
+  },
 ];
 
 /**
@@ -229,14 +393,6 @@ export const PROJETOS = [
  * PROJETOS — o desenho da linha não muda.
  */
 export const OUTRAS_OBRAS = [
-  {
-    nome: 'DANILA',
-    subtitulo: 'ANAMNESE ANTES DO ORÇAMENTO.',
-    tags: ['Link na bio', 'Automação', 'Banco próprio'],
-    data: 'Set 2026',
-    heroImagem: '/images/work-identidade.jpg',
-    heroAlt: 'Saúde estética',
-  },
   {
     nome: 'TIAGO — TL GARDEN',
     subtitulo: 'O LEAD CHEGA DIAGNOSTICADO.',
