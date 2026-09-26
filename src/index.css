@@ -5151,7 +5151,8 @@ html { scrollbar-gutter: stable; }
 
 /* O bloco de cima e o de baixo andam em ritmos diferentes no scroll —
    ver a nota do componente. */
-.prj__heroi-topo { margin-left: 20.7%; }
+/* 19.8% da caixa de conteúdo — medido: x=285 numa página de 1368. */
+.prj__heroi-topo { margin-left: 19.8%; }
 
 .prj__indice {
   display: flex; align-items: center; gap: 0.9rem;
@@ -5173,7 +5174,9 @@ html { scrollbar-gutter: stable; }
 }
 
 .prj__titulo {
-  margin: 0.6rem 0 0;
+  /* 12% da caixa de conteúdo — medido na referência: máscara em x=210
+     numa página de 1597 com 24 de margem. */
+  margin: 0.6rem 0 0 12%;
   font-family: var(--font-display);
   font-weight: 700;
   /* 140px em 1597 */
@@ -5182,26 +5185,60 @@ html { scrollbar-gutter: stable; }
   letter-spacing: -0.07em;
   text-transform: uppercase;
   display: flex; flex-direction: column;
+  /* ── a largura da linha mais longa ──
+     Na referência a máscara tem 773px: exatamente a largura de
+     "UNSTABLE", a maior das duas. `max-content` chega no mesmo número
+     sozinho, para qualquer nome de obra. */
+  width: max-content;
+  max-width: 88%;
 }
 
-/* A JANELA recorta o que ainda está fora. É ela que deixa o título
-   deslizar de fora da tela sem abrir rolagem horizontal — e sem ela o
-   `overflow: clip` da página cortaria também a sombra do resto. */
+/* ── a linha imaginária ──
+   É a borda DESTA caixa que o texto atravessa ao entrar e ao sair —
+   não a borda da tela. Sem o recorte aqui, o título cruzaria a página
+   inteira e o movimento perderia o ponto de partida. */
 .prj__janela { display: block; overflow: clip; }
-.prj__ln { display: block; will-change: transform; }
-.prj__ln--a { margin-left: 15.2%; color: var(--cal); }
-/* +80px sobre 1597 = +5%: a segunda linha recua, como na referência */
-.prj__ln--b { margin-left: 20.2%; color: var(--solda); }
 
+/* Duas camadas de transform: a de fora é presa ao scroll (saída), a de
+   dentro ao tempo (entrada). Na mesma peça elas se sobrescrevem. */
+.prj__saida { display: block; will-change: transform; }
+.prj__ln {
+  display: block;
+  width: 100%;          /* preenche a janela: xPercent 100 = sair inteiro */
+  will-change: transform;
+}
+/* ── por que as duas linhas alinham à DIREITA ──
+   Medido na referência: "UNSTABLE" vai de 210 a 983 e "SEQUENCE" de
+   290 a 983. As duas terminam no mesmo x — o recuo da segunda não é um
+   valor escolhido, é a consequência de ela ser mais curta. A escada
+   fica na borda esquerda.
+
+   Tentei antes com `text-indent: 10.3%` e a máscara cortou a palavra:
+   `max-content` mede o texto e ignora o recuo, então a linha pedia
+   632px numa caixa de 573 e os últimos 59 sumiam no `overflow: clip`.
+   Alinhar à direita entrega a mesma escada sem pedir largura extra. */
+.prj__titulo { text-align: right; }
+.prj__ln--a { color: var(--cal); }
+.prj__ln--b { color: var(--solda); }
+
+/* ── por que posição absoluta para os rótulos ──
+   Medido na referência: "Inspiration" encosta na margem esquerda da
+   PÁGINA e "Released" na direita, enquanto o parágrafo ocupa uma faixa
+   própria (x 16.5%, largura 49.5% da caixa de conteúdo) que não tem
+   relação com onde os dois rótulos terminam.
+
+   Numa grade de três colunas o parágrafo herdaria a largura dos
+   rótulos como ponto de partida, e a faixa mudaria de lugar a cada
+   palavra nova num deles. */
 .prj__heroi-base {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: start;
-  gap: clamp(1.5rem, 6vw, 7rem);
+  position: relative;
   margin-top: clamp(2rem, 5vw, 5rem);
+  min-height: 2rem;
 }
 
 .prj__lateral {
+  position: absolute;
+  top: 0;
   font-family: var(--font-mono);
   font-size: 0.75rem;
   letter-spacing: 0.14em;
@@ -5209,22 +5246,27 @@ html { scrollbar-gutter: stable; }
   color: var(--cal);
   white-space: nowrap;
 }
-.prj__lateral--dir { justify-self: end; }
+.prj__lateral:not(.prj__lateral--dir) { left: 0; }
+.prj__lateral--dir { right: 0; }
 
 .prj__heroi-texto {
-  margin: 0;
-  max-width: 43%;
+  /* x 16.5% e largura 49.5% da caixa de conteúdo — a faixa medida na
+     referência (242 e 653 numa página de 1368 com 24 de margem). */
+  margin: 0 0 0 16.5%;
+  width: 49.5%;
   /* O recuo da primeira linha vem da referência. É detalhe de página
      impressa: marca o começo do parágrafo sem precisar de espaço em
      branco acima dele. */
   text-indent: 4.5%;
   font-family: var(--font-body);
   font-size: 1rem;
-  font-weight: 600;
+  /* 700, e não os 600 da referência: o parágrafo fica sobre foto, e
+     meio peso a mais é o que separa o texto do fundo sem precisar
+     escurecer mais o véu e apagar a imagem junto. */
+  font-weight: 700;
   line-height: 1.5;
   letter-spacing: -0.02em;
   color: var(--cal);
-  margin-left: 12%;
 }
 
 .prj__ano {
@@ -5554,11 +5596,23 @@ html { scrollbar-gutter: stable; }
   /* Os recuos percentuais do desktop somem: em 375px, 20.7% de recuo
      deixa o rótulo com um terço da largura da tela para existir. */
   .prj__heroi-topo { margin-left: 0; }
-  .prj__ln--a, .prj__ln--b { margin-left: 0; }
-  .prj__titulo { font-size: clamp(2rem, 13vw, 3.6rem); }
-  .prj__heroi-base { grid-template-columns: 1fr; gap: 1rem; margin-top: 2rem; }
-  .prj__lateral--dir { justify-self: start; }
-  .prj__heroi-texto { max-width: 100%; margin-left: 0; text-indent: 0; }
+  /* A máscara passa a ocupar a largura toda: `max-content` num título
+     de 13vw estouraria a tela, e o recorte é o que segura a animação
+     dentro do quadro. O recuo da segunda linha cai junto — em 375px
+     ele comeria um terço da palavra. */
+  /* Alinhamento à esquerda: a escada da direita só existe quando sobra
+     largura. Em 375px as duas linhas ocupam a tela toda e o degrau
+     vira um desalinho sem motivo. */
+  .prj__titulo {
+    font-size: clamp(2rem, 13vw, 3.6rem);
+    margin-left: 0; width: 100%; max-width: 100%;
+    text-align: left;
+  }
+  /* Os rótulos voltam ao fluxo: empilhados, `position: absolute` os
+     sobreporia ao parágrafo. */
+  .prj__heroi-base { position: static; margin-top: 2rem; display: flex; flex-direction: column; gap: 1rem; }
+  .prj__lateral { position: static; white-space: normal; }
+  .prj__heroi-texto { width: 100%; margin-left: 0; text-indent: 0; }
   .prj__ano { font-size: clamp(2.6rem, 16vw, 5rem); right: 20px; }
 
   .prj__ficha, .prj__intro, .prj__cap, .prj__result, .prj__mais { padding-left: 20px; padding-right: 20px; }

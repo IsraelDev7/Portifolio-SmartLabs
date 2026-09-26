@@ -6,6 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { usePageMotion } from '../hooks/usePageMotion';
 import TransitionLink from '../components/TransitionLink';
 import { GradeRipas, animarRipas } from '../components/Persiana';
+import { aposCortina } from '../lib/cortina';
 import Partilha from '../components/Partilha';
 import { useCorpoJusto } from '../hooks/useCorpoJusto';
 import { acharProjeto, proximoProjeto, outrosProjetos } from '../dados/projetos';
@@ -60,42 +61,68 @@ export default function Projeto() {
     if (!r || !projeto) return;
 
     const parado = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let cancelarEntrada = null;
 
     const heroi = r.querySelector('.prj__heroi');
-    const linhaA = r.querySelector('.prj__ln--a');
-    const linhaB = r.querySelector('.prj__ln--b');
+    const linhas = gsap.utils.toArray(r.querySelectorAll('.prj__ln'));
+    const saidas = gsap.utils.toArray(r.querySelectorAll('.prj__saida'));
     const topo = r.querySelector('.prj__heroi-topo');
     const base = r.querySelector('.prj__heroi-base');
     const fundo = r.querySelector('.prj__fundo');
 
     /* ── o caminho estático de verdade ──
        Sem movimento o título PRECISA nascer no lugar. Deixá-lo fora da
-       tela com a animação desligada esconderia o nome da obra de quem
+       janela com a animação desligada esconderia o nome da obra de quem
        pediu menos movimento — que é o oposto de acessibilidade. */
     if (parado) {
-      gsap.set([linhaA, linhaB], { x: 0 });
-    } else if (heroi && linhaA && linhaB) {
-      /* As duas linhas: uma entra pela esquerda, a outra pela direita.
-         `100vw` e não um valor em px porque a distância tem que ser a
-         largura da tela em qualquer viewport — em px, num monitor
-         largo, a linha começaria já dentro do quadro. */
-      gsap.fromTo([linhaA, linhaB],
-        { xPercent: (i) => (i === 0 ? -1 : 1) * 100, x: (i) => (i === 0 ? -1 : 1) * 200 },
+      gsap.set([...linhas, ...saidas], { xPercent: 0 });
+    } else if (heroi && linhas.length) {
+      /* ── a SAÍDA é criada ANTES da entrada ──
+         Um `fromTo` sob ScrollTrigger grava o estado inicial no ato da
+         CRIAÇÃO, não quando dispara. Criada depois, a saída plantaria
+         `xPercent: 0` por cima da entrada que já estava correndo, e o
+         título apareceria de estalo. `immediateRender: false` impede
+         que ela escreva antes de o scroll pedir. */
+      gsap.fromTo(saidas,
+        { xPercent: 0 },
         {
-          xPercent: 0, x: 0,
-          /* ── por que `power3.out` e não linear ──
-             Medido na referência: com 210px de scroll as duas linhas já
-             estão a 64px do lugar, e os 340 restantes só assentam o
-             resto. A curva é quase toda no começo.
-
-             Linear dava -754 no mesmo ponto — metade do caminho —, e o
-             título só ficava legível bem depois de a pessoa ter passado
-             pela primeira tela. `power3.out` devolve a frente de
-             movimento para onde ela pertence: o convite para descer tem
-             que acontecer no primeiro gesto de scroll, não no quarto. */
-          ease: 'power3.out',
-          scrollTrigger: { trigger: heroi, start: 'top top', end: '+=420', scrub: 0.6 },
+          xPercent: (i) => (i === 0 ? -100 : 100),
+          ease: 'power2.in',
+          immediateRender: false,
+          scrollTrigger: {
+            trigger: heroi,
+            start: 'top top',
+            /* 75% do herói: a saída tem que ser VISTA. Terminando junto
+               com o herói, ela aconteceria quase toda fora do quadro. */
+            end: () => '+=' + heroi.offsetHeight * 0.75,
+            scrub: 0.6,
+          },
         });
+
+      /* ── a ENTRADA, no carregamento ──
+         A referência abre com o título JÁ no lugar — ele chega, e só
+         sai quando o scroll desce. Eu tinha lido ao contrário na
+         primeira leitura porque o navegador estava com o rAF congelado
+         e a animação de entrada nunca rodava: o que eu media era o
+         estado inicial parado, não o repouso.
+
+         `xPercent` e não px: a distância é a largura da JANELA, que é a
+         largura da linha mais longa. Em px, um título curto sairia da
+         janela antes da hora e um longo não sairia inteiro. */
+      /* `paused` + `aposCortina`: o `fromTo` planta o estado inicial na
+         hora — o título já nasce fora da janela, atrás da cortina do
+         preloader —, mas o movimento só começa quando a cortina sai.
+         Sem isso a entrada roda escondida e quem chega encontra só o
+         estado final, que é justamente o que esta página não pode ter:
+         o título CHEGANDO é a primeira coisa que ela diz.
+
+         É o mesmo instante que a persiana das imagens já usa; mora em
+         lib/cortina para o número não existir em três lugares. */
+      const entrada = gsap.fromTo(linhas,
+        { xPercent: (i) => (i === 0 ? -100 : 100) },
+        { xPercent: 0, ease: 'expo.out', duration: 1.2, stagger: 0.09, paused: true });
+
+      cancelarEntrada = aposCortina(() => entrada.play());
 
       /* O atraso dos textos menores. O de baixo atrasa o DOBRO do de
          cima: é a diferença entre os dois ritmos que faz o par se
@@ -122,7 +149,10 @@ export default function Projeto() {
     const limpezas = parado ? [] : gsap.utils.toArray(r.querySelectorAll('.prj__foto'))
       .map((fig) => animarRipas(fig, fig));
 
-    return () => limpezas.forEach((f) => f && f());
+    return () => {
+      if (cancelarEntrada) cancelarEntrada();
+      limpezas.forEach((f) => f && f());
+    };
   }, { scope: alvo, dependencies: [slug] });
 
   if (!projeto) return <Navigate to="/404" replace />;
@@ -154,12 +184,25 @@ export default function Projeto() {
             <p className="prj__chamada">{projeto.chamada}</p>
           </div>
 
-          {/* Cada linha numa janela própria: é a janela que recorta o
-              que ainda está fora, para o título deslizar sem abrir
-              rolagem horizontal na página. */}
+          {/* ── a linha imaginária ──
+              A JANELA tem `overflow: clip` e a largura da linha mais
+              longa. É a borda dela que o texto atravessa ao entrar e ao
+              sair — não a borda da tela. Medido na referência: máscara
+              de 773px, exatamente a largura de "UNSTABLE", com clip.
+
+              Duas camadas de transform, e não uma: a SAÍDA é presa ao
+              scroll e a ENTRADA é presa ao tempo. Na mesma peça, o
+              ScrollTrigger reescreveria `xPercent` a cada atualização e
+              engoliria a entrada antes de ela terminar. Separadas, cada
+              uma escreve na sua própria caixa e nenhuma pisa na outra. */}
           <h1 className="prj__titulo">
-            <span className="prj__janela"><span className="prj__ln prj__ln--a">{projeto.titulo[0]}</span></span>
-            <span className="prj__janela"><span className="prj__ln prj__ln--b">{projeto.titulo[1]}</span></span>
+            {projeto.titulo.map((linha, i) => (
+              <span className="prj__janela" key={i}>
+                <span className={`prj__saida prj__saida--${i === 0 ? 'a' : 'b'}`}>
+                  <span className={`prj__ln prj__ln--${i === 0 ? 'a' : 'b'}`}>{linha}</span>
+                </span>
+              </span>
+            ))}
           </h1>
 
           <div className="prj__heroi-base">
