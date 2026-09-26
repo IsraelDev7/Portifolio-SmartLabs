@@ -213,11 +213,18 @@ export default function Projeto() {
       });
     });
 
-    /* O bloco da introdução entra da direita, seguindo a régua. */
+    /* ── o texto sai de trás da régua ──
+       `xPercent: -100` e não um valor em px: a distância é a largura da
+       própria janela, então o bloco começa inteiro fora dela em
+       qualquer tela. É a mesma conta do título do herói.
+
+       Sem `autoAlpha`: o recorte da janela já esconde o que está fora,
+       e somar opacidade faria o texto CHEGAR desbotado em vez de
+       aparecer de trás da borda. */
     const introTexto = r.querySelector('.prj__intro-texto');
     if (introTexto && !parado) {
-      gsap.fromTo(introTexto, { x: 90, autoAlpha: 0 }, {
-        x: 0, autoAlpha: 1, duration: 1, ease: 'expo.out',
+      gsap.fromTo(introTexto, { xPercent: -100 }, {
+        xPercent: 0, duration: 1.1, ease: 'expo.out', delay: 0.15,
         scrollTrigger: { trigger: r.querySelector('.prj__intro'), start: 'top 78%', toggleActions: 'restart none none reverse' },
       });
     }
@@ -433,23 +440,26 @@ export default function Projeto() {
           palavra: 35 <div> inline-block na referência, uma por palavra,
           acendendo conforme o scroll passa. */}
       <section className="prj__intro">
-        {/* A régua traça da DIREITA para a esquerda, e o texto entra
-            atrás dela no mesmo sentido. É o único bloco da página que
-            anda nessa direção — e é de propósito: tudo antes dele veio
-            da esquerda, então a inversão marca que a leitura virou. */}
-        <i className="prj__intro-regua" data-regua aria-hidden="true" />
-        <p className="prj__intro-texto">
-          <strong className="prj__intro-destaque">
-            {projeto.introducao.destaque.split(' ').map((palavra, i) => (
-              <span className="prj__palavra" key={i}>{palavra}</span>
-            ))}
-          </strong>
-          <span className="prj__intro-resto">
-            {projeto.introducao.resto.split(' ').map((palavra, i) => (
-              <span className="prj__palavra" key={i}>{palavra}</span>
-            ))}
+        <div className="prj__intro-bloco">
+          {/* A régua traça da esquerda para a direita, e o texto sai da
+              borda dela — a janela recorta o que ainda está fora, do
+              mesmo jeito que o título do herói faz lá no começo. */}
+          <i className="prj__intro-regua" data-regua aria-hidden="true" />
+          <span className="prj__intro-janela">
+            <p className="prj__intro-texto">
+              <strong className="prj__intro-destaque">
+                {projeto.introducao.destaque.split(' ').map((palavra, i) => (
+                  <span className="prj__palavra" key={i}>{palavra}</span>
+                ))}
+              </strong>
+              <span className="prj__intro-resto">
+                {projeto.introducao.resto.split(' ').map((palavra, i) => (
+                  <span className="prj__palavra" key={i}>{palavra}</span>
+                ))}
+              </span>
+            </p>
           </span>
-        </p>
+        </div>
       </section>
 
       {/* ══════ CAPÍTULOS ══════ */}

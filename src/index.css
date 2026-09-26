@@ -5399,80 +5399,45 @@ html { scrollbar-gutter: stable; }
 .prj__dados > div:last-child { text-align: right; }
 .prj__dados > div:last-child dd { align-items: flex-end; }
 
-/* ── introdução: a faixa-cortina ──
-   Fica PREGADA no topo e o capítulo seguinte sobe por cima dela. É o
-   mecanismo da referência, medido: a seção (Introduction) lá é
-   `position: sticky; top: 0; z-index: 1` com fundo opaco, e as faixas
-   claras que vêm depois a cobrem conforme o scroll desce.
+/* ── introdução ──
+   A faixa era uma CORTINA: `position: sticky` no topo, altura de tela
+   inteira, e os capítulos subindo por cima. Saiu inteira. O efeito
+   funcionava, mas o preço era uma banda escura de uma tela que ficava
+   pregada atrás de tudo — e era ela que aparecia como vazio no pé do
+   fecho, porque lá não havia mais nada opaco para cobri-la.
 
-   Duas condições para funcionar, e as duas são fáceis de perder:
-   o fundo precisa ser OPACO (senão o que está por baixo vaza) e quem
-   cobre precisa estar posicionado com z-index maior (senão passa por
-   baixo e a cortina não existe).
-
-   Fica escura porque é o contraste que torna o movimento legível — na
-   referência a mesma faixa é a única escura entre bandas claras. */
+   Agora é uma faixa normal: altura do conteúdo, e nada pregado. */
 .prj__intro {
-  position: sticky;
-  top: 0;
-  z-index: 0;
   background: var(--aco);
   color: var(--cal);
-  /* ── por que 68svh e não uma tela inteira ──
-     A faixa é a cortina: ela precisa de altura para o capítulo seguinte
-     ter o que cobrir. Mas com 100svh o bloco de texto ocupava 26% dela
-     e sobravam dois terços de preto vazio, que foi o que o Israel
-     marcou com um X. Em 68svh a cortina continua funcionando e o vazio
-     sai. */
-  min-height: 68svh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: clamp(3rem, 7vw, 6rem) 24px clamp(3rem, 6vw, 5rem);
+  padding: clamp(4rem, 9vw, 7rem) 24px;
+}
+.prj__intro .prj__rotulo { color: var(--solda); }
+
+/* ── o bloco ──
+   Caixa própria, do tamanho que o Israel marcou: começa em 29% e ocupa
+   36% da largura. Não é a página inteira — é uma nota no meio dela. */
+.prj__intro-bloco {
+  margin-left: 29%;
+  max-width: 36%;
 }
 
-/* A régua da introdução: mesma peça de 8px do caderno, mas com origem
-   à DIREITA — é de lá que o bloco entra. */
+/* A régua traça da esquerda para a direita, como as outras da página,
+   e o texto sai da borda dela. */
 .prj__intro-regua {
   display: block;
   height: 8px;
   background: var(--solda);
-  margin: 0 0 clamp(1.4rem, 2.6vw, 2.2rem) 8.8%;
-  max-width: 62%;
-  transform-origin: right center;
+  margin: 0 0 clamp(1.2rem, 2.2vw, 1.8rem);
+  transform-origin: left center;
 }
-.prj__intro .prj__rotulo { color: var(--solda); }
-/* ── introdução: chave em cima, resto embaixo ──
-   O corpo caiu de 4vw para 3.1vw e o bloco virou duas vozes: a chave
-   em Solda, e o resto numa linha própria com peso fino, lendo como
-   subtítulo de tópico. Num bloco único de caixa alta a frase inteira
-   tinha o mesmo peso e o dado que importa se diluía. */
-.prj__intro-texto {
-  margin: 0 0 0 8.8%;
-  display: flex;
-  flex-direction: column;
-  gap: clamp(0.8rem, 1.6vw, 1.4rem);
-  max-width: 62%;
-}
-.prj__intro-destaque {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: clamp(1.5rem, 3.1vw, 3.1rem);
-  line-height: 1.02;
-  letter-spacing: -0.05em;
-  text-transform: uppercase;
-  color: var(--solda);
-}
-.prj__intro-resto {
-  font-family: var(--font-body);
-  /* 400 contra os 700 do destaque: é o contraste de peso que separa as
-     duas vozes, não o tamanho sozinho. */
-  font-weight: 400;
-  font-size: clamp(0.95rem, 1.35vw, 1.35rem);
-  line-height: 1.5;
-  letter-spacing: -0.01em;
-  color: var(--cal);
-}
+
+/* ── a janela ──
+   Mesma peça do título do herói: `overflow: clip` recorta o que ainda
+   está fora, e o texto desliza para dentro a partir da borda. Sem ela
+   o bloco só apareceria deslocado, sem o corte que faz parecer que ele
+   SAIU de trás da régua. */
+.prj__intro-janela { display: block; overflow: clip; }
 
 /* Cada palavra é uma peça própria — é ela que acende. `inline-block`
    para o opacity valer por palavra, e a margem no lugar do espaço,
@@ -5483,13 +5448,10 @@ html { scrollbar-gutter: stable; }
   will-change: opacity;
 }
 
-/* ── quem cobre a cortina ──
-   Sem `position` e sem z-index, estas faixas pintariam POR BAIXO da
-   seção pegajosa e a cortina não apareceria. */
-.prj__cap, .prj__result, .prj__fecho, .prj__mais {
-  position: relative;
-  z-index: 1;
-}
+/* O z-index existia só para cobrir a cortina pegajosa. Com ela fora, o
+   que resta é o `position: relative` que o fecho precisa para as
+   próprias camadas de fundo. */
+.prj__fecho { position: relative; }
 
 /* ── capítulos ── */
 .prj__cap, .prj__result {
@@ -6128,7 +6090,7 @@ html { scrollbar-gutter: stable; }
      desktop) e o texto ocupava 171px de uma faixa de 812 — 640px de
      vazio em volta de uma frase pequena demais para sustentar a tela
      inteira. O piso sobe e a faixa encurta. */
-  .prj__intro { min-height: 78svh; }
+  .prj__intro-bloco { margin-left: 0; max-width: 100%; }
   .prj__intro-texto {
     margin-left: 0;
     font-size: clamp(1.7rem, 7.4vw, 2.8rem);
