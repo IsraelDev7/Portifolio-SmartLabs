@@ -5399,13 +5399,32 @@ html { scrollbar-gutter: stable; }
 .prj__dados > div:last-child { text-align: right; }
 .prj__dados > div:last-child dd { align-items: flex-end; }
 
-/* ── introdução ── */
+/* ── introdução: a faixa-cortina ──
+   Fica PREGADA no topo e o capítulo seguinte sobe por cima dela. É o
+   mecanismo da referência, medido: a seção (Introduction) lá é
+   `position: sticky; top: 0; z-index: 1` com fundo opaco, e as faixas
+   claras que vêm depois a cobrem conforme o scroll desce.
+
+   Duas condições para funcionar, e as duas são fáceis de perder:
+   o fundo precisa ser OPACO (senão o que está por baixo vaza) e quem
+   cobre precisa estar posicionado com z-index maior (senão passa por
+   baixo e a cortina não existe).
+
+   Fica escura porque é o contraste que torna o movimento legível — na
+   referência a mesma faixa é a única escura entre bandas claras. */
 .prj__intro {
-  background: var(--cal);
-  color: var(--aco);
+  position: sticky;
+  top: 0;
+  z-index: 0;
+  background: var(--aco);
+  color: var(--cal);
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   padding: clamp(3rem, 7vw, 6rem) 24px clamp(4rem, 9vw, 8rem);
 }
-.prj__intro .prj__rotulo { color: rgba(10, 10, 10, 0.5); }
+.prj__intro .prj__rotulo { color: var(--solda); }
 .prj__intro-texto {
   margin: clamp(1.6rem, 3vw, 2.8rem) 0 0 8.8%;
   font-family: var(--font-display);
@@ -5414,6 +5433,23 @@ html { scrollbar-gutter: stable; }
   line-height: 1.02;
   letter-spacing: -0.05em;
   text-transform: uppercase;
+}
+
+/* Cada palavra é uma peça própria — é ela que acende. `inline-block`
+   para o opacity valer por palavra, e a margem no lugar do espaço,
+   que o inline-block engole. */
+.prj__palavra {
+  display: inline-block;
+  margin-right: 0.24em;
+  will-change: opacity;
+}
+
+/* ── quem cobre a cortina ──
+   Sem `position` e sem z-index, estas faixas pintariam POR BAIXO da
+   seção pegajosa e a cortina não apareceria. */
+.prj__cap, .prj__result, .prj__fecho, .prj__mais {
+  position: relative;
+  z-index: 1;
 }
 
 /* ── capítulos ── */
@@ -5667,7 +5703,16 @@ html { scrollbar-gutter: stable; }
   .prj__dados { grid-template-columns: 1fr 1fr; }
   .prj__dados > div:last-child { text-align: left; }
   .prj__dados > div:last-child dd { align-items: flex-start; }
-  .prj__intro-texto { margin-left: 0; }
+  /* Medido: em 375px o corpo caía para 24px (o piso do clamp de
+     desktop) e o texto ocupava 171px de uma faixa de 812 — 640px de
+     vazio em volta de uma frase pequena demais para sustentar a tela
+     inteira. O piso sobe e a faixa encurta. */
+  .prj__intro { min-height: 78svh; }
+  .prj__intro-texto {
+    margin-left: 0;
+    font-size: clamp(1.7rem, 7.4vw, 2.8rem);
+    line-height: 1.06;
+  }
   .prj__cap-corpo { grid-template-columns: 1fr; }
   .prj__blocos { grid-template-columns: 1fr; }
   .prj__fecho-linha2 { margin-left: 0; }

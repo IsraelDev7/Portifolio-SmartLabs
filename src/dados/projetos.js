@@ -90,8 +90,8 @@ export const PROJETOS = [
           'Nenhum contato do formulário chegando à planilha, com a tela dizendo que tinha chegado.',
           'O relatório diário que deveria sair às 23h nunca saiu, porque o agendamento morria na mesma linha.',
         ],
-        imagem: '/images/obra-bruno-antes.jpg',
-        legenda: 'Antes: a fachada de pé, e o que sustenta fora de ordem.',
+        imagem: '/images/obra-bruno-depois.jpg',
+        legenda: 'A entrega da BLGM: o resultado que a primeira dobra promete.',
       },
       {
         rotulo: '(Automação)',

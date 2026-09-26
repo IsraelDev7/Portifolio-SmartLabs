@@ -171,6 +171,33 @@ export default function Projeto() {
       }
     }
 
+    /* ── o texto que acende por palavra ──
+       Medido na referência: 35 <div> `inline-block`, um por palavra,
+       todos em rgb(242,242,242) no fim. O que parecia corte no meio de
+       "INTERRUPTI|ON" era so a linha quebrando — nao ha efeito por
+       letra.
+
+       `scrub: true` sem numero: o preenchimento fica preso ao scroll
+       nos DOIS sentidos, e desfaz subindo exatamente como fez
+       descendo. Com duracao propria, a volta ficaria fora de sincronia
+       com o dedo. */
+    const palavras = gsap.utils.toArray(r.querySelectorAll('.prj__palavra'));
+    if (palavras.length && !parado) {
+      gsap.fromTo(palavras,
+        { opacity: 0.22 },
+        {
+          opacity: 1, ease: 'none', stagger: 1,
+          scrollTrigger: {
+            trigger: r.querySelector('.prj__intro'),
+            start: 'top 85%',
+            end: 'bottom 90%',
+            scrub: true,
+          },
+        });
+    } else if (parado) {
+      gsap.set(palavras, { opacity: 1 });
+    }
+
     /* As fotos usam a MESMA persiana do resto do site. */
     const limpezas = parado ? [] : gsap.utils.toArray(r.querySelectorAll('.prj__foto'))
       .map((fig) => animarRipas(fig, fig));
@@ -269,9 +296,20 @@ export default function Projeto() {
       </section>
 
       {/* ══════ INTRODUÇÃO ══════ */}
+      {/* Esta faixa é a CORTINA: fica pregada no topo e o capítulo
+          seguinte sobe por cima dela. Mesmo mecanismo da referência —
+          a seção (Introduction) lá é `sticky; top: 0` com fundo opaco.
+
+          O texto vem quebrado em palavras porque o preenchimento é por
+          palavra: 35 <div> inline-block na referência, uma por palavra,
+          acendendo conforme o scroll passa. */}
       <section className="prj__intro">
         <p className="prj__rotulo">(Introdução)</p>
-        <p className="prj__intro-texto" data-anim="rise">{projeto.introducao}</p>
+        <p className="prj__intro-texto">
+          {projeto.introducao.split(' ').map((palavra, i) => (
+            <span className="prj__palavra" key={i}>{palavra}</span>
+          ))}
+        </p>
       </section>
 
       {/* ══════ CAPÍTULOS ══════ */}
