@@ -9,7 +9,7 @@ import { GradeRipas, animarRipas } from '../components/Persiana';
 import { aposCortina } from '../lib/cortina';
 import Partilha from '../components/Partilha';
 import { useCorpoJusto } from '../hooks/useCorpoJusto';
-import { acharProjeto, proximoProjeto, outrosProjetos } from '../dados/projetos';
+import { acharProjeto, proximoProjeto, outrosProjetos, OUTRAS_OBRAS } from '../dados/projetos';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -201,6 +201,27 @@ export default function Projeto() {
        nos DOIS sentidos, e desfaz subindo exatamente como fez
        descendo. Com duracao propria, a volta ficaria fora de sincronia
        com o dedo. */
+    /* ── as réguas ──
+       Mesma mecânica do caderno: `scaleX` de 0 a 1, cada peça com o
+       SEU gatilho. A da introdução tem origem à direita, porque é de
+       lá que o bloco inteiro entra. */
+    gsap.utils.toArray(r.querySelectorAll('[data-regua]')).forEach((reg) => {
+      if (parado) { gsap.set(reg, { scaleX: 1 }); return; }
+      gsap.fromTo(reg, { scaleX: 0 }, {
+        scaleX: 1, duration: 1.1, ease: 'power2.inOut',
+        scrollTrigger: { trigger: reg, start: 'top 92%', toggleActions: 'restart none none reverse' },
+      });
+    });
+
+    /* O bloco da introdução entra da direita, seguindo a régua. */
+    const introTexto = r.querySelector('.prj__intro-texto');
+    if (introTexto && !parado) {
+      gsap.fromTo(introTexto, { x: 90, autoAlpha: 0 }, {
+        x: 0, autoAlpha: 1, duration: 1, ease: 'expo.out',
+        scrollTrigger: { trigger: r.querySelector('.prj__intro'), start: 'top 78%', toggleActions: 'restart none none reverse' },
+      });
+    }
+
     /* Duas faixas usam o preenchimento: a introdução e o fecho. Cada
        uma precisa do PRÓPRIO gatilho — com um só, as palavras do fecho
        já estariam acesas quando alguém chegasse nele. */
@@ -412,7 +433,11 @@ export default function Projeto() {
           palavra: 35 <div> inline-block na referência, uma por palavra,
           acendendo conforme o scroll passa. */}
       <section className="prj__intro">
-        <p className="prj__rotulo">(Introdução)</p>
+        {/* A régua traça da DIREITA para a esquerda, e o texto entra
+            atrás dela no mesmo sentido. É o único bloco da página que
+            anda nessa direção — e é de propósito: tudo antes dele veio
+            da esquerda, então a inversão marca que a leitura virou. */}
+        <i className="prj__intro-regua" data-regua aria-hidden="true" />
         <p className="prj__intro-texto">
           <strong className="prj__intro-destaque">
             {projeto.introducao.destaque.split(' ').map((palavra, i) => (
@@ -622,28 +647,58 @@ export default function Projeto() {
       </section>
 
       {/* ══════ MAIS OBRAS ══════ */}
+      {/* Linha medida na referência: miniatura, título em 52px a 21.3%,
+          subtítulo logo abaixo, e as etiquetas com a data a 78.1%. A
+          seta fecha a linha à direita. */}
       <section className="prj__mais">
         <h2 className="prj__mais-titulo" aria-label="Mais obras">Mais obras</h2>
 
+        {/* Os riscos: a mesma faixa do caderno e da faixa de resultados. */}
+        <div className="prj__pente" aria-hidden="true">
+          {Array.from({ length: 64 }, (_, i) => <i key={i} />)}
+        </div>
+
         <ul className="prj__lista-obras">
-          {outros.map((o) => (
-            <li key={o.slug}>
-              <TransitionLink className="prj__obra" to={`/work/${o.slug}`}>
-                <span className="prj__obra-foto"><Foto src={o.heroImagem} alt={o.heroAlt} /></span>
-                <span className="prj__obra-corpo">
-                  <span className="prj__obra-titulo">{o.nome}</span>
-                  <span className="prj__obra-sub">{o.subtitulo}</span>
-                  <span className="prj__rotulo">{o.ficha[3]?.valor[0]}</span>
+          {[...outros, ...OUTRAS_OBRAS].map((o, i) => {
+            const conteudo = (
+              <>
+                <span className="prj__obra-foto">
+                  <Foto src={o.heroImagem} alt={o.heroAlt} />
                 </span>
-                <span className="prj__obra-seta" aria-hidden="true">→</span>
-              </TransitionLink>
-            </li>
-          ))}
-          {!outros.length && proximo === null && (
-            <li className="prj__vazio">
-              <TransitionLink to="/work">Voltar para as obras</TransitionLink>
-            </li>
-          )}
+
+                <span className="prj__obra-corpo">
+                  <span className="prj__obra-titulo" data-anim="rise">{o.nome}</span>
+                  <span className="prj__obra-sub" data-anim="rise">{o.subtitulo}</span>
+                </span>
+
+                <span className="prj__obra-ficha">
+                  <span className="prj__obra-tags">
+                    {(o.tags || (o.ficha && o.ficha[0].valor) || []).map((t) => (
+                      <span key={t}>{t}</span>
+                    ))}
+                  </span>
+                  <i className="prj__obra-regua" data-regua aria-hidden="true" />
+                  <span className="prj__obra-data">{o.data || (o.ficha && o.ficha[3].valor[0])}</span>
+                </span>
+
+                <span className="prj__obra-seta" aria-hidden="true">
+                  <svg viewBox="0 0 48 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path d="M0 8h45M38 1.5 45 8l-7 6.5" />
+                  </svg>
+                </span>
+              </>
+            );
+
+            return (
+              <li key={o.slug || o.nome}>
+                {o.slug ? (
+                  <TransitionLink className="prj__obra" to={`/work/${o.slug}`}>{conteudo}</TransitionLink>
+                ) : (
+                  <div className="prj__obra prj__obra--sem-destino">{conteudo}</div>
+                )}
+              </li>
+            );
+          })}
         </ul>
       </section>
     </main>

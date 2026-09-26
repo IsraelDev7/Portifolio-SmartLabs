@@ -219,6 +219,42 @@ export const PROJETOS = [
   },
 ];
 
+/**
+ * As obras que ainda não têm página própria.
+ *
+ * Elas aparecem na faixa "Mais obras" com o mesmo desenho das outras,
+ * mas SEM link: card que não leva ao projeto é pior que card que não
+ * clica, porque o primeiro quebra a confiança no resto da navegação.
+ * À medida que cada página nascer, a entrada sai daqui e entra em
+ * PROJETOS — o desenho da linha não muda.
+ */
+export const OUTRAS_OBRAS = [
+  {
+    nome: 'DANILA',
+    subtitulo: 'ANAMNESE ANTES DO ORÇAMENTO.',
+    tags: ['Link na bio', 'Automação', 'Banco próprio'],
+    data: 'Set 2026',
+    heroImagem: '/images/work-identidade.jpg',
+    heroAlt: 'Saúde estética',
+  },
+  {
+    nome: 'TIAGO — TL GARDEN',
+    subtitulo: 'O LEAD CHEGA DIAGNOSTICADO.',
+    tags: ['Motor de regras', 'Firebase', 'SEO'],
+    data: 'Set 2026',
+    heroImagem: '/images/work-infra.jpg',
+    heroAlt: 'Paisagismo no Reino Unido',
+  },
+  {
+    nome: 'PORTFÓLIO SMARTLABS',
+    subtitulo: 'O MÉTODO É O PRODUTO.',
+    tags: ['React 19', 'GSAP', 'Three.js'],
+    data: 'Set 2026',
+    heroImagem: '/images/work-performance.jpg',
+    heroAlt: 'Obra própria',
+  },
+];
+
 export function acharProjeto(slug) {
   return PROJETOS.find((p) => p.slug === slug) || null;
 }

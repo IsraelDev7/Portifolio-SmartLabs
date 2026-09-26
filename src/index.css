@@ -5418,11 +5418,28 @@ html { scrollbar-gutter: stable; }
   z-index: 0;
   background: var(--aco);
   color: var(--cal);
-  min-height: 100svh;
+  /* ── por que 68svh e não uma tela inteira ──
+     A faixa é a cortina: ela precisa de altura para o capítulo seguinte
+     ter o que cobrir. Mas com 100svh o bloco de texto ocupava 26% dela
+     e sobravam dois terços de preto vazio, que foi o que o Israel
+     marcou com um X. Em 68svh a cortina continua funcionando e o vazio
+     sai. */
+  min-height: 68svh;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: clamp(3rem, 7vw, 6rem) 24px clamp(4rem, 9vw, 8rem);
+  padding: clamp(3rem, 7vw, 6rem) 24px clamp(3rem, 6vw, 5rem);
+}
+
+/* A régua da introdução: mesma peça de 8px do caderno, mas com origem
+   à DIREITA — é de lá que o bloco entra. */
+.prj__intro-regua {
+  display: block;
+  height: 8px;
+  background: var(--solda);
+  margin: 0 0 clamp(1.4rem, 2.6vw, 2.2rem) 8.8%;
+  max-width: 62%;
+  transform-origin: right center;
 }
 .prj__intro .prj__rotulo { color: var(--solda); }
 /* ── introdução: chave em cima, resto embaixo ──
@@ -5431,7 +5448,7 @@ html { scrollbar-gutter: stable; }
    subtítulo de tópico. Num bloco único de caixa alta a frase inteira
    tinha o mesmo peso e o dado que importa se diluía. */
 .prj__intro-texto {
-  margin: clamp(1.6rem, 3vw, 2.8rem) 0 0 8.8%;
+  margin: 0 0 0 8.8%;
   display: flex;
   flex-direction: column;
   gap: clamp(0.8rem, 1.6vw, 1.4rem);
@@ -5999,32 +6016,74 @@ html { scrollbar-gutter: stable; }
 }
 
 .prj__lista-obras { list-style: none; margin: 0; padding: 0; }
+
+/* ── a linha de obra ──
+   Medida na referência (viewport 1436): miniatura à esquerda, título em
+   52px começando em 21.3%, e as etiquetas com a data em 78.1%. A altura
+   da linha lá é 341px. */
 .prj__obra {
   display: grid;
-  grid-template-columns: clamp(9rem, 16vw, 15rem) 1fr 3rem;
-  gap: clamp(1.2rem, 3vw, 2.4rem);
+  grid-template-columns: 19% 1fr 16% 3rem;
+  gap: clamp(1rem, 2.4vw, 2.4rem);
   align-items: center;
-  padding: clamp(1.4rem, 2.6vw, 2.2rem) 0;
+  padding: clamp(1.6rem, 3vw, 2.6rem) 0;
   border-top: 1px solid rgba(10, 10, 10, 0.16);
-  text-decoration: none; color: var(--aco);
-  transition: background-color .2s;
+  text-decoration: none;
+  color: var(--aco);
+  transition: background-color .25s;
 }
 .prj__lista-obras li:last-child .prj__obra { border-bottom: 1px solid rgba(10, 10, 10, 0.16); }
 .prj__obra:hover { background: rgba(10, 10, 10, 0.04); }
+/* Sem destino, a peça não promete nada: sem cursor de mão e sem realce. */
+.prj__obra--sem-destino { cursor: default; }
+.prj__obra--sem-destino:hover { background: none; }
+
 .prj__obra-foto { display: block; }
-.prj__obra-foto .prj__foto { aspect-ratio: 4 / 3; }
-.prj__obra-corpo { display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; }
+/* 3:2, a razão da miniatura na referência */
+.prj__obra-foto .prj__foto { aspect-ratio: 3 / 2; }
+
+.prj__obra-corpo { display: flex; flex-direction: column; gap: 0.7rem; min-width: 0; }
 .prj__obra-titulo {
   font-family: var(--font-display); font-weight: 700;
-  font-size: clamp(1.1rem, 2.5vw, 2.5rem);
-  line-height: 1.04; letter-spacing: -0.04em; text-transform: uppercase;
+  /* 52px em 1436 */
+  font-size: clamp(1.3rem, 3.62vw, 3.7rem);
+  line-height: 1; letter-spacing: -0.05em; text-transform: uppercase;
 }
 .prj__obra-sub {
-  font-family: var(--font-body); font-size: 0.95rem; font-weight: 500;
-  line-height: 1.5; letter-spacing: -0.01em; color: rgba(10, 10, 10, 0.7);
+  font-family: var(--font-body); font-size: 1rem; font-weight: 700;
+  line-height: 1.25; letter-spacing: -0.02em; text-transform: uppercase;
+  color: rgba(10, 10, 10, 0.68);
 }
-.prj__obra-seta { font-size: 1.4rem; justify-self: end; transition: transform .2s; }
-.prj__obra:hover .prj__obra-seta { transform: translateX(6px); }
+
+.prj__obra-ficha { display: flex; flex-direction: column; gap: 0.5rem; min-width: 0; }
+.prj__obra-tags { display: flex; flex-direction: column; gap: 0.1rem; }
+.prj__obra-tags span {
+  font-family: var(--font-body); font-size: 0.85rem; font-weight: 600;
+  letter-spacing: -0.01em; color: rgba(10, 10, 10, 0.8);
+}
+.prj__obra-regua {
+  display: block; height: 1px; background: rgba(10, 10, 10, 0.3);
+  margin: 0.4rem 0; transform-origin: left center;
+}
+.prj__obra-data {
+  font-family: var(--font-mono); font-size: 0.7rem;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: rgba(10, 10, 10, 0.5);
+}
+
+/* A seta é um traço desenhado, não um glifo: a haste cresce e a ponta
+   acompanha, que é o gesto de "vai por aqui". Com um "→" de fonte só
+   daria para deslocar o caractere inteiro. */
+.prj__obra-seta { display: block; justify-self: end; color: var(--aco); }
+.prj__obra-seta svg { width: 48px; height: 16px; display: block; }
+.prj__obra-seta svg path {
+  stroke-dasharray: 60; stroke-dashoffset: 0;
+  transition: transform .35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.prj__obra:hover .prj__obra-seta svg { transform: translateX(8px); }
+.prj__obra-seta svg { transition: transform .35s cubic-bezier(0.22, 1, 0.36, 1); }
+.prj__obra--sem-destino .prj__obra-seta { color: rgba(10, 10, 10, 0.25); }
+
 .prj__vazio a { font-family: var(--font-mono); font-size: 0.85rem; color: var(--solda); }
 
 /* ── telefone ── */
@@ -6118,7 +6177,10 @@ html { scrollbar-gutter: stable; }
   /* O hook é desligado abaixo de 820 e limpa o corpo que escreveu; aqui
      basta devolver a quebra de linha. */
   .prj__mais-titulo { white-space: normal; width: auto; }
+  /* Quatro colunas em 375px dariam 70px cada. Vira pilha: miniatura,
+     título, ficha — e a seta sai, porque a linha inteira já é o alvo. */
   .prj__obra { grid-template-columns: 1fr; gap: 0.9rem; }
   .prj__obra-foto .prj__foto { aspect-ratio: 16 / 9; }
   .prj__obra-seta { display: none; }
+  .prj__obra-tags { flex-direction: row; flex-wrap: wrap; gap: 0.2rem 0.9rem; }
 }
