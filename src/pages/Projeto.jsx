@@ -67,7 +67,9 @@ export default function Projeto() {
     const linhas = gsap.utils.toArray(r.querySelectorAll('.prj__ln'));
     const saidas = gsap.utils.toArray(r.querySelectorAll('.prj__saida'));
     const topo = r.querySelector('.prj__heroi-topo');
-    const base = r.querySelector('.prj__heroi-base');
+    const texto = r.querySelector('.prj__heroi-texto');
+    const latEsq = r.querySelector('.prj__lateral:not(.prj__lateral--dir)');
+    const latDir = r.querySelector('.prj__lateral--dir');
     const fundo = r.querySelector('.prj__fundo');
 
     /* ── o caminho estático de verdade ──
@@ -76,6 +78,7 @@ export default function Projeto() {
        pediu menos movimento — que é o oposto de acessibilidade. */
     if (parado) {
       gsap.set([...linhas, ...saidas], { xPercent: 0 });
+      gsap.set(r.querySelectorAll('.prj__lateral'), { xPercent: 0, autoAlpha: 1 });
     } else if (heroi && linhas.length) {
       /* ── a SAÍDA é criada ANTES da entrada ──
          Um `fromTo` sob ScrollTrigger grava o estado inicial no ato da
@@ -124,14 +127,37 @@ export default function Projeto() {
 
       cancelarEntrada = aposCortina(() => entrada.play());
 
-      /* O atraso dos textos menores. O de baixo atrasa o DOBRO do de
-         cima: é a diferença entre os dois ritmos que faz o par se
-         afastar na descida, não o deslocamento em si. */
-      [[topo, 0.1], [base, 0.2]].forEach(([el, taxa]) => {
+      /* ── os dois blocos se AFASTAM ──
+         A referência atrasa os dois para baixo em ritmos diferentes, o
+         que os separa. Aqui a separação é explícita: o bloco de cima
+         SOBE e o parágrafo DESCE, cada um saindo pela sua borda.
+
+         Ler melhor do que o atraso puro: com os dois indo para baixo,
+         quem rola rápido vê os dois perseguindo o rodapé. Em direções
+         opostas, o herói se abre no meio e o olho entende que aquela
+         tela acabou. */
+      const faixa = { trigger: heroi, start: 'top top', end: 'bottom top', scrub: true };
+      [[topo, -0.16], [texto, 0.18]].forEach(([el, taxa]) => {
         if (!el) return;
         gsap.fromTo(el, { y: 0 }, {
           y: () => heroi.offsetHeight * taxa, ease: 'none',
-          scrollTrigger: { trigger: heroi, start: 'top top', end: 'bottom top', scrub: true },
+          scrollTrigger: faixa,
+        });
+      });
+
+      /* ── os rótulos laterais saem PELO LADO ──
+         Mesma gramática do título: cada um se recolhe para a borda mais
+         próxima. São os dois textos que já nascem colados nas margens,
+         então sair pelo lado é o caminho mais curto — e o que repete o
+         gesto que a página inteira já faz. */
+      [[latEsq, -1], [latDir, 1]].forEach(([el, lado]) => {
+        if (!el) return;
+        gsap.fromTo(el, { xPercent: 0, autoAlpha: 1 }, {
+          xPercent: lado * 130, autoAlpha: 0, ease: 'power2.in',
+          scrollTrigger: {
+            trigger: heroi, start: 'top top',
+            end: () => '+=' + heroi.offsetHeight * 0.6, scrub: 0.6,
+          },
         });
       });
 

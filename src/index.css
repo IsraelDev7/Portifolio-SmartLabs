@@ -5129,12 +5129,24 @@ html { scrollbar-gutter: stable; }
   isolation: isolate;
 }
 
-/* 118% de altura para a deriva ter para onde ir sem descobrir a borda */
+/* ── o enquadramento que nao muda de aparelho para aparelho ──
+   A imagem termina EXATAMENTE no eixo vertical do rosto (medido: 57.5%
+   do retrato original, e o arquivo foi cortado ali). Com `right`, esse
+   eixo cai sempre na borda direita do container — em 375px ou em
+   2560px, cortando por largura ou por altura, o que sobra na tela e
+   sempre a metade esquerda do rosto.
+
+   `center`, como estava, deixava o enquadramento a merce da proporcao:
+   cada largura de tela mostrava um pedaco diferente da pessoa.
+
+   O 38% vertical e a altura do rosto no arquivo. Preso assim, a cabeca
+   fica no mesmo ponto da tela em retrato e em paisagem. */
 .prj__fundo {
   position: absolute;
-  left: 0; right: 0; top: -9%; height: 118%;
+  left: 0; right: 0; top: -8%; height: 116%;
   background-size: cover;
-  background-position: center;
+  background-position: right 38%;
+  background-repeat: no-repeat;
   z-index: -2;
 }
 
@@ -5206,6 +5218,15 @@ html { scrollbar-gutter: stable; }
   display: block;
   width: 100%;          /* preenche a janela: xPercent 100 = sair inteiro */
   will-change: transform;
+  /* ── a folga que impedia o corte ──
+     `letter-spacing` negativo tira espaco DEPOIS de cada letra,
+     inclusive da ultima: a caixa fica menor que os glifos e o
+     `overflow: clip` comia um pedaco do ultimo traco. Em 126px, os
+     0.07em de tracking viravam quase 9px sumidos.
+
+     O padding devolve essa folga dentro da propria caixa, sem mexer na
+     largura da mascara nem na distancia que a linha percorre ao sair. */
+  padding-right: 0.1em;
 }
 /* ── por que as duas linhas alinham à DIREITA ──
    Medido na referência: "UNSTABLE" vai de 210 a 983 e "SEQUENCE" de
@@ -5219,7 +5240,13 @@ html { scrollbar-gutter: stable; }
    Alinhar à direita entrega a mesma escada sem pedir largura extra. */
 .prj__titulo { text-align: right; }
 .prj__ln--a { color: var(--cal); }
-.prj__ln--b { color: var(--solda); }
+/* ── o degrau ──
+   A segunda linha recua da borda, e a mascara cresce junto porque
+   `max-content` soma o padding do filho mais largo. A primeira linha,
+   sem esse recuo, passa a terminar 0.6em a DIREITA da segunda — e o
+   degrau aparece sem precisar de posicao absoluta nem de largura fixa,
+   que quebrariam com um nome de obra mais longo. */
+.prj__ln--b { color: var(--solda); padding-right: 0.7em; }
 
 /* ── por que posição absoluta para os rótulos ──
    Medido na referência: "Inspiration" encosta na margem esquerda da
@@ -5230,30 +5257,41 @@ html { scrollbar-gutter: stable; }
    Numa grade de três colunas o parágrafo herdaria a largura dos
    rótulos como ponto de partida, e a faixa mudaria de lugar a cada
    palavra nova num deles. */
+/* ── por que uma grade, e nao posicao absoluta ──
+   Com os rotulos absolutos nas margens, o paragrafo comecava em 16.5%
+   fixo — e "ACONSELHAMENTO · PROPERTY CARE" tem 268px, ou seja, passava
+   por baixo dele. Os dois textos se sobrepunham.
+
+   Na grade o rotulo tem coluna PROPRIA, limitada a 20%: ele quebra em
+   duas linhas dentro dela em vez de invadir a do lado, e o paragrafo
+   comeca sempre depois — com qualquer setor escrito ali. */
 .prj__heroi-base {
-  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 20%) 49.5% 1fr;
+  /* Medido sem o vão: o rótulo terminava em 301 e o parágrafo começava
+     em 301. Não se sobrepunham, mas encostavam — e bastaria uma palavra
+     a mais no setor para os dois virarem um bloco só. */
+  column-gap: clamp(1rem, 2vw, 2rem);
+  align-items: start;
   margin-top: clamp(2rem, 5vw, 5rem);
-  min-height: 2rem;
 }
 
 .prj__lateral {
-  position: absolute;
-  top: 0;
   font-family: var(--font-mono);
   font-size: 0.75rem;
+  line-height: 1.5;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--cal);
-  white-space: nowrap;
+  will-change: transform;
 }
-.prj__lateral:not(.prj__lateral--dir) { left: 0; }
-.prj__lateral--dir { right: 0; }
+.prj__lateral--dir { text-align: right; }
 
 .prj__heroi-texto {
-  /* x 16.5% e largura 49.5% da caixa de conteúdo — a faixa medida na
-     referência (242 e 653 numa página de 1368 com 24 de margem). */
-  margin: 0 0 0 16.5%;
-  width: 49.5%;
+  /* Largura da referência (49.5% da caixa de conteúdo); a posição vem
+     da coluna da grade, não de uma margem fixa. */
+  margin: 0;
+  width: 100%;
   /* O recuo da primeira linha vem da referência. É detalhe de página
      impressa: marca o começo do parágrafo sem precisar de espaço em
      branco acima dele. */
@@ -5600,19 +5638,24 @@ html { scrollbar-gutter: stable; }
      de 13vw estouraria a tela, e o recorte é o que segura a animação
      dentro do quadro. O recuo da segunda linha cai junto — em 375px
      ele comeria um terço da palavra. */
-  /* Alinhamento à esquerda: a escada da direita só existe quando sobra
-     largura. Em 375px as duas linhas ocupam a tela toda e o degrau
-     vira um desalinho sem motivo. */
+  /* Só o recuo da esquerda cai — a máscara continua `max-content` e o
+     alinhamento à direita continua valendo.
+
+     Medido: em 375px o título vai a 48.75px e "GUTIERRES" ocupa 221px
+     numa caixa de 335. Cabe folgado, então forçar largura total e
+     alinhamento à esquerda (como eu tinha feito) só apagava o degrau
+     onde ele ainda funcionava — inclusive no tablet, onde sobra
+     bastante largura. */
   .prj__titulo {
     font-size: clamp(2rem, 13vw, 3.6rem);
-    margin-left: 0; width: 100%; max-width: 100%;
-    text-align: left;
+    margin-left: 0;
+    max-width: 100%;
   }
-  /* Os rótulos voltam ao fluxo: empilhados, `position: absolute` os
-     sobreporia ao parágrafo. */
-  .prj__heroi-base { position: static; margin-top: 2rem; display: flex; flex-direction: column; gap: 1rem; }
-  .prj__lateral { position: static; white-space: normal; }
-  .prj__heroi-texto { width: 100%; margin-left: 0; text-indent: 0; }
+  /* Uma coluna: em 375px, 20% de rótulo sobram 75px para escrever
+     "ACONSELHAMENTO · PROPERTY CARE". */
+  .prj__heroi-base { grid-template-columns: 1fr; margin-top: 2rem; gap: 1rem; }
+  .prj__lateral--dir { text-align: left; }
+  .prj__heroi-texto { width: 100%; text-indent: 0; }
   .prj__ano { font-size: clamp(2.6rem, 16vw, 5rem); right: 20px; }
 
   .prj__ficha, .prj__intro, .prj__cap, .prj__result, .prj__mais { padding-left: 20px; padding-right: 20px; }
