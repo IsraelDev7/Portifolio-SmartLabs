@@ -422,20 +422,56 @@ export default function Projeto() {
       ))}
 
       {/* ══════ RESULTADOS ══════ */}
+      {/* Duas colunas, medidas na referência: a direita começa em 66.5%
+          e tem 30.8% de largura — e é a MESMA coluna para a imagem em
+          cima e para os blocos embaixo, por isso eles alinham. */}
       <section className="prj__result">
-        <p className="prj__rotulo">{projeto.resultados.rotulo}</p>
-        <h3 className="prj__cap-titulo" data-anim="rise">{projeto.resultados.declaracao}</h3>
-        <p className="prj__cap-sub" data-anim="rise">{projeto.resultados.sub}</p>
+        <div className="prj__result-topo">
+          <div>
+            <p className="prj__rotulo">{projeto.resultados.rotulo}</p>
+            <h3 className="prj__cap-titulo" data-anim="rise">{projeto.resultados.declaracao}</h3>
+            <p className="prj__cap-sub prj__result-sub" data-anim="rise">{projeto.resultados.sub}</p>
+          </div>
 
-        <ol className="prj__blocos">
-          {projeto.resultados.blocos.map((b, i) => (
-            <li key={i}>
-              <span className="prj__bloco-n">{String(i + 1).padStart(2, '0')}</span>
-              <h4 className="prj__bloco-titulo" data-anim="rise">{b.titulo}</h4>
-              <p data-anim="rise">{b.texto}</p>
-            </li>
-          ))}
-        </ol>
+          {projeto.resultados.imagem && (
+            <figure className="prj__result-figura">
+              <span className="prj__foto prj__foto--quadrada"
+                    style={{ backgroundImage: `url(${projeto.resultados.imagem})` }}
+                    role="img" aria-label={projeto.resultados.imagemAlt}>
+                <GradeRipas />
+              </span>
+            </figure>
+          )}
+        </div>
+
+        {/* O pente: a mesma faixa de riscos finos que o caderno usa.
+            Na referência ela separa a declaração do bloco de baixo. */}
+        <div className="prj__pente" aria-hidden="true">
+          {Array.from({ length: 64 }, (_, i) => <i key={i} />)}
+        </div>
+
+        <div className="prj__result-base">
+          <aside className="prj__registro">
+            <span className="prj__aspas" aria-hidden="true">&ldquo;</span>
+            <p className="prj__rotulo">{projeto.resultados.registro.rotulo}</p>
+            <p className="prj__registro-frase" data-anim="rise">{projeto.resultados.registro.frase}</p>
+            <p className="prj__registro-texto" data-anim="rise">{projeto.resultados.registro.texto}</p>
+            <p className="prj__registro-assina">
+              <b>{projeto.resultados.registro.assina}</b>
+              <span>{projeto.resultados.registro.org}</span>
+            </p>
+          </aside>
+
+          <ol className="prj__blocos">
+            {projeto.resultados.blocos.map((b, i) => (
+              <li key={i}>
+                <span className="prj__bloco-n">{String(i + 1).padStart(2, '0')}</span>
+                <h4 className="prj__bloco-titulo" data-anim="rise">{b.titulo}</h4>
+                <p data-anim="rise">{b.texto}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
       </section>
 
       {/* ══════ FECHO ══════ */}

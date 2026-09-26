@@ -139,6 +139,25 @@ export const PROJETOS = [
       rotulo: '(Resultados)',
       declaracao: 'O QUE A OBRA PRONTA ENTREGA.',
       sub: 'NÃO SÃO TRÊS PÁGINAS BONITAS. É UM CANAL QUE REGISTRA, RESPONDE E PRESTA CONTAS SOZINHO.',
+      imagem: '/images/obra-bruno-resultado.jpg',
+      imagemAlt: 'Circuito de aço com uma linha de luz que se fecha sobre si mesma',
+
+      /* ── por que REGISTRO e não depoimento ──
+         A referência põe uma citação de cliente nesta caixa. Aqui não
+         há citação: inventar depoimento é propaganda enganosa (CDC
+         art. 37; o CONAR trata review fabricada como publicidade
+         ilícita), e o Bruno não mandou nenhuma.
+         O lugar continua o mesmo e o peso visual também — só que
+         preenchido com um fato que o repositório comprova. */
+      registro: {
+        rotulo: 'Registro',
+        frase: 'Depoimento se escreve. Voltar, não.',
+        texto:
+          'Três projetos para o mesmo cliente em cinco meses — o segundo e o terceiro pedidos depois de o primeiro já estar no ar.',
+        assina: 'Bruno Gutierres',
+        org: 'Aconselhamento · BLGM Solutions',
+      },
+
       blocos: [
         {
           titulo: 'CAPTAÇÃO QUE CHEGA',

@@ -5645,18 +5645,106 @@ html { scrollbar-gutter: stable; }
   .prj__painel-item:nth-child(3) { margin-top: 0; }
 }
 
-/* ── resultados ── */
+/* ── resultados ──
+   Medido na referência: coluna direita em x 66.5% com 30.8% de largura,
+   e é a MESMA coluna para a imagem em cima e para os blocos embaixo —
+   por isso eles alinham. A esquerda leva o título (41.8%) e, abaixo, o
+   registro recuado a 8.8%. */
+.prj__result-topo {
+  display: grid;
+  grid-template-columns: 1fr 32%;
+  gap: clamp(2rem, 4vw, 4rem);
+  align-items: start;
+}
+/* ── o título de resultados é MENOR que o dos capítulos ──
+   Medido: 52px contra os 90px dos capítulos, e 41.8% de largura contra
+   93.9%. Faz sentido de hierarquia — o capítulo abre um assunto, os
+   resultados fecham um. Eu tinha herdado o corpo do capítulo e a faixa
+   passava a gritar mais alto que as três que vêm antes dela. */
+.prj__result-topo .prj__cap-titulo {
+  font-size: clamp(1.5rem, 3.62vw, 3.7rem);
+  max-width: 64%;
+}
+/* 27.9% a partir de 2.5%: recuado da margem, como na referência */
+.prj__result-sub { max-width: 44%; margin-left: 1.5%; }
+
+.prj__result-figura { margin: 0; }
+.prj__foto--quadrada { aspect-ratio: 1 / 1; }
+
+/* O pente: mesma faixa de riscos do caderno. */
+.prj__pente {
+  display: flex; gap: 6px; height: 34px;
+  margin: clamp(2.5rem, 5vw, 4rem) 0 clamp(2rem, 4vw, 3rem);
+}
+.prj__pente i { flex: 1; background: rgba(10, 10, 10, 0.12); }
+
+.prj__result-base {
+  display: grid;
+  grid-template-columns: 1fr 32%;
+  gap: clamp(2rem, 4vw, 4rem);
+  align-items: start;
+}
+
+/* ── o registro ──
+   Ocupa o lugar que a referência dá ao depoimento. Recuado a 8.8% e com
+   as aspas grandes atrás, como lá — a diferença é o conteúdo, que aqui
+   é um fato verificável e não uma citação. */
+.prj__registro { position: relative; padding-left: 8.8%; }
+.prj__aspas {
+  position: absolute;
+  left: 2%; top: -0.35em;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(4rem, 9vw, 9rem);
+  line-height: 1;
+  color: rgba(10, 10, 10, 0.09);
+  pointer-events: none;
+}
+.prj__registro-frase {
+  margin: 1rem 0 0;
+  max-width: 22ch;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.2rem, 2.2vw, 2.1rem);
+  line-height: 1.06;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+}
+.prj__registro-texto {
+  margin: 1rem 0 0;
+  max-width: 38ch;
+  font-family: var(--font-body);
+  font-size: 0.95rem; font-weight: 500;
+  line-height: 1.55; letter-spacing: -0.01em;
+  color: rgba(10, 10, 10, 0.72);
+}
+.prj__registro-assina {
+  margin: 1.6rem 0 0;
+  display: flex; flex-direction: column; gap: 0.15rem;
+}
+.prj__registro-assina b {
+  font-family: var(--font-body);
+  font-size: 0.9rem; font-weight: 700; letter-spacing: -0.02em;
+}
+.prj__registro-assina span {
+  font-family: var(--font-mono);
+  font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase;
+  color: rgba(10, 10, 10, 0.5);
+}
+
+/* Empilhados, e não lado a lado: a referência põe os três um sob o
+   outro na coluna da direita, alinhados com a imagem de cima. */
 .prj__blocos {
   list-style: none;
-  margin: clamp(2.5rem, 5vw, 4.5rem) 0 0;
+  margin: 0;
   padding: 0;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: clamp(1.5rem, 4vw, 3.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.4rem, 2.6vw, 2.4rem);
 }
 .prj__blocos li { border-top: 1px solid rgba(10, 10, 10, 0.18); padding-top: 1.2rem; }
 .prj__bloco-n {
-  display: block; margin-bottom: 1.4rem;
+  display: block; margin-bottom: 0.9rem;
   font-family: var(--font-mono); font-size: 0.8rem;
   letter-spacing: 0.14em; color: var(--solda);
 }
@@ -5666,10 +5754,14 @@ html { scrollbar-gutter: stable; }
   font-weight: 700; font-size: clamp(1.05rem, 1.6vw, 1.5rem);
   line-height: 1.06; letter-spacing: -0.03em; text-transform: uppercase;
 }
+/* 16px/700 em caixa alta, medido — o corpo dos blocos na referência e
+   uma AFIRMACAO curta, nao um paragrafo de apoio. */
 .prj__blocos p {
   margin: 0;
-  font-family: var(--font-body); font-size: 0.96rem; font-weight: 500;
-  line-height: 1.55; letter-spacing: -0.01em; color: rgba(10, 10, 10, 0.78);
+  font-family: var(--font-body); font-size: 0.92rem; font-weight: 700;
+  line-height: 1.35; letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: rgba(10, 10, 10, 0.62);
 }
 
 /* ── fecho ── */
@@ -5842,7 +5934,14 @@ html { scrollbar-gutter: stable; }
      esconderiam a legenda de quem só toca. Nesta largura, mostrar é
      sempre a resposta certa. */
   .prj__painel-legenda { opacity: 1; transform: none; }
-  .prj__blocos { grid-template-columns: 1fr; }
+  .prj__result-topo, .prj__result-base { grid-template-columns: 1fr; }
+  .prj__result-topo .prj__cap-titulo { max-width: 100%; }
+  .prj__result-sub { max-width: 100%; margin-left: 0; }
+  /* O recuo de 8.8% custaria 33px numa tela de 375 sem devolver nada:
+     ali o registro já é o único bloco da linha. */
+  .prj__registro { padding-left: 0; padding-top: 2.2rem; }
+  .prj__aspas { left: -0.06em; top: -0.1em; }
+  .prj__pente { height: 22px; gap: 4px; }
   .prj__fecho-linha2 { margin-left: 0; }
   .prj__fecho-titulo { font-size: clamp(2rem, 13vw, 3.6rem); }
 
