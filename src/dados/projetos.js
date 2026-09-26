@@ -139,40 +139,63 @@ export const PROJETOS = [
       rotulo: '(Resultados)',
       declaracao: 'O QUE A OBRA PRONTA ENTREGA.',
       sub: 'NÃO SÃO TRÊS PÁGINAS BONITAS. É UM CANAL QUE REGISTRA, RESPONDE E PRESTA CONTAS SOZINHO.',
-      imagem: '/images/obra-bruno-resultado.jpg',
-      imagemAlt: 'Circuito de aço com uma linha de luz que se fecha sobre si mesma',
+      /* ── a TV ──
+         Em vez de uma foto parada, o quadro passa TODAS as imagens da
+         obra em ordem sorteada e em laço. O bloco de resultados é o
+         resumo da página: faz sentido que ele mostre o conjunto, e não
+         mais uma peça isolada. */
+      imagens: [
+        '/images/obra-bruno-resultado.jpg',
+        '/images/obra-bruno-medir.jpg',
+        '/images/obra-bruno-responder.jpg',
+        '/images/obra-bruno-reportar.jpg',
+        '/images/obra-bruno-depois.jpg',
+        '/images/obra-bruno-empresa.jpg',
+      ],
+      imagemAlt: 'Peças da obra, em sequência',
 
       /* ── por que REGISTRO e não depoimento ──
          A referência põe uma citação de cliente nesta caixa. Aqui não
          há citação: inventar depoimento é propaganda enganosa (CDC
          art. 37; o CONAR trata review fabricada como publicidade
          ilícita), e o Bruno não mandou nenhuma.
-         O lugar continua o mesmo e o peso visual também — só que
-         preenchido com um fato que o repositório comprova. */
+         O lugar e o peso visual continuam os mesmos — o cartão de baixo
+         inclusive repete o desenho da referência —, só que o texto é um
+         FATO em terceira pessoa, que não dá para ler como fala dele. */
       registro: {
         rotulo: 'Registro',
         frase: 'Depoimento se escreve. Voltar, não.',
         texto:
-          'Três projetos para o mesmo cliente em cinco meses — o segundo e o terceiro pedidos depois de o primeiro já estar no ar.',
-        assina: 'Bruno Gutierres',
-        org: 'Aconselhamento · BLGM Solutions',
+          'Na página dele a promessa é privacidade absoluta. Num trabalho assim, o que mede confiança não é uma frase elogiosa — é o cliente entregar o segundo projeto, e depois o terceiro.',
+        cartao: {
+          foto: '/images/obra-bruno-retrato.jpg',
+          texto: 'Três projetos em cinco meses. O segundo e o terceiro foram pedidos depois de o primeiro já estar no ar.',
+          assina: 'Bruno Gutierres',
+          org: 'Aconselhamento · BLGM Solutions',
+        },
       },
 
+      /* ── a copy saiu da página do cliente ──
+         Li a landing antes de escrever: o formulário do Código do
+         Alicerce não pede nome e e-mail, pede o que está acontecendo, e
+         a promessa central da página é PRIVACIDADE ABSOLUTA. Isso muda
+         o que cada bloco precisa afirmar — não é captação de lead, é
+         alguém admitindo uma coisa difícil de escrever. */
       blocos: [
         {
-          titulo: 'CAPTAÇÃO QUE CHEGA',
+          titulo: 'O QUE ELE ESCREVEU CHEGA INTEIRO',
           texto:
-            'A tela só confirma o envio depois que o registro existe. Se não existe, mostra o erro e oferece o WhatsApp como saída — verba de tráfego deixa de virar silêncio.',
+            'O formulário não pede nome e e-mail: pede o que está acontecendo. Texto assim se escreve uma vez só. A tela só confirma depois que o registro existe — e quando falha, mostra o erro em vez de engolir uma confissão.',
         },
         {
-          titulo: 'ORIGEM RASTREADA',
+          titulo: 'A PORTA POR ONDE ELE ENTROU',
           texto:
-            'Cada contato carrega a porta por onde entrou e o bloco que gerou o clique. Dá para saber qual das três trouxe quem, em vez de somar tudo num número só.',
+            'São três: a landing do Código do Alicerce, o link da bio e o site da BLGM. Cada contato carrega qual delas trouxe a pessoa e qual bloco gerou o clique — dá para saber onde o argumento funciona.',
         },
         {
-          titulo: 'ZERO CURVA DE APRENDIZADO',
+          titulo: 'PRIVACIDADE COMO ARQUITETURA',
           texto:
-            'O dono não abre painel, não aprende ferramenta e não muda rotina. O resumo chega às 23h no aplicativo que ele já usa o dia inteiro.',
+            'A página promete privacidade absoluta. Aqui isso é estrutura: o dado fica em registro próprio, não espalhado em plataforma de terceiro, e o resumo do dia chega às 23h no WhatsApp que ele já usa.',
         },
       ],
     },

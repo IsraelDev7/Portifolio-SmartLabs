@@ -246,12 +246,47 @@ export default function Projeto() {
       });
     }
 
+    /* ── a TV ──
+       Passa todos os quadros em ordem SORTEADA e em laço. O sorteio
+       acontece uma vez, na montagem: re-sortear a cada volta faria a
+       mesma imagem repetir em sequência de vez em quando, que é
+       exatamente o que o olho pega como defeito.
+
+       O laço é preso a um ScrollTrigger que o pausa fora da tela — uma
+       timeline infinita rodando no rodapé de uma página de 12.000px
+       gasta quadro sem ninguém ver. */
+    let tv = null;
+    const quadros = gsap.utils.toArray(r.querySelectorAll('.prj__tv-quadro'));
+    if (quadros.length > 1 && !parado) {
+      const ordem = gsap.utils.shuffle(quadros.map((_, i) => i));
+      gsap.set(quadros, { autoAlpha: 0 });
+      gsap.set(quadros[ordem[0]], { autoAlpha: 1 });
+
+      tv = gsap.timeline({ repeat: -1, paused: true });
+      ordem.forEach((_, k) => {
+        const sai = quadros[ordem[k]];
+        const entra = quadros[ordem[(k + 1) % ordem.length]];
+        tv.to(entra, { autoAlpha: 1, duration: 0.8, ease: 'power2.inOut' }, '+=2.6')
+          .set(sai, { autoAlpha: 0 });
+      });
+
+      ScrollTrigger.create({
+        trigger: r.querySelector('.prj__tv'),
+        start: 'top bottom', end: 'bottom top',
+        onToggle: ({ isActive }) => (isActive ? tv.play() : tv.pause()),
+      });
+    } else if (quadros.length) {
+      gsap.set(quadros, { autoAlpha: 0 });
+      gsap.set(quadros[0], { autoAlpha: 1 });
+    }
+
     /* As fotos usam a MESMA persiana do resto do site. */
-    const limpezas = parado ? [] : gsap.utils.toArray(r.querySelectorAll('.prj__foto'))
+    const limpezas = parado ? [] : gsap.utils.toArray(r.querySelectorAll('.prj__foto, .prj__tv'))
       .map((fig) => animarRipas(fig, fig));
 
     return () => {
       if (cancelarEntrada) cancelarEntrada();
+      if (tv) tv.kill();
       limpezasPainel.forEach((f) => f());
       limpezas.forEach((f) => f && f());
     };
@@ -433,11 +468,16 @@ export default function Projeto() {
             <p className="prj__cap-sub prj__result-sub" data-anim="rise">{projeto.resultados.sub}</p>
           </div>
 
-          {projeto.resultados.imagem && (
+          {projeto.resultados.imagens && (
             <figure className="prj__result-figura">
-              <span className="prj__foto prj__foto--quadrada"
-                    style={{ backgroundImage: `url(${projeto.resultados.imagem})` }}
-                    role="img" aria-label={projeto.resultados.imagemAlt}>
+              {/* Os quadros ficam todos empilhados no mesmo lugar; só a
+                  opacidade muda. Trocar o `background-image` de um
+                  elemento só faria o navegador buscar a imagem na hora
+                  da troca e piscar branco no primeiro ciclo. */}
+              <span className="prj__tv" role="img" aria-label={projeto.resultados.imagemAlt}>
+                {projeto.resultados.imagens.map((src, i) => (
+                  <span className="prj__tv-quadro" key={i} style={{ backgroundImage: `url(${src})` }} />
+                ))}
                 <GradeRipas />
               </span>
             </figure>
@@ -456,10 +496,26 @@ export default function Projeto() {
             <p className="prj__rotulo">{projeto.resultados.registro.rotulo}</p>
             <p className="prj__registro-frase" data-anim="rise">{projeto.resultados.registro.frase}</p>
             <p className="prj__registro-texto" data-anim="rise">{projeto.resultados.registro.texto}</p>
-            <p className="prj__registro-assina">
-              <b>{projeto.resultados.registro.assina}</b>
-              <span>{projeto.resultados.registro.org}</span>
-            </p>
+
+            {/* O cartão do pé da coluna, no desenho da referência: foto
+                pequena à esquerda, texto, nome e origem. A assinatura
+                saiu de cima — solta lá, ela parecia a rubrica de uma
+                fala que não existe. Aqui ela fecha um cartão de
+                REGISTRO, e o texto está em terceira pessoa. */}
+            {projeto.resultados.registro.cartao && (
+              <div className="prj__cartao">
+                <span className="prj__cartao-foto"
+                      style={{ backgroundImage: `url(${projeto.resultados.registro.cartao.foto})` }}
+                      role="img" aria-label={`Retrato de ${projeto.resultados.registro.cartao.assina}`} />
+                <div>
+                  <p className="prj__cartao-texto">{projeto.resultados.registro.cartao.texto}</p>
+                  <p className="prj__cartao-assina">
+                    <b>{projeto.resultados.registro.cartao.assina}</b>
+                    <span>{projeto.resultados.registro.cartao.org}</span>
+                  </p>
+                </div>
+              </div>
+            )}
           </aside>
 
           <ol className="prj__blocos">

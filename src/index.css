@@ -5669,7 +5669,26 @@ html { scrollbar-gutter: stable; }
 .prj__result-sub { max-width: 44%; margin-left: 1.5%; }
 
 .prj__result-figura { margin: 0; }
-.prj__foto--quadrada { aspect-ratio: 1 / 1; }
+
+/* ── a TV ──
+   Todos os quadros no mesmo lugar, só a opacidade muda. `isolation`
+   para o empilhamento não escapar e passar por cima das ripas. */
+.prj__tv {
+  position: relative;
+  display: block;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: var(--aco);
+  isolation: isolate;
+}
+.prj__tv-quadro {
+  position: absolute;
+  inset: 0;
+  display: block;
+  background-size: cover;
+  background-position: center;
+  will-change: opacity;
+}
 
 /* O pente: mesma faixa de riscos do caderno. */
 .prj__pente {
@@ -5682,14 +5701,16 @@ html { scrollbar-gutter: stable; }
   display: grid;
   grid-template-columns: 1fr 32%;
   gap: clamp(2rem, 4vw, 4rem);
-  align-items: start;
+  /* `stretch` e não `start`: é o que dá altura à coluna da esquerda
+     para o cartão poder descer até o pé dela. */
+  align-items: stretch;
 }
 
 /* ── o registro ──
    Ocupa o lugar que a referência dá ao depoimento. Recuado a 8.8% e com
    as aspas grandes atrás, como lá — a diferença é o conteúdo, que aqui
    é um fato verificável e não uma citação. */
-.prj__registro { position: relative; padding-left: 8.8%; }
+.prj__registro { position: relative; padding-left: 8.8%; display: flex; flex-direction: column; }
 .prj__aspas {
   position: absolute;
   left: 2%; top: -0.35em;
@@ -5718,17 +5739,42 @@ html { scrollbar-gutter: stable; }
   line-height: 1.55; letter-spacing: -0.01em;
   color: rgba(10, 10, 10, 0.72);
 }
-.prj__registro-assina {
-  margin: 1.6rem 0 0;
-  display: flex; flex-direction: column; gap: 0.15rem;
+/* ── o cartão do pé ──
+   Desenho da referência: foto pequena à esquerda, texto, nome e
+   origem. `margin-top: auto` o empurra para o pé da coluna, alinhado
+   com o último bloco da direita — é assim que a referência equilibra
+   as duas metades sem altura fixa. */
+.prj__cartao {
+  margin-top: auto;
+  padding-top: clamp(2.5rem, 6vw, 5rem);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem;
+  align-items: start;
+  max-width: 34ch;
 }
-.prj__registro-assina b {
+.prj__cartao-foto {
+  display: block;
+  width: 62px; height: 62px;
+  background-size: cover;
+  background-position: center 20%;
+  background-color: var(--chapa);
+}
+.prj__cartao-texto {
+  margin: 0 0 0.9rem;
   font-family: var(--font-body);
-  font-size: 0.9rem; font-weight: 700; letter-spacing: -0.02em;
+  font-size: 0.85rem; font-weight: 600;
+  line-height: 1.45; letter-spacing: -0.01em;
+  color: rgba(10, 10, 10, 0.82);
 }
-.prj__registro-assina span {
+.prj__cartao-assina { margin: 0; display: flex; flex-direction: column; gap: 0.15rem; }
+.prj__cartao-assina b {
+  font-family: var(--font-body);
+  font-size: 0.85rem; font-weight: 700; letter-spacing: -0.02em;
+}
+.prj__cartao-assina span {
   font-family: var(--font-mono);
-  font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase;
+  font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase;
   color: rgba(10, 10, 10, 0.5);
 }
 
@@ -5940,6 +5986,7 @@ html { scrollbar-gutter: stable; }
   /* O recuo de 8.8% custaria 33px numa tela de 375 sem devolver nada:
      ali o registro já é o único bloco da linha. */
   .prj__registro { padding-left: 0; padding-top: 2.2rem; }
+  .prj__cartao { padding-top: 2.2rem; max-width: 100%; }
   .prj__aspas { left: -0.06em; top: -0.1em; }
   .prj__pente { height: 22px; gap: 4px; }
   .prj__fecho-linha2 { margin-left: 0; }
