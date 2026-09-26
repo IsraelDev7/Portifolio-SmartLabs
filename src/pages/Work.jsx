@@ -29,22 +29,23 @@ gsap.registerPlugin(ScrollTrigger);
  */
 
 const OBRAS = [
-  { n: '01', titulo: ['[ nome do', 'projeto ]'], sub: '[ uma linha dizendo o que o projeto e ]',
-    cliente: '[ cliente ]', tipo: '[ tipo de projeto ]', data: '[ mês e ano ]',
-    legenda: '[ o problema que existia, e o que a estrutura nova resolveu. duas ou tres linhas. ]',
-    imagem: '/images/work-performance.jpg', para: '/contact' },
+  { n: '01', titulo: ['BRUNO', 'GUTIERRES'], sub: 'Três portas, dois públicos, um registro só.',
+    cliente: 'Aconselhamento · Property care', tipo: 'Landing · Link na bio · Site institucional',
+    data: 'Set 2026',
+    legenda: 'Três endereços no ar e nenhum deles registrava de onde vinha um contato. Hoje cada clique guarda a porta por onde entrou, e o resumo do dia chega às 23h no WhatsApp do dono.',
+    imagem: '/images/obra-bruno-heroi.jpg', para: '/work/bruno-gutierres' },
   { n: '02', titulo: ['[ nome do', 'projeto ]'], sub: '[ uma linha dizendo o que o projeto e ]',
     cliente: '[ cliente ]', tipo: '[ tipo de projeto ]', data: '[ mês e ano ]',
     legenda: '[ o problema que existia, e o que a estrutura nova resolveu. duas ou tres linhas. ]',
-    imagem: '/images/work-identidade.jpg', para: '/contact' },
+    imagem: '/images/work-identidade.jpg', para: null },
   { n: '03', titulo: ['[ nome do', 'projeto ]'], sub: '[ uma linha dizendo o que o projeto e ]',
     cliente: '[ cliente ]', tipo: '[ tipo de projeto ]', data: '[ mês e ano ]',
     legenda: '[ o problema que existia, e o que a estrutura nova resolveu. duas ou tres linhas. ]',
-    imagem: '/images/work-automacao.jpg', para: '/contact' },
+    imagem: '/images/work-automacao.jpg', para: null },
   { n: '04', titulo: ['[ nome do', 'projeto ]'], sub: '[ uma linha dizendo o que o projeto e ]',
     cliente: '[ cliente ]', tipo: '[ tipo de projeto ]', data: '[ mês e ano ]',
     legenda: '[ o problema que existia, e o que a estrutura nova resolveu. duas ou tres linhas. ]',
-    imagem: '/images/work-infra.jpg', para: '/contact' },
+    imagem: '/images/work-infra.jpg', para: null },
 ];
 
 export default function Work() {
@@ -132,14 +133,33 @@ export default function Work() {
               {Array.from({ length: 9 }, (_, i) => <i key={i} />)}
             </div>
 
-            <Link className="obra__peca" to={o.para} aria-label={`Ver o projeto ${o.n}`}>
-              <Persiana imagem={o.imagem} className="obra__persiana" />
+            {/* ── por que a peca deixa de ser link quando `para` e null ──
+                Os quatro cards apontavam para /contact enquanto nao
+                tinham pagina. Quem clicava no projeto caía no
+                formulario de contato sem entender por que — e um card
+                que nao leva ao projeto e pior que um card que nao
+                clica, porque o primeiro quebra a confianca no resto da
+                navegacao.
 
-              <span className="obra__legenda">
-                {o.legenda}
-                <b>Inspiração</b>
-              </span>
-            </Link>
+                Sem destino, a peca vira <div>: sem cursor de mao, sem
+                foco de teclado, sem promessa. */}
+            {o.para ? (
+              <Link className="obra__peca" to={o.para} aria-label={`Ver o projeto — ${o.titulo.join(' ')}`}>
+                <Persiana imagem={o.imagem} className="obra__persiana" />
+                <span className="obra__legenda">
+                  {o.legenda}
+                  <b>Ver o projeto</b>
+                </span>
+              </Link>
+            ) : (
+              <div className="obra__peca obra__peca--sem-destino">
+                <Persiana imagem={o.imagem} className="obra__persiana" />
+                <span className="obra__legenda">
+                  {o.legenda}
+                  <b>Em breve</b>
+                </span>
+              </div>
+            )}
           </article>
         ))}
       </div>

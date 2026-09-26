@@ -13,14 +13,14 @@
  *   ficha        nome 90px, declaracao 40px, e 4 colunas de dados
  *   introducao   um paragrafo unico em 64px, caixa alta
  *   capitulos    (rotulo) + declaracao 52px + sub 16px + corpo + foto
- *   resultados   depoimento a esquerda, blocos de numero a direita
+ *   resultados   tres blocos numerados
  *   fecho        o titulo de novo, esteira e partilha
  *   mais         as outras obras
  *
  * ── a animação que o herói carrega ──
- * Medida na referência com scroll de RODA REAL — `scrollTo` por script
- * não move o valor, porque ele está preso a um spring que só responde a
- * scroll de verdade. Quatro estados:
+ * Medida com scroll de RODA REAL — `scrollTo` por script não move o
+ * valor na referência, porque ele está preso a um spring que só
+ * responde a scroll de verdade. Quatro estados:
  *
  *   scroll     linha 1     linha 2     rotulo/chamada   paragrafo
  *     0        -1200px     +1200px          0               0
@@ -28,53 +28,52 @@
  *   400           +1          -1          +40             +80
  *   600          -75         +75          +60            +120
  *
- * Ou seja: as duas linhas do titulo NASCEM FORA DA TELA, em lados
- * opostos, e convergem conforme o scroll desce — a de cima entra pela
- * esquerda, a de baixo pela direita. Os textos menores ficam para trás
- * do scroll em ritmos diferentes (0.1x e 0.2x), o que faz o bloco de
- * cima e o paragrafo de baixo se AFASTAREM um do outro na descida e
- * voltarem a se juntar na subida.
+ * As duas linhas do titulo NASCEM FORA DA TELA, em lados opostos, e
+ * convergem conforme o scroll desce. Os textos menores ficam para trás
+ * em ritmos diferentes (0.1x e 0.2x), e é a diferença entre os dois
+ * ritmos que faz o par se afastar na descida e voltar na subida.
  *
- * ── tipografia medida ──
- *   titulo do heroi   140px / 800 / entrelinha 0.8 / tracking -0.07em
- *   linha 2 recuada   +80px em relacao a linha 1
- *   nome da ficha      90px / 700
- *   declaracao         52px / 700   ·  introducao  64px / 700
- *   sub                16px / 700   ·  rotulo      12px / 600
+ * ── de onde vêm as imagens ──
+ * Dos próprios sites entregues, baixadas em resolução original e
+ * reduzidas aqui (9,7 MB → 1,1 MB). O herói é o retrato que o cliente
+ * usa na página dele, recomposto em 16:9 com a pessoa à direita e o
+ * campo livre à esquerda para o título — é a composição da referência,
+ * e o retrato já vinha sobre fundo preto, então estender a tela para a
+ * esquerda não aparece como montagem.
  */
 
 export const PROJETOS = [
   {
-    slug: 'bruno-consultoria',
+    slug: 'bruno-gutierres',
     indice: '01',
     ano: '2026',
 
     /* ── herói ── */
-    chamada: 'Três entregas que falam com a mesma planilha.',
-    titulo: ['CONSULTORIA', 'BRUNO'],
-    heroImagem: '/images/work-automacao.jpg',
-    heroAlt: 'A página do cliente no ar',
-    lateralEsq: 'Setor',
-    lateralDir: 'Entregue',
+    chamada: 'Três portas, dois públicos, um registro só.',
+    titulo: ['BRUNO', 'GUTIERRES'],
+    heroImagem: '/images/obra-bruno-heroi.jpg',
+    heroAlt: 'Retrato de Bruno Gutierres, da página dele',
+    lateralEsq: 'Aconselhamento · Property care',
+    lateralDir: 'Set 2026',
     heroTexto:
-      'Consultoria no Reino Unido, três projetos em cinco meses. O cliente voltou duas vezes — e essa é a única métrica de satisfação que não dá para fabricar.',
+      'Uma marca pessoal em português, para homens em reconstrução. E uma empresa de property care em Londres, em inglês. O mesmo dono, dois públicos que não se cruzam — e nenhuma das duas sabia de onde vinha um contato.',
 
     /* ── ficha ── */
-    nome: 'CONSULTORIA BRUNO',
-    subtitulo: 'TRÊS ENTREGAS QUE FALAM COM A MESMA PLANILHA.',
+    nome: 'BRUNO GUTIERRES',
+    subtitulo: 'TRÊS ENTREGAS EM CINCO MESES. O CLIENTE VOLTOU DUAS VEZES.',
     declaracao:
-      'UMA LANDING, UM LINK NA BIO E UM SITE INSTITUCIONAL. TRÊS PORTAS, UM REGISTRO SÓ.',
-    linkVivo: { rotulo: 'PROJETO NO AR', texto: 'VER A EXPERIÊNCIA COMPLETA', url: null },
+      'UMA LANDING, UM LINK NA BIO E UM SITE INSTITUCIONAL FALANDO COM O MESMO REGISTRO.',
+    linkVivo: { rotulo: 'PROJETOS NO AR', texto: 'TRÊS ENDEREÇOS, TODOS PÚBLICOS', url: null },
     ficha: [
       { valor: ['Landing page', 'Link na bio', 'Site institucional'], rotulo: 'TIPO DE TRABALHO' },
-      { valor: ['Consultoria', 'Reino Unido'], rotulo: 'SETOR' },
-      { valor: ['5 meses'], rotulo: 'PRAZO' },
+      { valor: ['Aconselhamento', 'Property care'], rotulo: 'SETOR' },
+      { valor: ['Brasil', 'Londres e Surrey'], rotulo: 'PRAÇA' },
       { valor: ['Set 2026'], rotulo: 'ENTREGUE' },
     ],
 
     /* ── introdução ── */
     introducao:
-      'O PEDIDO ERA UMA PÁGINA. O QUE FALTAVA ERA UM SISTEMA. TRÊS CANAIS DIFERENTES TRAZIAM CONTATO E NENHUM DELES DEIXAVA REGISTRO — O CLIENTE SABIA QUE CHEGAVA GENTE, MAS NUNCA DE ONDE.',
+      'TRÊS ENDEREÇOS NO AR, DOIS IDIOMAS, DOIS PÚBLICOS QUE NÃO SE CRUZAM. O PEDIDO ERA UMA PÁGINA. O QUE FALTAVA ERA SABER, NO FIM DO MÊS, QUAL DAS TRÊS PORTAS TROUXE QUEM.',
 
     /* ── capítulos ── */
     capitulos: [
@@ -83,34 +82,43 @@ export const PROJETOS = [
         declaracao: 'O SITE RESPONDIA. A CAPTAÇÃO ESTAVA MORTA.',
         sub: 'TRÊS ENDEREÇOS DE API QUEBRAVAM EM TODA CHAMADA, DESDE O PRIMEIRO DIA — E NADA NA TELA DENUNCIAVA.',
         corpo:
-          'A página abria em menos de dois segundos e o formulário respondia "enviado" com uma animação bem-feita. Rodei uma verificação de rotina nos endereços e as três funções morriam antes da primeira linha útil. Nenhum clique registrado, nenhum contato na planilha, nenhum e-mail disparado.',
-        codigo: 'GET /api/clicks\n\nFUNCTION_INVOCATION_FAILED\nem 100% das chamadas',
-        imagem: '/images/ideia-estrutura.jpg',
-        legenda: 'A verificação que ninguém tinha rodado.',
+          'A página abria em menos de dois segundos e o formulário respondia "enviado" com uma animação bem-feita. Rodei uma verificação de rotina nos endereços e as três funções morriam antes da primeira linha útil: o projeto declarava módulo ES e os endpoints usavam a sintaxe do sistema antigo. Em módulo ES, `require` simplesmente não existe.',
+        codigo: 'GET /api/clicks\n\nFUNCTION_INVOCATION_FAILED\nem 100% das chamadas, desde o dia um',
+        listaTitulo: 'O QUE ISSO CUSTAVA, EM SILÊNCIO',
+        lista: [
+          'Nenhum clique registrado — nem na landing, nem no link da bio, nem no site da empresa.',
+          'Nenhum contato do formulário chegando à planilha, com a tela dizendo que tinha chegado.',
+          'O relatório diário que deveria sair às 23h nunca saiu, porque o agendamento morria na mesma linha.',
+        ],
+        imagem: '/images/obra-bruno-antes.jpg',
+        legenda: 'Antes: a fachada de pé, e o que sustenta fora de ordem.',
       },
       {
         rotulo: '(Automação)',
         declaracao: 'MEDIR, RESPONDER, REPORTAR.',
         sub: 'TRÊS ROTINAS, E NENHUMA DELAS PEDE QUE O CLIENTE ABRA UM PAINEL.',
         corpo:
-          'Cada clique passou a guardar seção, rótulo e origem — dá para cruzar qual bloco gerou interesse com qual contato entrou. O lead recebe resposta em segundos, porque velocidade de primeira resposta é o fator isolado que mais move conversão. E às 23h um resumo do dia chega no WhatsApp do dono, gerado sozinho.',
+          'Cada clique passou a guardar seção, rótulo e origem, gravados em registro próprio e não só no painel de anúncio — dá para cruzar qual bloco gerou interesse com qual contato entrou. O lead recebe resposta em segundos. E às 23h um resumo do dia chega no WhatsApp do dono, gerado sozinho.',
         listaTitulo: 'POR QUE NO WHATSAPP, E NÃO NUM PAINEL',
         lista: [
-          'Painel exige lembrar de abrir. Relatório que chega sozinho continua sendo lido no terceiro mês.',
-          'A rotina roda no servidor, não no navegador de ninguém — não depende de aba aberta nem de máquina ligada.',
-          'Se um canal cai, aparece no log com nome e motivo. O erro vira registro, e não silêncio.',
+          'Painel exige lembrar de abrir. O relatório que chega sozinho continua sendo lido no terceiro mês, e é aí que ele começa a valer.',
+          'A rotina roda no servidor, não no navegador de ninguém — não depende de aba aberta, de máquina ligada nem de o dono estar no país certo.',
+          'No link da bio a marcação sai por `sendBeacon`: o clique é registrado mesmo quando a pessoa já está saindo da página, que é exatamente quando ele acontece.',
+          'Se um canal cai, aparece no log com nome e motivo. O erro vira registro, e não silêncio de quatro meses.',
         ],
         imagem: '/images/work-automacao.jpg',
-        legenda: 'O relatório das 23h, entregue onde o dono já olha.',
+        legenda: 'O resumo das 23h, entregue onde o dono já olha.',
       },
       {
         rotulo: '(Design)',
-        declaracao: 'O DESENHO SERVE AO ARGUMENTO, NUNCA O CONTRÁRIO.',
-        sub: 'CONSULTORIA NÃO VENDE HORA DE REUNIÃO. VENDE A CERTEZA DE TER SIDO ENTENDIDO.',
+        declaracao: 'DUAS IDENTIDADES, PORQUE SÃO DUAS DECISÕES DE COMPRA.',
+        sub: 'NA EMPRESA, A PROVA É A FOTO. NA MARCA PESSOAL, A PROVA É A PESSOA.',
         corpo:
-          'A página foi montada para provar entendimento antes de pedir o contato: o problema aparece escrito com as palavras do cliente antes de qualquer proposta. Tipografia sóbria, nenhuma ilustração genérica, e uma única decisão por dobra — em serviço de alto valor, ambiguidade lê como insegurança.',
-        imagem: '/images/camada-interface.jpg',
-        legenda: 'Uma decisão por dobra, e nenhuma concorrendo com a outra.',
+          'A BLGM abre com um comparador de antes e depois arrastável, ocupando a primeira dobra inteira. Em serviço de transformação de imóvel ninguém compra pela descrição — compra pelo salto entre duas fotos, e esse salto tinha que ser a primeira coisa na tela, não uma galeria lá embaixo.',
+        corpoExtra:
+          'A landing do conselheiro faz o oposto: retrato em tela cheia e uma frase que nomeia a dor antes de qualquer oferta. Em aconselhamento a pessoa é o produto, e o rosto precisa chegar antes do método. Fundo escuro com um único acento quente, tipografia com serifa no título e uma decisão por dobra — em decisão íntima, ambiguidade lê como insegurança.',
+        imagem: '/images/obra-bruno-empresa.jpg',
+        legenda: 'Depois: a prova que a primeira dobra da BLGM entrega.',
       },
     ],
 
@@ -118,7 +126,7 @@ export const PROJETOS = [
     resultados: {
       rotulo: '(Resultados)',
       declaracao: 'O QUE A OBRA PRONTA ENTREGA.',
-      sub: 'NÃO É UMA PÁGINA BONITA. É UM CANAL QUE REGISTRA, RESPONDE E PRESTA CONTAS SOZINHO.',
+      sub: 'NÃO SÃO TRÊS PÁGINAS BONITAS. É UM CANAL QUE REGISTRA, RESPONDE E PRESTA CONTAS SOZINHO.',
       blocos: [
         {
           titulo: 'CAPTAÇÃO QUE CHEGA',
@@ -128,7 +136,7 @@ export const PROJETOS = [
         {
           titulo: 'ORIGEM RASTREADA',
           texto:
-            'Cada contato carrega a seção e o rótulo que geraram o clique. Dá para cortar criativo que traz clique sem contato, em vez de adivinhar no escuro.',
+            'Cada contato carrega a porta por onde entrou e o bloco que gerou o clique. Dá para saber qual das três trouxe quem, em vez de somar tudo num número só.',
         },
         {
           titulo: 'ZERO CURVA DE APRENDIZADO',

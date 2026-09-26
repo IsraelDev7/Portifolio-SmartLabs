@@ -215,6 +215,7 @@ export default function Projeto() {
           <div className="prj__cap-corpo">
             <div className="prj__cap-texto">
               <p data-anim="rise">{c.corpo}</p>
+              {c.corpoExtra && <p data-anim="rise">{c.corpoExtra}</p>}
 
               {c.codigo && (
                 <pre className="prj__codigo" data-anim="rise"><code>{c.codigo}</code></pre>

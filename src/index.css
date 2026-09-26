@@ -5089,6 +5089,10 @@ html { scrollbar-gutter: stable; }
   .art__pente { height: 22px; gap: 4px; }
 }
 
+/* Peca sem destino: mesma caixa, sem a promessa de clique. */
+.obra__peca--sem-destino { cursor: default; }
+.obra__peca--sem-destino .obra__legenda b { color: var(--fumaca); }
+
 /* ═══════════════════════════════════════════════════════════════
    PÁGINA DE PROJETO
    Medida em vertical.framer.media/work/unstable-sequence, viewport
