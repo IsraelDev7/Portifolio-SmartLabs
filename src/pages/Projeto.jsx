@@ -161,6 +161,26 @@ export default function Projeto() {
         });
       });
 
+      /* ── a ilusão no título do fecho ──
+         Deslocamento pequeno demais para o olho nomear: 26px ao longo
+         de uma tela inteira de scroll, contra os 90 do bloco do herói.
+         A leitura muda — dá para sentir que a peça não está parada sem
+         conseguir dizer o que se mexeu. Acima de uns 40px vira
+         paralaxe declarado e perde a graça. */
+      const fechoTit = r.querySelector('.prj__fecho-titulo');
+      const fechoTxt = r.querySelector('.prj__fecho-texto');
+      if (fechoTit) {
+        gsap.fromTo([fechoTit, fechoTxt].filter(Boolean),
+          { y: (i) => (i === 0 ? 26 : 14) },
+          {
+            y: (i) => (i === 0 ? -26 : -14), ease: 'none',
+            scrollTrigger: {
+              trigger: r.querySelector('.prj__fecho'),
+              start: 'top bottom', end: 'bottom top', scrub: 1.2,
+            },
+          });
+      }
+
       /* O fundo anda mais devagar que a página: é o que separa a
          imagem do conteúdo em vez de os dois subirem colados. */
       if (fundo) {
@@ -394,9 +414,16 @@ export default function Projeto() {
       <section className="prj__intro">
         <p className="prj__rotulo">(Introdução)</p>
         <p className="prj__intro-texto">
-          {projeto.introducao.split(' ').map((palavra, i) => (
-            <span className="prj__palavra" key={i}>{palavra}</span>
-          ))}
+          <strong className="prj__intro-destaque">
+            {projeto.introducao.destaque.split(' ').map((palavra, i) => (
+              <span className="prj__palavra" key={i}>{palavra}</span>
+            ))}
+          </strong>
+          <span className="prj__intro-resto">
+            {projeto.introducao.resto.split(' ').map((palavra, i) => (
+              <span className="prj__palavra" key={i}>{palavra}</span>
+            ))}
+          </span>
         </p>
       </section>
 
@@ -563,7 +590,18 @@ export default function Projeto() {
               repetindo em laço. */}
           {projeto.fecho.url && (
             <a className="prj__marca" href={projeto.fecho.url}
-               target="_blank" rel="noopener noreferrer">
+               target="_blank" rel="noopener noreferrer"
+               onClick={(e) => {
+                 /* A falha no clique é a mesma gramática dos ícones de
+                    partilha: `steps`, nada interpolado. A classe se
+                    remove sozinha ao fim da animação para o efeito
+                    poder rodar de novo no clique seguinte. */
+                 const el = e.currentTarget;
+                 el.classList.remove('e-falha');
+                 void el.offsetWidth;   // reinicia a animação
+                 el.classList.add('e-falha');
+                 setTimeout(() => el.classList.remove('e-falha'), 520);
+               }}>
               <span className="prj__marca-trilho" aria-hidden="true">
                 {Array.from({ length: 6 }, (_, i) => (
                   <span key={i}>{projeto.fecho.esteira}<i>▶▶</i></span>

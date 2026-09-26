@@ -5425,14 +5425,36 @@ html { scrollbar-gutter: stable; }
   padding: clamp(3rem, 7vw, 6rem) 24px clamp(4rem, 9vw, 8rem);
 }
 .prj__intro .prj__rotulo { color: var(--solda); }
+/* ── introdução: chave em cima, resto embaixo ──
+   O corpo caiu de 4vw para 3.1vw e o bloco virou duas vozes: a chave
+   em Solda, e o resto numa linha própria com peso fino, lendo como
+   subtítulo de tópico. Num bloco único de caixa alta a frase inteira
+   tinha o mesmo peso e o dado que importa se diluía. */
 .prj__intro-texto {
   margin: clamp(1.6rem, 3vw, 2.8rem) 0 0 8.8%;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.8rem, 1.6vw, 1.4rem);
+  max-width: 62%;
+}
+.prj__intro-destaque {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: clamp(1.5rem, 4vw, 4rem);
+  font-size: clamp(1.5rem, 3.1vw, 3.1rem);
   line-height: 1.02;
   letter-spacing: -0.05em;
   text-transform: uppercase;
+  color: var(--solda);
+}
+.prj__intro-resto {
+  font-family: var(--font-body);
+  /* 400 contra os 700 do destaque: é o contraste de peso que separa as
+     duas vozes, não o tamanho sozinho. */
+  font-weight: 400;
+  font-size: clamp(0.95rem, 1.35vw, 1.35rem);
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  color: var(--cal);
 }
 
 /* Cada palavra é uma peça própria — é ela que acende. `inline-block`
@@ -5846,19 +5868,36 @@ html { scrollbar-gutter: stable; }
   margin: 0;
   display: flex; flex-direction: column;
   font-family: var(--font-display); font-weight: 700;
-  font-size: clamp(2.3rem, 8.77vw, 9rem);
+  /* Maior que o do herói: aqui o nome é a última coisa que fica, e a
+     faixa tem a tela inteira para ele ocupar. */
+  font-size: clamp(2.6rem, 10.5vw, 11rem);
   line-height: 0.8; letter-spacing: -0.07em; text-transform: uppercase;
+  will-change: transform;
 }
 /* +80px sobre 1436 = 5.6%, medido */
 .prj__fecho-linha2 { margin-left: 5.6%; color: var(--solda); }
 
 .prj__fecho-texto {
-  margin: clamp(1.6rem, 3vw, 2.6rem) 0 0;
-  max-width: 55.7%;
+  margin: clamp(1.8rem, 3.4vw, 3rem) 0 0;
+  max-width: 62%;
   font-family: var(--font-display); font-weight: 700;
-  font-size: clamp(1.1rem, 2.5vw, 2.5rem);
+  font-size: clamp(1.25rem, 3.1vw, 3.1rem);
   line-height: 1.1; letter-spacing: -0.04em; text-transform: uppercase;
+  will-change: transform;
+  /* ── a transparência negativa ──
+     `difference` inverte o texto contra o que estiver atrás: sobre o
+     preto da faixa ele sai claro, e ao cruzar a parte iluminada do
+     retrato ele escurece sozinho. É a mesma técnica que a marca usa na
+     barra do topo.
+
+     Precisa de um contexto isolado para não sangrar para a página
+     inteira — `.prj__fecho` já tem `isolation: isolate`. */
+  mix-blend-mode: difference;
+  color: var(--cal);
 }
+/* Sem o isolamento o `difference` subiria até o fundo do documento.
+   Deixo explícito porque é a condição de funcionamento, não um detalhe. */
+.prj__fecho { isolation: isolate; }
 
 /* ── o marca-texto ──
    Na referência é um <a> de 10.8% de largura com o fundo de acento e a
@@ -5871,7 +5910,9 @@ html { scrollbar-gutter: stable; }
   /* 155px em 1436 = 10.8%, medido. Com 22rem o selo virava uma faixa
      de 24.5% e deixava de ler como marcação de caneta. */
   max-width: min(12rem, 55%);
-  margin-top: clamp(1.6rem, 3vw, 2.4rem);
+  /* Respiro maior: colado no parágrafo, o selo lia como mais uma
+     linha do texto em vez de uma ação. */
+  margin-top: clamp(2.6rem, 5vw, 4.5rem);
   padding: 0.18em 0;
   background: var(--solda);
   color: var(--aco);
@@ -5901,6 +5942,25 @@ html { scrollbar-gutter: stable; }
 .prj__marca:hover .prj__marca-trilho { animation-play-state: paused; }
 .prj__marca:focus-visible { outline: 2px solid var(--cal); outline-offset: 3px; }
 @media (prefers-reduced-motion: reduce) { .prj__marca-trilho { animation: none; } }
+
+/* ── a falha no clique ──
+   Mesma gramática dos ícones de partilha: `steps`, nada interpolado.
+   O selo salta, troca de cor por um quadro e volta — o tempo de dizer
+   "recebi" antes de a aba nova abrir. */
+.prj__marca.e-falha { animation: prj-marca-falha 0.5s steps(1, end) 1; }
+.prj__marca.e-falha .prj__marca-trilho { animation-play-state: paused; }
+@keyframes prj-marca-falha {
+  0%           { transform: translate(0, 0);     background: var(--solda); color: var(--aco); }
+  12%          { transform: translate(-4px, 2px); background: var(--cal);   color: var(--solda); }
+  26%          { transform: translate(5px, -2px); background: var(--solda); color: var(--cal); clip-path: inset(28% 0 34% 0); }
+  40%          { transform: translate(-2px, 0);  background: var(--aco);   color: var(--solda); clip-path: none; }
+  56%          { transform: translate(3px, 1px); background: var(--solda); color: var(--aco); clip-path: inset(0 0 62% 0); }
+  70%          { transform: translate(0, 0);     clip-path: none; }
+  100%         { transform: translate(0, 0);     background: var(--solda); color: var(--aco); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .prj__marca.e-falha { animation: none; }
+}
 
 /* ── partilha ──
    Faixa própria e CENTRADA: na referência o bloco sai da peça escura e
@@ -6049,6 +6109,9 @@ html { scrollbar-gutter: stable; }
   .prj__fecho-linha2 { margin-left: 0; }
   .prj__fecho-titulo { font-size: clamp(2rem, 13vw, 3.6rem); }
   .prj__fecho-texto { max-width: 100%; }
+  /* `difference` sobre foto em tela pequena derruba o contraste em
+     trechos claros, e aqui o texto é o argumento. Volta ao normal. */
+  .prj__fecho-texto { mix-blend-mode: normal; }
   .prj__marca { max-width: 100%; }
   .prj__partilha { padding-left: 20px; padding-right: 20px; }
 

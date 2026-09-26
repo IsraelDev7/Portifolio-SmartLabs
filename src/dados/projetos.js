@@ -71,9 +71,15 @@ export const PROJETOS = [
       { valor: ['Set 2026'], rotulo: 'ENTREGUE' },
     ],
 
-    /* ── introdução ── */
-    introducao:
-      'TRÊS ENDEREÇOS NO AR, DOIS IDIOMAS, DOIS PÚBLICOS QUE NÃO SE CRUZAM. O PEDIDO ERA UMA PÁGINA. O QUE FALTAVA ERA SABER, NO FIM DO MÊS, QUAL DAS TRÊS PORTAS TROUXE QUEM.',
+    /* ── introdução ──
+       Quebrada em duas: a chave em destaque e o resto como subtítulo.
+       Num bloco único de caixa alta a frase inteira tinha o mesmo peso,
+       e a informação que importa — quantos endereços, em quantos
+       idiomas — se diluía nas outras vinte palavras. */
+    introducao: {
+      destaque: 'Três endereços no ar',
+      resto: 'Dois idiomas, dois públicos que não se cruzam. O pedido era uma página; o que faltava era saber, no fim do mês, qual das três portas trouxe quem.',
+    },
 
     /* ── capítulos ── */
     capitulos: [
