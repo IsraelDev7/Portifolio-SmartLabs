@@ -108,6 +108,18 @@ export const PROJETOS = [
         ],
         imagem: '/images/work-automacao.jpg',
         legenda: 'O resumo das 23h, entregue onde o dono já olha.',
+        /* Três painéis, um por rotina. As imagens foram geradas na
+           linguagem da marca — Aço, Cal e Solda, macro industrial, sem
+           texto e sem gente — porque aqui não há tela para mostrar: o
+           que a automação faz acontece fora do navegador. */
+        galeria: [
+          { src: '/images/obra-bruno-medir.jpg', titulo: 'Cada clique com endereço',
+            sub: 'Seção, rótulo e origem' },
+          { src: '/images/obra-bruno-responder.jpg', titulo: 'Resposta em segundos',
+            sub: 'Antes de o lead procurar outro' },
+          { src: '/images/obra-bruno-reportar.jpg', titulo: 'O dia fechado às 23h',
+            sub: 'No WhatsApp, sem abrir painel' },
+        ],
       },
       {
         rotulo: '(Design)',

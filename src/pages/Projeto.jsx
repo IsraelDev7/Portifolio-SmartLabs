@@ -198,12 +198,61 @@ export default function Projeto() {
       gsap.set(palavras, { opacity: 1 });
     }
 
+    /* ── os painéis: deslize no scroll e resposta ao cursor ──
+       Duas coisas diferentes na mesma peça. O DESLIZE é do scroll: cada
+       coluna anda num ritmo próprio e as três passam umas pelas outras,
+       que e o "nivel reverso" da referência. O CURSOR move só a foto
+       dentro da moldura, nunca a moldura — mover a caixa inteira
+       arrastaria o vizinho e a fileira perderia o alinhamento.
+
+       `quickTo` e não `to`: num mousemove o `to` cria uma tween nova a
+       cada evento, dezenas por segundo. O `quickTo` reaproveita a mesma
+       e só troca o destino. */
+    const limpezasPainel = [];
+    const itens = gsap.utils.toArray(r.querySelectorAll('.prj__painel-item'));
+    if (itens.length && !parado) {
+      itens.forEach((item, i) => {
+        /* o do meio anda ao contrário dos outros dois: é o cruzamento
+           que faz o conjunto respirar em vez de subir em bloco */
+        const taxa = [-0.10, 0.12, -0.06][i % 3];
+        gsap.fromTo(item, { yPercent: 0 }, {
+          yPercent: taxa * 100, ease: 'none',
+          scrollTrigger: { trigger: r.querySelector('.prj__painel'), start: 'top bottom', end: 'bottom top', scrub: true },
+        });
+
+        const fig = item.querySelector('.prj__painel-fig');
+        const foto = item.querySelector('.prj__painel-foto');
+        if (!fig || !foto) return;
+
+        const px = gsap.quickTo(foto, 'x', { duration: 0.7, ease: 'power3' });
+        const py = gsap.quickTo(foto, 'y', { duration: 0.7, ease: 'power3' });
+
+        const mover = (e) => {
+          const b = fig.getBoundingClientRect();
+          px((e.clientX - b.left - b.width / 2) * 0.09);
+          py((e.clientY - b.top - b.height / 2) * 0.09);
+        };
+        const entrar = () => gsap.to(fig, { y: -14, scale: 1.02, duration: 0.5, ease: 'power3.out' });
+        const sair = () => { px(0); py(0); gsap.to(fig, { y: 0, scale: 1, duration: 0.5, ease: 'power3.out' }); };
+
+        fig.addEventListener('mousemove', mover);
+        fig.addEventListener('mouseenter', entrar);
+        fig.addEventListener('mouseleave', sair);
+        limpezasPainel.push(() => {
+          fig.removeEventListener('mousemove', mover);
+          fig.removeEventListener('mouseenter', entrar);
+          fig.removeEventListener('mouseleave', sair);
+        });
+      });
+    }
+
     /* As fotos usam a MESMA persiana do resto do site. */
     const limpezas = parado ? [] : gsap.utils.toArray(r.querySelectorAll('.prj__foto'))
       .map((fig) => animarRipas(fig, fig));
 
     return () => {
       if (cancelarEntrada) cancelarEntrada();
+      limpezasPainel.forEach((f) => f());
       limpezas.forEach((f) => f && f());
     };
   }, { scope: alvo, dependencies: [slug] });
@@ -339,10 +388,36 @@ export default function Projeto() {
             {c.imagem && (
               <figure className="prj__figura">
                 <Foto src={c.imagem} alt={c.legenda} />
-                <figcaption className="prj__rotulo">{c.legenda}</figcaption>
+                <figcaption className="prj__legenda">{c.legenda}</figcaption>
               </figure>
             )}
           </div>
+
+          {/* ── a fileira de painéis ──
+              Medida na referência: três peças de 45.7% da largura,
+              sobrepostas (espaçadas 477 numa largura de 656), com
+              alturas decrescentes e 25px de degrau vertical entre elas.
+              É o "nível reverso" — cada coluna anda num ritmo e as três
+              deslizam umas sobre as outras.
+
+              A legenda aparece no hover; lá ela é 32px/700 branca,
+              absoluta sobre a foto. */}
+          {c.galeria && (
+            <ul className="prj__painel">
+              {c.galeria.map((g, j) => (
+                <li className="prj__painel-item" key={j}>
+                  <figure className="prj__painel-fig">
+                    <span className="prj__painel-foto" style={{ backgroundImage: `url(${g.src})` }}
+                          role="img" aria-label={g.titulo} />
+                    <figcaption className="prj__painel-legenda">
+                      <span>{g.titulo}</span>
+                      <i>{g.sub}</i>
+                    </figcaption>
+                  </figure>
+                </li>
+              ))}
+            </ul>
+          )}
         </section>
       ))}
 

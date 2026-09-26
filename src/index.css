@@ -5461,31 +5461,40 @@ html { scrollbar-gutter: stable; }
 }
 .prj__cap .prj__rotulo, .prj__result .prj__rotulo { color: var(--solda); }
 
+/* Medido na referência (viewport 1436): 90px/700, entrelinha 1.0,
+   tracking -0.06em e largura de 93.9% — o título do capítulo ocupa a
+   PÁGINA, não uma coluna. O meu estava em 3.26vw com `max-width: 24ch`,
+   quase metade do corpo e preso a um terço da largura. */
 .prj__cap-titulo {
   margin: clamp(1.2rem, 2.6vw, 2.2rem) 0 0;
-  max-width: 24ch;
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: clamp(1.5rem, 3.26vw, 3.3rem);
+  font-size: clamp(1.9rem, 6.27vw, 6.4rem);
   line-height: 1;
-  letter-spacing: -0.05em;
+  letter-spacing: -0.06em;
   text-transform: uppercase;
 }
+/* 16px/700, 55.7% de largura. A entrelinha lá é 1.0; aqui vai 1.2
+   porque em português o til e o circunflexo sobem acima da altura das
+   maiúsculas e encostavam na linha de cima. */
 .prj__cap-sub {
   margin: clamp(1.2rem, 2.4vw, 2rem) 0 0;
-  max-width: 56ch;
+  max-width: 55.7%;
   font-family: var(--font-body);
   font-size: 1rem; font-weight: 700;
-  line-height: 1.4; letter-spacing: -0.02em;
+  line-height: 1.2; letter-spacing: -0.04em;
   text-transform: uppercase;
 }
 
+/* O corpo é uma COLUNA ESTREITA recuada da margem — 27.9% de largura a
+   partir de 3.9%, medido. Eu tinha uma grade 50/50, que transformava
+   um texto de apoio em metade da página. */
 .prj__cap-corpo {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 32%) 1fr;
   gap: clamp(2rem, 6vw, 6rem);
   align-items: start;
-  margin-top: clamp(2.4rem, 5vw, 4.5rem);
+  margin: clamp(2.4rem, 5vw, 4.5rem) 0 0 3.9%;
 }
 .prj__cap-texto p {
   margin: 0 0 1.1rem;
@@ -5524,7 +5533,22 @@ html { scrollbar-gutter: stable; }
 }
 
 .prj__figura { margin: 0; }
-.prj__figura figcaption { margin-top: 0.9rem; color: rgba(10, 10, 10, 0.5); }
+/* A legenda da referência não é mono nem caixa alta: é o mesmo texto de
+   corpo em 12px/600, com um filete vertical à esquerda. O filete faz o
+   trabalho que a caixa alta fazia — separar a legenda do texto — sem
+   gritar. */
+.prj__legenda {
+  margin-top: 0.9rem;
+  padding-left: 0.85rem;
+  border-left: 2px solid var(--solda);
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  color: rgba(10, 10, 10, 0.62);
+  max-width: 26ch;
+}
 
 /* 3:4, a razão das imagens do caderno — a página inteira usa uma só. */
 .prj__foto {
@@ -5536,6 +5560,89 @@ html { scrollbar-gutter: stable; }
   position: relative;
   overflow: hidden;
   background-color: var(--chapa);
+}
+
+/* ── a fileira de painéis ──
+   Medida na referência: três peças de 45.7% da largura, espaçadas 477
+   numa largura de 656 — ou seja, elas SE SOBREPÕEM. Aqui a sobreposição
+   vem de um vão negativo, e o degrau vertical do `margin-top` por peça.
+
+   `align-items: start` é o que permite alturas diferentes sem esticar
+   ninguém — sem ele a grade igualaria as três e o degrau sumiria. */
+.prj__painel {
+  list-style: none;
+  margin: clamp(3rem, 7vw, 6rem) -24px 0;
+  padding: 0 24px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(0.6rem, 1.6vw, 1.6rem);
+  align-items: start;
+}
+.prj__painel-item:nth-child(2) { margin-top: clamp(1.5rem, 4vw, 4rem); }
+.prj__painel-item:nth-child(3) { margin-top: clamp(3rem, 8vw, 8rem); }
+
+.prj__painel-fig {
+  position: relative;
+  margin: 0;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: var(--aco);
+  will-change: transform;
+}
+
+/* A foto sangra 8% para fora da moldura: é essa folga que o cursor
+   consome ao mover a imagem. Sem ela, o deslocamento descobriria a
+   borda e apareceria uma faixa do fundo. */
+.prj__painel-foto {
+  position: absolute;
+  inset: -8%;
+  display: block;
+  background-size: cover;
+  background-position: center;
+  will-change: transform;
+}
+
+.prj__painel-legenda {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  padding: clamp(1rem, 2vw, 1.6rem);
+  display: flex; flex-direction: column; gap: 0.25rem;
+  color: var(--cal);
+  /* O degradê nasce da própria peça: texto claro sobre foto escura
+     ainda perde legibilidade quando a foto tem um ponto claro embaixo. */
+  background: linear-gradient(to top, rgba(10,10,10,0.88), rgba(10,10,10,0) 100%);
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 380ms ease, transform 380ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.prj__painel-legenda span {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1rem, 1.6vw, 1.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+.prj__painel-legenda i {
+  font-style: normal;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--solda);
+}
+.prj__painel-fig:hover .prj__painel-legenda,
+.prj__painel-fig:focus-within .prj__painel-legenda { opacity: 1; transform: translateY(0); }
+
+/* Sem cursor não há hover: no telefone a legenda nasce visível, senão
+   ela seria informação que ninguém alcança. */
+@media (hover: none) {
+  .prj__painel-legenda { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .prj__painel-legenda { transition: opacity 200ms ease; transform: none; }
+  .prj__painel-item:nth-child(2),
+  .prj__painel-item:nth-child(3) { margin-top: 0; }
 }
 
 /* ── resultados ── */
@@ -5713,7 +5820,28 @@ html { scrollbar-gutter: stable; }
     font-size: clamp(1.7rem, 7.4vw, 2.8rem);
     line-height: 1.06;
   }
-  .prj__cap-corpo { grid-template-columns: 1fr; }
+  .prj__cap-corpo { grid-template-columns: 1fr; margin-left: 0; }
+  .prj__cap-sub { max-width: 100%; }
+  /* Três painéis lado a lado em 375px dariam 105px cada. Viram um
+     carrossel horizontal: a peça mantém o tamanho e quem rola escolhe
+     qual olhar. */
+  .prj__painel {
+    grid-template-columns: repeat(3, 78%);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .prj__painel::-webkit-scrollbar { display: none; }
+  .prj__painel-item { scroll-snap-align: center; }
+  .prj__painel-item:nth-child(2),
+  .prj__painel-item:nth-child(3) { margin-top: 0; }
+  /* A legenda nasce visível aqui também, e não só em `hover: none`.
+     Aquela consulta depende de o aparelho se declarar sem ponteiro —
+     híbridos com tela sensível E mouse respondem `hover: hover` e
+     esconderiam a legenda de quem só toca. Nesta largura, mostrar é
+     sempre a resposta certa. */
+  .prj__painel-legenda { opacity: 1; transform: none; }
   .prj__blocos { grid-template-columns: 1fr; }
   .prj__fecho-linha2 { margin-left: 0; }
   .prj__fecho-titulo { font-size: clamp(2rem, 13vw, 3.6rem); }
