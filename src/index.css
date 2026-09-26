@@ -5810,12 +5810,38 @@ html { scrollbar-gutter: stable; }
   color: rgba(10, 10, 10, 0.62);
 }
 
-/* ── fecho ── */
+/* ── fecho ──
+   Medido na referência: a faixa tem a altura de uma tela inteira
+   (1246 num viewport de 1246), título de 140px — o MESMO do herói, e
+   não um corpo menor —, e o parágrafo em 40px com 55.7% de largura.
+
+   Lá a seção é transparente e revela uma imagem em `position: fixed`
+   que vive atrás da página inteira. Aqui a imagem é da própria faixa:
+   o que se vê é o mesmo (o herói volta no fim) sem manter uma camada
+   composta viva durante os 12.000px do meio. */
 .prj__fecho {
-  background: var(--chapa);
+  position: relative;
+  min-height: 100svh;
+  display: grid;
+  /* ── por que `minmax(0, 1fr)` e não o padrão ──
+     A coluna implícita de uma grade se dimensiona pelo `max-content`
+     dos filhos. O trilho do marca-texto tem `width: max-content` com
+     seis repetições: mesmo recortado por `overflow: clip`, ele entrava
+     nessa conta e esticava a coluna para 1674px numa tela de 1434.
+     Resultado: o parágrafo calculava a largura sobre 1674 em vez de
+     1386. Mesma armadilha do `min-width: auto` nos itens flex. */
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
+  overflow: clip;
+  padding: clamp(4rem, 9vw, 8rem) 24px;
+  background: var(--aco);
   color: var(--cal);
-  padding: clamp(3.5rem, 8vw, 7rem) 24px clamp(3rem, 6vw, 5rem);
+  isolation: isolate;
 }
+.prj__fundo--fecho { top: 0; height: 100%; }
+.prj__fecho .prj__veu { z-index: -1; }
+.prj__fecho-corpo { width: 100%; }
+
 .prj__fecho-titulo {
   margin: 0;
   display: flex; flex-direction: column;
@@ -5823,41 +5849,73 @@ html { scrollbar-gutter: stable; }
   font-size: clamp(2.3rem, 8.77vw, 9rem);
   line-height: 0.8; letter-spacing: -0.07em; text-transform: uppercase;
 }
-.prj__fecho-linha2 { margin-left: 5%; color: var(--solda); }
+/* +80px sobre 1436 = 5.6%, medido */
+.prj__fecho-linha2 { margin-left: 5.6%; color: var(--solda); }
 
 .prj__fecho-texto {
   margin: clamp(1.6rem, 3vw, 2.6rem) 0 0;
-  max-width: 52ch;
+  max-width: 55.7%;
   font-family: var(--font-display); font-weight: 700;
   font-size: clamp(1.1rem, 2.5vw, 2.5rem);
-  line-height: 1.06; letter-spacing: -0.04em; text-transform: uppercase;
+  line-height: 1.1; letter-spacing: -0.04em; text-transform: uppercase;
 }
 
-/* A esteira: mesma gramática do Marquee do resto do site — duplicada e
-   deslizando em `transform`, para não repintar a cada quadro. */
-.prj__esteira {
-  margin: clamp(2.5rem, 5vw, 4rem) -24px;
-  overflow: hidden;
-  border-top: 1px solid var(--linha);
-  border-bottom: 1px solid var(--linha);
-  padding: 0.9rem 0;
+/* ── o marca-texto ──
+   Na referência é um <a> de 10.8% de largura com o fundo de acento e a
+   esteira correndo DENTRO dele, em 24px/600 escuro. Não é uma faixa
+   que atravessa a página: é uma marcação de caneta sobre uma linha. */
+.prj__marca {
+  position: relative;
+  display: inline-block;
+  overflow: clip;
+  /* 155px em 1436 = 10.8%, medido. Com 22rem o selo virava uma faixa
+     de 24.5% e deixava de ler como marcação de caneta. */
+  max-width: min(12rem, 55%);
+  margin-top: clamp(1.6rem, 3vw, 2.4rem);
+  padding: 0.18em 0;
+  background: var(--solda);
+  color: var(--aco);
+  text-decoration: none;
+  vertical-align: bottom;
 }
-.prj__esteira-trilho {
-  display: flex; gap: 2.5rem; width: max-content;
-  animation: prj-esteira 26s linear infinite;
+.prj__marca-trilho {
+  display: flex; gap: 1.6rem; width: max-content;
+  animation: prj-marca 9s linear infinite;
 }
-.prj__esteira-trilho span {
-  display: inline-flex; align-items: center; gap: 2.5rem;
+.prj__marca-trilho > span {
+  display: inline-flex; align-items: center; gap: 1.6rem;
   font-family: var(--font-display); font-weight: 700;
-  font-size: clamp(0.95rem, 1.5vw, 1.5rem);
+  font-size: clamp(0.95rem, 1.6vw, 1.5rem);
   letter-spacing: -0.03em; text-transform: uppercase;
   white-space: nowrap;
 }
-.prj__esteira-trilho i { font-style: normal; color: var(--solda); font-size: 0.6em; }
-@keyframes prj-esteira { to { transform: translateX(-50%); } }
-@media (prefers-reduced-motion: reduce) { .prj__esteira-trilho { animation: none; } }
+.prj__marca-trilho i { font-style: normal; font-size: 0.55em; }
+@keyframes prj-marca { to { transform: translateX(-50%); } }
 
-.prj__partilha .prj__rotulo { color: rgba(245, 240, 232, 0.5); }
+/* O rótulo real para leitor de tela: o trilho é `aria-hidden` porque
+   repete a mesma frase seis vezes. */
+.prj__marca-leitor {
+  position: absolute; width: 1px; height: 1px;
+  overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+}
+.prj__marca:hover .prj__marca-trilho { animation-play-state: paused; }
+.prj__marca:focus-visible { outline: 2px solid var(--cal); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { .prj__marca-trilho { animation: none; } }
+
+/* ── partilha ──
+   Faixa própria e CENTRADA: na referência o bloco sai da peça escura e
+   vira uma linha clara, sozinha, com o rótulo e os ícones no eixo. */
+.prj__partilha {
+  background: var(--cal);
+  color: var(--aco);
+  padding: clamp(3rem, 6vw, 5rem) 24px;
+  display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
+  text-align: center;
+}
+.prj__partilha .prj__rotulo { color: rgba(10, 10, 10, 0.5); }
+.prj__partilha .pt { margin-left: 0; justify-content: center; }
+.prj__partilha .pt__peca { color: var(--aco); }
+.prj__partilha .pt__peca:hover { color: var(--solda); }
 
 /* ── mais obras ── */
 .prj__mais {
@@ -5941,7 +5999,6 @@ html { scrollbar-gutter: stable; }
 
   .prj__ficha, .prj__intro, .prj__cap, .prj__result, .prj__mais { padding-left: 20px; padding-right: 20px; }
   .prj__fecho { padding-left: 20px; padding-right: 20px; }
-  .prj__esteira { margin-left: -20px; margin-right: -20px; }
 
   .prj__declara { grid-template-columns: 1fr; }
   .prj__vivo { text-align: left; align-items: flex-start; }
@@ -5991,6 +6048,9 @@ html { scrollbar-gutter: stable; }
   .prj__pente { height: 22px; gap: 4px; }
   .prj__fecho-linha2 { margin-left: 0; }
   .prj__fecho-titulo { font-size: clamp(2rem, 13vw, 3.6rem); }
+  .prj__fecho-texto { max-width: 100%; }
+  .prj__marca { max-width: 100%; }
+  .prj__partilha { padding-left: 20px; padding-right: 20px; }
 
   /* O hook é desligado abaixo de 820 e limpa o corpo que escreveu; aqui
      basta devolver a quebra de linha. */

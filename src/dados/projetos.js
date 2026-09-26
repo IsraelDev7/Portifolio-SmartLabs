@@ -204,7 +204,11 @@ export const PROJETOS = [
     fecho: {
       texto:
         'TRÊS ENTREGAS EM CINCO MESES, E O CLIENTE VOLTOU DUAS VEZES. CÓDIGO DE CLIENTE NÃO É MEU PARA PUBLICAR — MAS APRESENTO QUALQUER PARTE DELE NUMA CONVERSA.',
+      /* O marca-texto leva ao link da bio: é a porta que reúne as três
+         entregas num endereço só, então é por ela que alguém de fora
+         conhece o projeto inteiro sem escolher por onde começar. */
       esteira: 'Projeto no ar',
+      url: 'https://bruno-conselheiro-bio.vercel.app/',
     },
   },
 ];

@@ -181,21 +181,25 @@ export default function Projeto() {
        nos DOIS sentidos, e desfaz subindo exatamente como fez
        descendo. Com duracao propria, a volta ficaria fora de sincronia
        com o dedo. */
-    const palavras = gsap.utils.toArray(r.querySelectorAll('.prj__palavra'));
-    if (palavras.length && !parado) {
-      gsap.fromTo(palavras,
-        { opacity: 0.22 },
-        {
-          opacity: 1, ease: 'none', stagger: 1,
-          scrollTrigger: {
-            trigger: r.querySelector('.prj__intro'),
-            start: 'top 85%',
-            end: 'bottom 90%',
-            scrub: true,
-          },
-        });
-    } else if (parado) {
-      gsap.set(palavras, { opacity: 1 });
+    /* Duas faixas usam o preenchimento: a introdução e o fecho. Cada
+       uma precisa do PRÓPRIO gatilho — com um só, as palavras do fecho
+       já estariam acesas quando alguém chegasse nele. */
+    const todasPalavras = gsap.utils.toArray(r.querySelectorAll('.prj__palavra'));
+    if (parado) {
+      gsap.set(todasPalavras, { opacity: 1 });
+    } else {
+      ['.prj__intro', '.prj__fecho'].forEach((sel) => {
+        const faixa = r.querySelector(sel);
+        if (!faixa) return;
+        const pal = gsap.utils.toArray(faixa.querySelectorAll('.prj__palavra'));
+        if (!pal.length) return;
+        gsap.fromTo(pal,
+          { opacity: 0.22 },
+          {
+            opacity: 1, ease: 'none', stagger: 1,
+            scrollTrigger: { trigger: faixa, start: 'top 85%', end: 'bottom 90%', scrub: true },
+          });
+      });
     }
 
     /* ── os painéis: deslize no scroll e resposta ao cursor ──
@@ -531,26 +535,52 @@ export default function Projeto() {
       </section>
 
       {/* ══════ FECHO ══════ */}
+      {/* Na referência esta faixa é TRANSPARENTE e revela a imagem do
+          herói, que vive num `position: fixed` atrás da página inteira.
+          Aqui a imagem é da própria faixa — o resultado que se vê é o
+          mesmo (o herói volta no fim) sem manter uma camada composta
+          viva durante os 12.000px do meio. */}
       <section className="prj__fecho">
-        <h2 className="prj__fecho-titulo">
-          <span>{projeto.titulo[0]}</span>
-          <span className="prj__fecho-linha2">{projeto.titulo[1]}</span>
-        </h2>
-        <p className="prj__fecho-texto" data-anim="rise">{projeto.fecho.texto}</p>
+        <div className="prj__fundo prj__fundo--fecho"
+             style={{ backgroundImage: `url(${projeto.heroImagem})` }} aria-hidden="true" />
+        <div className="prj__veu" aria-hidden="true" />
 
-        {/* A esteira: a mesma gramática do Marquee do resto do site. */}
-        <div className="prj__esteira" aria-hidden="true">
-          <div className="prj__esteira-trilho">
-            {Array.from({ length: 8 }, (_, i) => (
-              <span key={i}>{projeto.fecho.esteira}<i>◆</i></span>
+        <div className="prj__fecho-corpo">
+          <h2 className="prj__fecho-titulo">
+            <span>{projeto.titulo[0]}</span>
+            <span className="prj__fecho-linha2">{projeto.titulo[1]}</span>
+          </h2>
+
+          <p className="prj__fecho-texto">
+            {projeto.fecho.texto.split(' ').map((palavra, i) => (
+              <span className="prj__palavra" key={i}>{palavra}</span>
             ))}
-          </div>
-        </div>
+          </p>
 
-        <div className="prj__partilha">
-          <p className="prj__rotulo">Compartilhar este projeto</p>
-          <Partilha url={`https://smartlabs.ai/work/${projeto.slug}`} titulo={projeto.nome} />
+          {/* O marca-texto: um <a> estreito com fundo de acento e a
+              esteira correndo DENTRO dele. Medido na referência —
+              10.8% de largura, texto em 24px/600 escuro sobre o acento,
+              repetindo em laço. */}
+          {projeto.fecho.url && (
+            <a className="prj__marca" href={projeto.fecho.url}
+               target="_blank" rel="noopener noreferrer">
+              <span className="prj__marca-trilho" aria-hidden="true">
+                {Array.from({ length: 6 }, (_, i) => (
+                  <span key={i}>{projeto.fecho.esteira}<i>▶▶</i></span>
+                ))}
+              </span>
+              <span className="prj__marca-leitor">{projeto.fecho.esteira}</span>
+            </a>
+          )}
         </div>
+      </section>
+
+      {/* ══════ COMPARTILHAR ══════ */}
+      {/* Faixa própria e centrada, como na referência: lá o bloco de
+          partilha sai da peça escura e vira uma linha clara, sozinha. */}
+      <section className="prj__partilha">
+        <p className="prj__rotulo">Compartilhar este projeto</p>
+        <Partilha url={`https://smartlabs.ai/work/${projeto.slug}`} titulo={projeto.nome} />
       </section>
 
       {/* ══════ MAIS OBRAS ══════ */}
