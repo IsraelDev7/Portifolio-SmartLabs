@@ -202,28 +202,33 @@ export default function Projeto() {
        descendo. Com duracao propria, a volta ficaria fora de sincronia
        com o dedo. */
     /* ── as réguas ──
-       Mesma mecânica do caderno: `scaleX` de 0 a 1, cada peça com o
-       SEU gatilho. A da introdução tem origem à direita, porque é de
-       lá que o bloco inteiro entra. */
+       Mesma mecânica do caderno: de 0 a 1, cada peça com o SEU gatilho.
+       O que muda é o EIXO: as horizontais traçam em `scaleX`, e a da
+       nota, que é um risco vertical na margem direita, traça em
+       `scaleY`. O eixo vem do HTML (`data-regua="vertical"`) e não de
+       uma medida do elemento — medir largura contra altura acertaria
+       aqui e erraria no dia em que uma régua nascesse quadrada. */
     gsap.utils.toArray(r.querySelectorAll('[data-regua]')).forEach((reg) => {
-      if (parado) { gsap.set(reg, { scaleX: 1 }); return; }
-      gsap.fromTo(reg, { scaleX: 0 }, {
-        scaleX: 1, duration: 1.1, ease: 'power2.inOut',
+      const eixo = reg.dataset.regua === 'vertical' ? 'scaleY' : 'scaleX';
+      if (parado) { gsap.set(reg, { [eixo]: 1 }); return; }
+      gsap.fromTo(reg, { [eixo]: 0 }, {
+        [eixo]: 1, duration: 1.1, ease: 'power2.inOut',
         scrollTrigger: { trigger: reg, start: 'top 92%', toggleActions: 'restart none none reverse' },
       });
     });
 
     /* ── o texto sai de trás da régua ──
-       `xPercent: -100` e não um valor em px: a distância é a largura da
-       própria janela, então o bloco começa inteiro fora dela em
-       qualquer tela. É a mesma conta do título do herói.
+       `xPercent: 100` — positivo, porque a régua agora é o risco
+       vertical da DIREITA e é de lá que o texto vem. Percentual e não
+       px: a distância é a largura da própria janela, então o bloco
+       começa inteiro fora dela em qualquer tela.
 
        Sem `autoAlpha`: o recorte da janela já esconde o que está fora,
        e somar opacidade faria o texto CHEGAR desbotado em vez de
        aparecer de trás da borda. */
     const introTexto = r.querySelector('.prj__intro-texto');
     if (introTexto && !parado) {
-      gsap.fromTo(introTexto, { xPercent: -100 }, {
+      gsap.fromTo(introTexto, { xPercent: 100 }, {
         xPercent: 0, duration: 1.1, ease: 'expo.out', delay: 0.15,
         scrollTrigger: { trigger: r.querySelector('.prj__intro-bloco'), start: 'top 88%', toggleActions: 'restart none none reverse' },
       });
@@ -622,12 +627,11 @@ export default function Projeto() {
               dado continua sendo `projeto.introducao` — o que mudou foi
               onde ela e lida, nao o que ela diz.
 
-              A regua trace da esquerda para a direita e o texto sai de
-              tras dela: a janela tem `overflow: clip` e recorta o que
-              ainda esta fora, do mesmo jeito que o titulo do heroi faz
-              la no comeco. */}
+              A regua e VERTICAL, na borda direita, e trace de cima
+              para baixo. O texto sai de tras dela: a janela tem
+              `overflow: clip` e recorta o que ainda esta fora, do mesmo
+              jeito que o titulo do heroi faz la no comeco. */}
           <div className="prj__intro-bloco">
-            <i className="prj__intro-regua" data-regua aria-hidden="true" />
             <span className="prj__intro-janela">
               <p className="prj__intro-texto">
                 <strong className="prj__intro-destaque">
@@ -638,6 +642,7 @@ export default function Projeto() {
                 </span>
               </p>
             </span>
+            <i className="prj__intro-regua" data-regua="vertical" aria-hidden="true" />
           </div>
         </div>
       </section>

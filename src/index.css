@@ -5415,16 +5415,28 @@ html { scrollbar-gutter: stable; }
   margin-left: 32%;
   max-width: 39%;
   margin-top: clamp(2.5rem, 5vw, 4.5rem);
+  /* Texto e régua lado a lado: a régua é a margem direita do bloco. */
+  display: flex;
+  align-items: stretch;
+  gap: clamp(0.9rem, 1.4vw, 1.4rem);
 }
 
-/* A régua traça da esquerda para a direita, como as outras da página,
-   e o texto sai da borda dela. */
+/* ── a régua ──
+   Era um traço horizontal em cima. Agora é o risco VERTICAL da borda
+   direita, e é de trás dele que o texto entra.
+
+   `flex: 0 0 8px` e não `width`: em flex, largura pedida sem `flex-
+   grow/shrink` travados ainda encolhe quando falta espaço, e uma régua
+   de 6px numa tela estreita vira sujeira. `align-self: stretch` dá a
+   ela a altura do texto sem precisar saber quanto isso é.
+
+   `transform-origin: top` porque o traço desce — o `scaleY` sai de 0
+   no topo. */
 .prj__intro-regua {
-  display: block;
-  height: 8px;
+  flex: 0 0 8px;
+  align-self: stretch;
   background: var(--solda);
-  margin: 0 0 clamp(1.2rem, 2.2vw, 1.8rem);
-  transform-origin: left center;
+  transform-origin: top center;
 }
 
 /* ── a janela ──
@@ -5432,7 +5444,10 @@ html { scrollbar-gutter: stable; }
    está fora, e o texto desliza para dentro a partir da borda. Sem ela
    o bloco só apareceria deslocado, sem o corte que faz parecer que ele
    SAIU de trás da régua. */
-.prj__intro-janela { display: block; overflow: clip; }
+/* `min-width: 0` é obrigatório: item de flex nasce com `min-width:
+   auto` e se recusa a encolher abaixo do conteúdo, o que empurraria a
+   régua para fora do bloco em vez de quebrar a linha. */
+.prj__intro-janela { flex: 1 1 auto; min-width: 0; display: block; overflow: clip; }
 
 /* ── as duas vozes ──
    O pedido era um título de tópico: a chave em cima, na cor da marca,
