@@ -225,18 +225,18 @@ export default function Projeto() {
     if (introTexto && !parado) {
       gsap.fromTo(introTexto, { xPercent: -100 }, {
         xPercent: 0, duration: 1.1, ease: 'expo.out', delay: 0.15,
-        scrollTrigger: { trigger: r.querySelector('.prj__intro'), start: 'top 78%', toggleActions: 'restart none none reverse' },
+        scrollTrigger: { trigger: r.querySelector('.prj__intro-bloco'), start: 'top 88%', toggleActions: 'restart none none reverse' },
       });
     }
 
-    /* Duas faixas usam o preenchimento: a introdução e o fecho. Cada
-       uma precisa do PRÓPRIO gatilho — com um só, as palavras do fecho
-       já estariam acesas quando alguém chegasse nele. */
+    /* Só o fecho preenche por palavra. A nota que mora nele não entra
+       nessa conta: ela é texto de tópico, aparece de trás da régua e
+       fica acesa — por isso o `.prj__palavra` não existe lá dentro. */
     const todasPalavras = gsap.utils.toArray(r.querySelectorAll('.prj__palavra'));
     if (parado) {
       gsap.set(todasPalavras, { opacity: 1 });
     } else {
-      ['.prj__intro', '.prj__fecho'].forEach((sel) => {
+      ['.prj__fecho'].forEach((sel) => {
         const faixa = r.querySelector(sel);
         if (!faixa) return;
         const pal = gsap.utils.toArray(faixa.querySelectorAll('.prj__palavra'));
@@ -431,37 +431,6 @@ export default function Projeto() {
         </dl>
       </section>
 
-      {/* ══════ INTRODUÇÃO ══════ */}
-      {/* Esta faixa é a CORTINA: fica pregada no topo e o capítulo
-          seguinte sobe por cima dela. Mesmo mecanismo da referência —
-          a seção (Introduction) lá é `sticky; top: 0` com fundo opaco.
-
-          O texto vem quebrado em palavras porque o preenchimento é por
-          palavra: 35 <div> inline-block na referência, uma por palavra,
-          acendendo conforme o scroll passa. */}
-      <section className="prj__intro">
-        <div className="prj__intro-bloco">
-          {/* A régua traça da esquerda para a direita, e o texto sai da
-              borda dela — a janela recorta o que ainda está fora, do
-              mesmo jeito que o título do herói faz lá no começo. */}
-          <i className="prj__intro-regua" data-regua aria-hidden="true" />
-          <span className="prj__intro-janela">
-            <p className="prj__intro-texto">
-              <strong className="prj__intro-destaque">
-                {projeto.introducao.destaque.split(' ').map((palavra, i) => (
-                  <span className="prj__palavra" key={i}>{palavra}</span>
-                ))}
-              </strong>
-              <span className="prj__intro-resto">
-                {projeto.introducao.resto.split(' ').map((palavra, i) => (
-                  <span className="prj__palavra" key={i}>{palavra}</span>
-                ))}
-              </span>
-            </p>
-          </span>
-        </div>
-      </section>
-
       {/* ══════ CAPÍTULOS ══════ */}
       {projeto.capitulos.map((c, i) => (
         <section className="prj__cap" key={i}>
@@ -645,6 +614,31 @@ export default function Projeto() {
               <span className="prj__marca-leitor">{projeto.fecho.esteira}</span>
             </a>
           )}
+
+          {/* ── a nota do fecho ──
+              Era uma faixa inteira logo depois da ficha, e o lugar dela
+              e aqui: o vao que sobrava no pe do fecho, embaixo do
+              marca-texto. O nome da classe continua `intro` porque o
+              dado continua sendo `projeto.introducao` — o que mudou foi
+              onde ela e lida, nao o que ela diz.
+
+              A regua trace da esquerda para a direita e o texto sai de
+              tras dela: a janela tem `overflow: clip` e recorta o que
+              ainda esta fora, do mesmo jeito que o titulo do heroi faz
+              la no comeco. */}
+          <div className="prj__intro-bloco">
+            <i className="prj__intro-regua" data-regua aria-hidden="true" />
+            <span className="prj__intro-janela">
+              <p className="prj__intro-texto">
+                <strong className="prj__intro-destaque">
+                  {projeto.introducao.destaque}
+                </strong>
+                <span className="prj__intro-resto">
+                  {projeto.introducao.resto}
+                </span>
+              </p>
+            </span>
+          </div>
         </div>
       </section>
 

@@ -5399,27 +5399,22 @@ html { scrollbar-gutter: stable; }
 .prj__dados > div:last-child { text-align: right; }
 .prj__dados > div:last-child dd { align-items: flex-end; }
 
-/* ── introdução ──
-   A faixa era uma CORTINA: `position: sticky` no topo, altura de tela
-   inteira, e os capítulos subindo por cima. Saiu inteira. O efeito
-   funcionava, mas o preço era uma banda escura de uma tela que ficava
-   pregada atrás de tudo — e era ela que aparecia como vazio no pé do
-   fecho, porque lá não havia mais nada opaco para cobri-la.
+/* ── a nota do fecho ──
+   Nasceu como faixa de INTRODUÇÃO logo depois da ficha, e era uma
+   CORTINA: `position: sticky`, altura de tela inteira, capítulos
+   subindo por cima. A cortina saiu, e agora o bloco saiu também: o
+   lugar dele é o vão no pé do fecho, embaixo do marca-texto — que era
+   exatamente o espaço vazio que sobrava lá.
 
-   Agora é uma faixa normal: altura do conteúdo, e nada pregado. */
-.prj__intro {
-  background: var(--aco);
-  color: var(--cal);
-  padding: clamp(4rem, 9vw, 7rem) 24px;
-}
-.prj__intro .prj__rotulo { color: var(--solda); }
+   Sem faixa própria, não precisa de fundo nem de padding: o fecho já
+   dá os dois. O que resta é o bloco. */
 
-/* ── o bloco ──
-   Caixa própria, do tamanho que o Israel marcou: começa em 29% e ocupa
-   36% da largura. Não é a página inteira — é uma nota no meio dela. */
+/* Medido no retângulo que o Israel marcou (tela de 1900): começa em
+   612px e tem 735 de largura — 32% e 39%. */
 .prj__intro-bloco {
-  margin-left: 29%;
-  max-width: 36%;
+  margin-left: 32%;
+  max-width: 39%;
+  margin-top: clamp(2.5rem, 5vw, 4.5rem);
 }
 
 /* A régua traça da esquerda para a direita, como as outras da página,
@@ -5438,6 +5433,40 @@ html { scrollbar-gutter: stable; }
    o bloco só apareceria deslocado, sem o corte que faz parecer que ele
    SAIU de trás da régua. */
 .prj__intro-janela { display: block; overflow: clip; }
+
+/* ── as duas vozes ──
+   O pedido era um título de tópico: a chave em cima, na cor da marca,
+   e o resto embaixo em fonte fina. Até aqui o bloco não tinha regra
+   NENHUMA — saía em 16px de corpo, o tamanho padrão do parágrafo, e a
+   chave saía em Cal porque `<strong>` só engrossa, não colore.
+
+   `display: block` nas duas peças é o que põe o resto na linha de
+   baixo sem precisar de <br> no conteúdo. */
+.prj__intro-texto {
+  margin: 0;
+  display: block;
+}
+.prj__intro-destaque {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.1rem, 1.5vw, 1.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--solda);
+}
+.prj__intro-resto {
+  display: block;
+  margin-top: 0.7rem;
+  font-family: var(--font-body);
+  font-weight: 300;
+  font-size: clamp(0.95rem, 1.05vw, 1.05rem);
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  color: var(--cal);
+  opacity: 0.82;
+}
 
 /* Cada palavra é uma peça própria — é ela que acende. `inline-block`
    para o opacity valer por palavra, e a margem no lugar do espaço,
@@ -6078,7 +6107,7 @@ html { scrollbar-gutter: stable; }
   .prj__heroi-texto { width: 100%; text-indent: 0; }
   .prj__ano { font-size: clamp(2.6rem, 16vw, 5rem); right: 20px; }
 
-  .prj__ficha, .prj__intro, .prj__cap, .prj__result, .prj__mais { padding-left: 20px; padding-right: 20px; }
+  .prj__ficha, .prj__cap, .prj__result, .prj__mais { padding-left: 20px; padding-right: 20px; }
   .prj__fecho { padding-left: 20px; padding-right: 20px; }
 
   .prj__declara { grid-template-columns: 1fr; }
@@ -6090,12 +6119,12 @@ html { scrollbar-gutter: stable; }
      desktop) e o texto ocupava 171px de uma faixa de 812 — 640px de
      vazio em volta de uma frase pequena demais para sustentar a tela
      inteira. O piso sobe e a faixa encurta. */
-  .prj__intro-bloco { margin-left: 0; max-width: 100%; }
-  .prj__intro-texto {
-    margin-left: 0;
-    font-size: clamp(1.7rem, 7.4vw, 2.8rem);
-    line-height: 1.06;
-  }
+  .prj__intro-bloco { margin-left: 0; max-width: 100%; margin-top: 2.5rem; }
+  /* A regra antiga daqui subia o texto para 2.8rem — era de quando o
+     bloco era um parágrafo de display ocupando a tela. Como título de
+     tópico ele já nasce pequeno, e o clamp de desktop serve. */
+  .prj__intro-destaque { font-size: 1.15rem; }
+  .prj__intro-resto { font-size: 1rem; }
   .prj__cap-corpo { grid-template-columns: 1fr; margin-left: 0; }
   .prj__cap-sub { max-width: 100%; }
   /* Três painéis lado a lado em 375px dariam 105px cada. Viram um
