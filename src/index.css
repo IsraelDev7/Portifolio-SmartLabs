@@ -5460,6 +5460,11 @@ html { scrollbar-gutter: stable; }
 .prj__intro-texto {
   margin: 0;
   display: block;
+  /* O texto encosta na régua. Com a régua à direita, alinhar à esquerda
+     deixaria um degrau irregular justo do lado em que o olho tem uma
+     linha reta para comparar — cada linha terminando num ponto
+     diferente a milímetros de um traço perfeitamente vertical. */
+  text-align: right;
 }
 .prj__intro-destaque {
   display: block;
