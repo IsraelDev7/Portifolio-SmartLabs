@@ -438,7 +438,7 @@ export default function Projeto() {
 
       {/* ══════ CAPÍTULOS ══════ */}
       {projeto.capitulos.map((c, i) => (
-        <section className="prj__cap" key={i}>
+        <section className={`prj__cap${i % 2 ? ' prj__cap--espelho' : ''}`} key={i}>
           <p className="prj__rotulo">{c.rotulo}</p>
           <h3 className="prj__cap-titulo" data-anim="rise">{c.declaracao}</h3>
           <p className="prj__cap-sub" data-anim="rise">{c.sub}</p>
@@ -531,11 +531,15 @@ export default function Projeto() {
         </div>
 
         <div className="prj__result-base">
-          <aside className="prj__registro">
+          {/* `stagger` no PAI, e nao `rise` em cada filho: com um gatilho
+              por peca a coluna se montava em pedacos, cada linha
+              esperando a propria altura. Aqui a coluna inteira e um
+              gesto so, em cascata de 0.07s. */}
+          <aside className="prj__registro" data-anim="stagger">
             <span className="prj__aspas" aria-hidden="true">&ldquo;</span>
             <p className="prj__rotulo">{projeto.resultados.registro.rotulo}</p>
-            <p className="prj__registro-frase" data-anim="rise">{projeto.resultados.registro.frase}</p>
-            <p className="prj__registro-texto" data-anim="rise">{projeto.resultados.registro.texto}</p>
+            <p className="prj__registro-frase">{projeto.resultados.registro.frase}</p>
+            <p className="prj__registro-texto">{projeto.resultados.registro.texto}</p>
 
             {/* O cartão do pé da coluna, no desenho da referência: foto
                 pequena à esquerda, texto, nome e origem. A assinatura
@@ -558,12 +562,15 @@ export default function Projeto() {
             )}
           </aside>
 
-          <ol className="prj__blocos">
+          {/* Cada <li> entra inteiro — numero, titulo e texto juntos.
+              Antes o titulo e o paragrafo tinham gatilhos separados, e
+              dava para ver o titulo sozinho esperando o texto chegar. */}
+          <ol className="prj__blocos" data-anim="stagger">
             {projeto.resultados.blocos.map((b, i) => (
               <li key={i}>
                 <span className="prj__bloco-n">{String(i + 1).padStart(2, '0')}</span>
-                <h4 className="prj__bloco-titulo" data-anim="rise">{b.titulo}</h4>
-                <p data-anim="rise">{b.texto}</p>
+                <h4 className="prj__bloco-titulo">{b.titulo}</h4>
+                <p>{b.texto}</p>
               </li>
             ))}
           </ol>

@@ -100,28 +100,44 @@ export function usePageMotion() {
         );
       });
 
-      /* ---------- entrada de bloco ---------- */
+      /* ---------- entrada de bloco ----------
+         `top 88%` disparava tarde demais. Medido numa tela de 768: o
+         gatilho cai em 676px, entao uma peca podia estar em y=749 — ou
+         seja, DENTRO da tela, na altura em que o olho ja chegou — e
+         ainda em opacidade 0. O leitor via o espaco do paragrafo antes
+         do paragrafo.
+
+         `top 96%` poe o disparo praticamente na borda de baixo: a peca
+         comeca a se materializar no instante em que entra, e quando
+         sobe ate a faixa de leitura ja esta inteira.
+
+         O movimento tambem encurtou: 40px de deslocamento com expo.out
+         de 0.9s e um gesto grande, e repetido dez vezes numa faixa so
+         vira agitacao. 22px em power3.out de 0.6s assenta sem chamar
+         atencao para si. */
       root.querySelectorAll('[data-anim="rise"]').forEach((el) => {
         gsap.from(el, {
-          y: 40,
+          y: 22,
           opacity: 0,
-          duration: 0.9,
-          ease: 'expo.out',
+          duration: 0.6,
+          ease: 'power3.out',
           // reverse ao voltar: a referencia nao guarda estado, ela e lida
           // na posicao do scroll — subir de novo desfaz a entrada
-          scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none reverse' },
+          scrollTrigger: { trigger: el, start: 'top 96%', toggleActions: 'play none none reverse' },
         });
       });
 
       /* ---------- cascata nos filhos ---------- */
       root.querySelectorAll('[data-anim="stagger"]').forEach((el) => {
         gsap.from(el.children, {
-          y: 32,
+          y: 22,
           opacity: 0,
-          duration: 0.8,
-          ease: 'expo.out',
-          stagger: 0.08,
-          scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none reverse' },
+          duration: 0.6,
+          ease: 'power3.out',
+          stagger: 0.07,
+          /* O gatilho e o PAI, e nao cada filho: e isso que faz o grupo
+             entrar junto em vez de cada peca negociar a propria hora. */
+          scrollTrigger: { trigger: el, start: 'top 94%', toggleActions: 'play none none reverse' },
         });
       });
 

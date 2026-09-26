@@ -1,6 +1,7 @@
 import React from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { useLenis } from './hooks/useLenis'
+import { useTopoNaRota } from './hooks/useTopoNaRota'
 
 // Components
 import Navbar from './components/Navbar'
@@ -23,7 +24,8 @@ import Contact from './pages/Contact'
 
 // A wrapper to initialize Lenis inside Router context if needed
 function ScrollWrapper({ children }) {
-  useLenis(); // Initialize smooth scroll
+  useLenis();        // scroll suavizado
+  useTopoNaRota();   // toda troca de rota comeca do topo
   return <>{children}</>;
 }
 

@@ -5539,13 +5539,36 @@ html { scrollbar-gutter: stable; }
 /* O corpo é uma COLUNA ESTREITA recuada da margem — 27.9% de largura a
    partir de 3.9%, medido. Eu tinha uma grade 50/50, que transformava
    um texto de apoio em metade da página. */
+/* ── a foto do capitulo ──
+   Estava em 55.9% da largura da tela (medido: 572px em 1024), quase o
+   dobro do padrao do caderno, que poe a figura em 42.6%. Numa coluna
+   dessa largura com proporcao 3/4 a imagem passava de 760px de altura
+   e empurrava o texto para uma tira de 298px ao lado.
+
+   Agora a coluna da foto e a MENOR das duas: 42% contra o resto para o
+   texto. A figura encolhe para a medida do caderno e o corpo ganha a
+   largura que faltava para ler. */
 .prj__cap-corpo {
   display: grid;
-  grid-template-columns: minmax(0, 32%) 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 45%);
   gap: clamp(2rem, 6vw, 6rem);
   align-items: start;
-  margin: clamp(2.4rem, 5vw, 4.5rem) 0 0 3.9%;
+  margin: clamp(2.4rem, 5vw, 4.5rem) 3.9% 0 3.9%;
 }
+
+/* ── os lados alternam ──
+   Capitulo impar espelha: a foto vai para a esquerda e o texto para a
+   direita. Com as tres do mesmo lado a pagina descia como uma coluna
+   so; alternando, o olho muda de apoio a cada faixa.
+
+   `order` e nao uma segunda grade com as colunas trocadas: a ordem do
+   DOM continua texto-depois-figura, que e a ordem de leitura e a que o
+   telefone recebe quando a grade vira uma coluna unica. */
+.prj__cap--espelho .prj__cap-corpo {
+  grid-template-columns: minmax(0, 45%) minmax(0, 1fr);
+}
+.prj__cap--espelho .prj__cap-texto { order: 2; }
+.prj__cap--espelho .prj__figura { order: 1; }
 .prj__cap-texto p {
   margin: 0 0 1.1rem;
   font-family: var(--font-body);
@@ -6145,7 +6168,25 @@ html { scrollbar-gutter: stable; }
      tópico ele já nasce pequeno, e o clamp de desktop serve. */
   .prj__intro-destaque { font-size: 1.15rem; }
   .prj__intro-resto { font-size: 1rem; }
-  .prj__cap-corpo { grid-template-columns: 1fr; margin-left: 0; }
+  /* ── a armadilha da especificidade ──
+     `.prj__cap-corpo` sozinho e (0,1,0); `.prj__cap--espelho
+     .prj__cap-corpo` la em cima e (0,2,0) — e a media query NAO muda
+     especificidade nenhuma. Sem repetir o seletor espelhado aqui, o
+     capitulo do meio ficava com as duas colunas no telefone: 145px de
+     foto e 145px de texto numa tela de 375.
+
+     Mesma familia do `!important` em linha: media query nao vence
+     seletor mais especifico, so agrupa. */
+  .prj__cap-corpo,
+  .prj__cap--espelho .prj__cap-corpo {
+    grid-template-columns: 1fr;
+    margin-left: 0;
+    margin-right: 0;
+  }
+  /* E a ordem volta a ser a do DOM: texto, depois foto. O `order` do
+     espelho so faz sentido quando ha duas colunas lado a lado. */
+  .prj__cap--espelho .prj__cap-texto,
+  .prj__cap--espelho .prj__figura { order: 0; }
   .prj__cap-sub { max-width: 100%; }
   /* Três painéis lado a lado em 375px dariam 105px cada. Viram um
      carrossel horizontal: a peça mantém o tamanho e quem rola escolhe
