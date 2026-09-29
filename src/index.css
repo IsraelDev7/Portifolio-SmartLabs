@@ -5569,6 +5569,49 @@ html { scrollbar-gutter: stable; }
 }
 .prj__cap--espelho .prj__cap-texto { order: 2; }
 .prj__cap--espelho .prj__figura { order: 1; }
+
+/* ══ o tríptico ══
+   O layout de imagem das obras fotográficas. Nas outras duas, o
+   material era tela de aplicação e uma peça de apoio bastava. Aqui são
+   quinze fotos reais de jardim: uma só desperdiçaria catorze.
+
+   Três peças na coluna da imagem, alternando a borda em que encostam —
+   a do meio recua para o lado oposto. É o que impede a pilha de ler
+   como uma galeria empilhada e faz o olho descer em ziguezague.
+
+   As margens negativas entrelaçam: cada peça sobe sobre a anterior, e
+   o conjunto ocupa menos altura do que a soma das três. */
+.prj__triptico {
+  display: flex;
+  flex-direction: column;
+  margin-top: clamp(0.5rem, 1vw, 1rem);
+}
+.prj__triptico-peca {
+  margin: 0;
+  width: 82%;
+  align-self: flex-end;
+}
+.prj__triptico-peca + .prj__triptico-peca { margin-top: clamp(-4rem, -5vw, -2rem); }
+.prj__triptico-peca:nth-child(2) { align-self: flex-start; }
+
+/* A caixa da foto: mesma proporção e mesmo fundo de espera da figura
+   das outras obras, para as três páginas terem a mesma pele. */
+.prj__triptico-peca .prj__foto {
+  aspect-ratio: 3 / 4;
+  background-color: var(--chapa);
+}
+/* A legenda de cada peça é menor que a da figura solteira: são três
+   numa coluna, e no mesmo corpo elas competiriam com o texto ao lado. */
+.prj__triptico-peca .prj__legenda {
+  font-size: 0.78rem;
+  margin-top: 0.55rem;
+}
+
+/* No espelho a pilha inverte junto: quem encosta à direita passa a
+   encostar à esquerda. Sem isso o ziguezague ficaria contra a coluna
+   de texto em vez de contra a margem. */
+.prj__cap--espelho .prj__triptico-peca { align-self: flex-start; }
+.prj__cap--espelho .prj__triptico-peca:nth-child(2) { align-self: flex-end; }
 .prj__cap-texto p {
   margin: 0 0 1.1rem;
   font-family: var(--font-body);
@@ -6187,6 +6230,16 @@ html { scrollbar-gutter: stable; }
      espelho so faz sentido quando ha duas colunas lado a lado. */
   .prj__cap--espelho .prj__cap-texto,
   .prj__cap--espelho .prj__figura { order: 0; }
+
+  /* O tríptico no telefone: largura cheia e sem entrelace. A 82% com
+     margem negativa, as tres pecas ficariam com 300px numa tela de 375
+     e ainda cobrindo umas as outras. */
+  .prj__triptico-peca,
+  .prj__cap--espelho .prj__triptico-peca,
+  .prj__cap--espelho .prj__triptico-peca:nth-child(2),
+  .prj__triptico-peca:nth-child(2) { width: 100%; align-self: stretch; }
+  .prj__triptico-peca + .prj__triptico-peca { margin-top: 1.6rem; }
+  .prj__cap--espelho .prj__triptico { order: 0; }
   .prj__cap-sub { max-width: 100%; }
   /* Três painéis lado a lado em 375px dariam 105px cada. Viram um
      carrossel horizontal: a peça mantém o tamanho e quem rola escolhe

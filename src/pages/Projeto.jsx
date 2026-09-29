@@ -466,6 +466,31 @@ export default function Projeto() {
                 <figcaption className="prj__legenda">{c.legenda}</figcaption>
               </figure>
             )}
+
+            {/* ── o tríptico ──
+                Layout proprio para obras cujo material e FOTOGRAFIA, e
+                nao tela de aplicacao: tres pecas empilhadas na coluna
+                da imagem, alternando a borda em que encostam.
+
+                `data-parallax` com fatores diferentes e o que faz as
+                tres andarem em ritmos proprios enquanto a pagina desce
+                — o mesmo gesto das colunas do portfolio do cliente,
+                que foi de onde a ideia veio.
+
+                Os numeros sobem (6, 11, 16): a peca de baixo deriva
+                mais que a de cima, entao o conjunto ABRE conforme
+                passa, em vez de andar como um bloco rigido. */}
+            {c.triptico && (
+              <div className="prj__triptico">
+                {c.triptico.map((t, j) => (
+                  <figure className="prj__triptico-peca" key={j}
+                          data-anim="parallax" data-parallax={6 + j * 5}>
+                    <Foto src={t.src} alt={t.legenda} />
+                    <figcaption className="prj__legenda">{t.legenda}</figcaption>
+                  </figure>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* ── a fileira de painéis ──

@@ -381,6 +381,164 @@ export const PROJETOS = [
       url: 'https://danila-souza-link-bio.vercel.app/',
     },
   },
+
+  /* ══════════════════════════════════════════════════════════════
+     TIAGO — TL GARDEN SOLUTION
+
+     ── o que distingue esta obra ──
+     Nas outras duas o formulário pergunta e alguém lê depois. Aqui o
+     site DIAGNOSTICA: sete perguntas, um índice de saúde calculado na
+     hora, e o lead chega com o problema já nomeado. A conversa começa
+     no segundo assunto.
+
+     ── por que as imagens têm layout próprio ──
+     O Israel pediu, e o material pedia junto: são quinze fotos reais de
+     jardins em Surrey, não telas de aplicação. Uma foto de apoio ao
+     lado do texto — o desenho das outras duas obras — desperdiçaria
+     catorze. O TRÍPTICO empilha três por capítulo, em ritmos de deriva
+     diferentes, ecoando as três colunas do portfólio do próprio site
+     dele.
+     ══════════════════════════════════════════════════════════════ */
+  {
+    slug: 'tl-garden',
+    indice: '03',
+    ano: '2026',
+
+    /* ── herói ── */
+    chamada: 'O lead chega com o diagnóstico na mão.',
+    titulo: ['TL', 'GARDEN'],
+    heroImagem: '/images/obra-tiago-heroi.jpg',
+    heroAlt: 'Retrato de Tiago, da página da TL Garden Solution',
+    lateralEsq: 'Paisagismo · Surrey, UK',
+    lateralDir: 'Set 2026',
+    heroTexto:
+      'Sete anos cuidando de jardins em Surrey, e um orçamento que sempre começava do zero: qual é o tamanho, qual é o problema, manda foto. O site passou a fazer essas perguntas antes — e a devolver um índice de saúde em vez de um "entraremos em contato".',
+
+    /* ── ficha ── */
+    nome: 'TL GARDEN SOLUTION',
+    subtitulo: 'SETE PERGUNTAS ANTES DA PRIMEIRA CONVERSA.',
+    declaracao:
+      'UM SITE QUE DIAGNOSTICA O JARDIM ANTES DE ALGUÉM PEDIR ORÇAMENTO.',
+    linkVivo: { rotulo: 'PROJETO NO AR', texto: 'EM INGLÊS, PARA SURREY', url: null },
+    ficha: [
+      { valor: ['Site institucional', 'Motor de diagnóstico', 'Upload de fotos', 'SEO'], rotulo: 'TIPO DE TRABALHO' },
+      { valor: ['Paisagismo', 'Manutenção de jardim'], rotulo: 'SETOR' },
+      { valor: ['Surrey e arredores', 'Reino Unido'], rotulo: 'PRAÇA' },
+      { valor: ['Set 2026'], rotulo: 'ENTREGUE' },
+    ],
+
+    /* ── a nota do fecho ── */
+    introducao: {
+      destaque: 'Sete perguntas, um índice',
+      resto: 'O formulário deixou de ser uma caixa de entrada e virou uma triagem. Quem responde já sabe o que tem; quem atende já sabe o que vai encontrar.',
+    },
+
+    /* ── capítulos ──
+       Cada um traz TRÊS fotos em vez de uma: ver `triptico`. */
+    capitulos: [
+      {
+        rotulo: '(O sinal)',
+        declaracao: 'O DONO SÓ VÊ O PROBLEMA QUANDO ELE JÁ CUSTA CARO.',
+        sub: 'JARDIM MAL CUIDADO NÃO DÁ AVISO. ELE DEGRADA DEVAGAR, E O OLHO SE ACOSTUMA.',
+        corpo:
+          'A página abre nomeando isso antes de vender qualquer coisa: os sinais passam despercebidos até virarem conserto. Solo compactado, irrigação desregulada, espécie errada para a incidência de sol — nada disso aparece numa foto até estar avançado. Quem mora ali vê o jardim todo dia e é exatamente por isso que não percebe.',
+        listaTitulo: 'O QUE O DIAGNÓSTICO PERGUNTA, E POR QUÊ',
+        lista: [
+          'Tipo de propriedade — residência, condomínio, empresa e hotel têm exigências diferentes de acabamento e de frequência. A mesma resposta técnica não serve aos quatro.',
+          'Condição do solo, incidência de sol e irrigação. São as três causas de quase todo sintoma visível, e nenhuma delas aparece numa foto de jardim.',
+          'Objetivo do dono. Manter, recuperar ou transformar são orçamentos de ordens de grandeza diferentes — perguntar antes evita a proposta que ninguém pediu.',
+        ],
+        triptico: [
+          { src: '/images/obra-tiago-sinal-a.jpg', legenda: 'Sebe e topiaria: acabamento que denuncia manutenção.' },
+          { src: '/images/obra-tiago-sinal-b.jpg', legenda: 'A forma só se sustenta com poda em calendário.' },
+          { src: '/images/obra-tiago-sinal-c.jpg', legenda: 'Canteiro com borda definida — desenho, não capina.' },
+        ],
+      },
+      {
+        rotulo: '(A triagem)',
+        declaracao: 'SETE PERGUNTAS, E UM ÍNDICE NO FIM.',
+        sub: 'O VISITANTE NÃO PREENCHE UM FORMULÁRIO. ELE FAZ UM EXAME.',
+        corpo:
+          'A diferença entre os dois é quem recebe valor primeiro. Formulário comum pede dado e devolve uma promessa de retorno; o diagnóstico devolve na hora um índice de saúde e os pontos de atenção da área verde. Quem respondeu sai com alguma coisa mesmo que nunca contrate — e quem contrata já chegou sabendo o que tem.',
+        corpoExtra:
+          'O formulário de orçamento aceita foto da área: até 5MB, JPG ou PNG. Num serviço em que o preço depende do estado do terreno, a imagem economiza uma visita inteira de avaliação. É também a parte que mais exige cuidado — upload aberto é porta aberta, e por isso as regras de acesso do armazenamento são parte da entrega, não um detalhe de configuração.',
+        triptico: [
+          { src: '/images/obra-tiago-obra-a.jpg', legenda: 'A área como ela chega: caminho, estufa, canteiro.' },
+          { src: '/images/obra-tiago-obra-b.jpg', legenda: 'Uso real do espaço — é isso que o dono quer de volta.' },
+          { src: '/images/obra-tiago-obra-c.jpg', legenda: 'O corte em faixa: assinatura de manutenção regular.' },
+        ],
+      },
+      {
+        rotulo: '(A praça)',
+        declaracao: 'EM INGLÊS, PARA QUEM PROCURA EM SURREY.',
+        sub: 'JARDINAGEM É BUSCA LOCAL. QUEM NÃO APARECE NO RAIO CERTO NÃO EXISTE.',
+        corpo:
+          'A página inteira é escrita em inglês britânico — "maintained", "neighbourhood", "personalised" — porque o público é local e ortografia americana num serviço de Surrey lê como empresa de fora. A praça aparece declarada no rodapé, no formulário e no texto: Surrey e arredores, sete anos de estrada.',
+        corpoExtra:
+          'Os planos são três, e a régua é o nível de cuidado, não o desconto: Essential mantém, Performance acompanha, Signature gere. Em serviço recorrente, quem escolhe está decidindo com que frequência quer pensar no assunto — e essa é a pergunta que a tabela precisa responder.',
+        triptico: [
+          { src: '/images/obra-tiago-praca-a.jpg', legenda: 'A escala real do trabalho em Surrey.' },
+          { src: '/images/obra-tiago-praca-b.jpg', legenda: 'Casa e jardim lidos como uma coisa só.' },
+          { src: '/images/obra-tiago-praca-c.jpg', legenda: 'O acabamento que a página promete na primeira dobra.' },
+        ],
+      },
+    ],
+
+    /* ── resultados ── */
+    resultados: {
+      rotulo: '(Resultados)',
+      declaracao: 'O QUE A OBRA PRONTA ENTREGA.',
+      sub: 'NÃO É UM SITE BONITO DE JARDINAGEM. É UMA TRIAGEM QUE CHEGA ANTES DA PRIMEIRA CONVERSA.',
+      imagens: [
+        '/images/obra-tiago-praca-a.jpg',
+        '/images/obra-tiago-sinal-b.jpg',
+        '/images/obra-tiago-obra-a.jpg',
+        '/images/obra-tiago-praca-c.jpg',
+        '/images/obra-tiago-sinal-c.jpg',
+        '/images/obra-tiago-obra-c.jpg',
+      ],
+      imagemAlt: 'Jardins da TL Garden, em sequência',
+
+      registro: {
+        rotulo: 'Registro',
+        frase: 'A conversa começa no segundo assunto.',
+        texto:
+          'Antes, todo orçamento abria com as mesmas cinco perguntas. Agora elas já estão respondidas quando o telefone toca — e o que sobra de tempo é o que decide se o serviço é vendido.',
+        cartao: {
+          foto: '/images/obra-tiago-retrato.jpg',
+          texto: 'Sete anos cuidando de áreas verdes em Surrey. O site passou a fazer a triagem que antes consumia a primeira visita.',
+          assina: 'Tiago',
+          org: 'TL Garden Solution · Surrey, UK',
+        },
+      },
+
+      blocos: [
+        {
+          titulo: 'O ORÇAMENTO CHEGA COM FOTO',
+          texto:
+            'O formulário aceita imagem da área — JPG ou PNG, até 5MB. Em serviço cujo preço depende do estado do terreno, isso é uma visita de avaliação que não precisou acontecer.',
+        },
+        {
+          titulo: 'O ÍNDICE É DO VISITANTE, NÃO MEU',
+          texto:
+            'O diagnóstico devolve o resultado na tela, na hora. Quem responde sai com alguma coisa mesmo que nunca contrate — e é isso que faz as sete perguntas serem respondidas até o fim.',
+        },
+        {
+          titulo: 'ESCRITO PARA O RAIO CERTO',
+          texto:
+            'Inglês britânico, praça declarada em três lugares da página e estrutura preparada para busca local. Jardinagem não se procura por marca, se procura por bairro.',
+        },
+      ],
+    },
+
+    /* ── fecho ── */
+    fecho: {
+      texto:
+        'SETE PERGUNTAS ANTES DA PRIMEIRA CONVERSA, E UM ÍNDICE DE SAÚDE NA TELA. O MOTOR DE REGRAS NÃO É MEU PARA PUBLICAR — MAS EXPLICO COMO ELE PONTUA NUMA CONVERSA.',
+      esteira: 'Projeto no ar',
+      url: 'https://tl-garden.vercel.app/',
+    },
+  },
 ];
 
 /**
@@ -393,14 +551,6 @@ export const PROJETOS = [
  * PROJETOS — o desenho da linha não muda.
  */
 export const OUTRAS_OBRAS = [
-  {
-    nome: 'TIAGO — TL GARDEN',
-    subtitulo: 'O LEAD CHEGA DIAGNOSTICADO.',
-    tags: ['Motor de regras', 'Firebase', 'SEO'],
-    data: 'Set 2026',
-    heroImagem: '/images/work-infra.jpg',
-    heroAlt: 'Paisagismo no Reino Unido',
-  },
   {
     nome: 'PORTFÓLIO SMARTLABS',
     subtitulo: 'O MÉTODO É O PRODUTO.',
