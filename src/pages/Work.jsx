@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
@@ -6,6 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { usePageMotion } from '../hooks/usePageMotion';
 import Letras from '../components/Letras';
 import Persiana from '../components/Persiana';
+import Canteiro from '../components/Canteiro';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -52,7 +53,63 @@ const OBRAS = [
     data: 'Set 2026',
     legenda: 'As outras três você precisa acreditar que ficaram boas. Esta você está usando agora: 9.337 linhas de JavaScript e 6.315 de CSS escritas à mão, medidas em três larguras antes de subir.',
     imagem: '/images/obra-smartlabs-heroi.jpg', para: '/work/portfolio-smartlabs' },
+
+  /* ── as duas em obra ──
+     `emObra: true` e um terceiro estado, entre o card com destino e o
+     card morto. Sem pagina para levar, mas COM trabalho acontecendo —
+     e o clique conta isso em vez de nao fazer nada.
+
+     Cliente, tipo e legenda ficam propositalmente curtos: o que eu sei
+     destas duas hoje e o nome. Inventar setor, problema e resultado
+     para preencher a ficha seria a mesma mentira que os placeholders
+     das outras quatro eram, e que ja custou uma correcao aqui. */
+  { n: '05', titulo: ['STS', ''], sub: 'Em construção.',
+    cliente: 'Rodrigo', tipo: 'Escopo em definição', data: '2026',
+    legenda: 'A página desta obra está sendo montada. O trabalho está em andamento — clique para ver o canteiro.',
+    imagem: '/images/obra-smartlabs-sistema.jpg', para: null, emObra: true },
+  { n: '06', titulo: ['NAILS', 'DESIGN'], sub: 'Em construção.',
+    cliente: 'Rayssa', tipo: 'Nail design', data: '2026',
+    legenda: 'A página desta obra está sendo montada. O trabalho está em andamento — clique para ver o canteiro.',
+    imagem: '/images/obra-smartlabs-acabamento.jpg', para: null, emObra: true },
 ];
+
+/**
+ * PecaEmObra — o card que nao leva a lugar nenhum porque o lugar ainda
+ * esta sendo feito.
+ *
+ * E um <button> e nao um <div>: ele FAZ alguma coisa quando clicado,
+ * entao precisa do foco de teclado, do Enter e do Espaco de graca. E
+ * `aria-pressed` conta o estado a quem nao ve a engrenagem girando.
+ *
+ * O aviso vai num `role="status"` separado porque o conteudo do botao
+ * muda: leitor de tela anuncia a mudanca sem a pessoa ter que sair e
+ * voltar ao elemento para descobrir o que aconteceu.
+ */
+function PecaEmObra({ obra }) {
+  const [aberto, setAberto] = useState(false);
+
+  return (
+    <>
+      <button
+        type="button"
+        className={`obra__peca obra__peca--obra${aberto ? ' e-aberto' : ''}`}
+        aria-pressed={aberto}
+        aria-label={`${obra.titulo.join(' ').trim()} — obra em construção`}
+        onClick={() => setAberto((v) => !v)}
+      >
+        <Persiana imagem={obra.imagem} className="obra__persiana" />
+        <Canteiro aberto={aberto} />
+        <span className="obra__legenda">
+          {obra.legenda}
+          <b>{aberto ? 'Fechar o canteiro' : 'Ver o canteiro'}</b>
+        </span>
+      </button>
+      <p className="visualmente-oculto" role="status">
+        {aberto ? `${obra.titulo.join(' ').trim()}: obra em construção, página sendo montada.` : ''}
+      </p>
+    </>
+  );
+}
 
 export default function Work() {
   const motionRef = usePageMotion();
@@ -157,6 +214,8 @@ export default function Work() {
                   <b>Ver o projeto</b>
                 </span>
               </Link>
+            ) : o.emObra ? (
+              <PecaEmObra obra={o} />
             ) : (
               <div className="obra__peca obra__peca--sem-destino">
                 <Persiana imagem={o.imagem} className="obra__persiana" />

@@ -5106,6 +5106,149 @@ html { scrollbar-gutter: stable; }
 
 /* Peca sem destino: mesma caixa, sem a promessa de clique. */
 .obra__peca--sem-destino { cursor: default; }
+
+/* ══ o canteiro ══
+   O terceiro estado do card: sem página, mas com trabalho acontecendo.
+   Ver o componente para o porquê de duas engrenagens e da razão entre
+   elas; aqui mora só o desenho. */
+
+/* Botão, não link: some o sublinhado, a borda e o fundo que o navegador
+   dá de graça, e o alinhamento volta a ser o do <a> que ele substitui. */
+.obra__peca--obra {
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+}
+
+.cant {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  /* ── coluna, e não sobreposição ──
+     Com `place-items: center` e o dizer em `position: absolute`, os dois
+     disputavam o mesmo centro: medido em 375, o card tem 234px de altura
+     e o mecanismo 191 — o texto caía em cima das engrenagens.
+     Empilhados numa coluna com folga, não há largura em que se cruzem. */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.7rem, 1.8vw, 1.4rem);
+  padding: var(--space-3);
+  /* O véu que apaga a foto sem sumir com ela: a obra continua lá atrás,
+     é ela que está sendo feita. */
+  background: rgba(10, 10, 10, 0.82);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 300ms ease, visibility 0s linear 300ms;
+}
+.cant.e-aberto {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 300ms ease, visibility 0s;
+}
+
+/* ── a faixa de canteiro ──
+   Listra diagonal, a linguagem universal de obra, na cor da casa. Ela
+   ANDA: faixa parada é aviso, faixa que corre é trabalho. O passo do
+   `background-size` é o mesmo do deslocamento, senão o laço salta. */
+.cant__faixa {
+  position: absolute;
+  left: 0; right: 0;
+  top: 50%;
+  height: 4px;
+  transform: translateY(-50%);
+  background-image: repeating-linear-gradient(
+    -45deg,
+    var(--solda) 0 10px,
+    rgba(10, 10, 10, 0) 10px 20px
+  );
+  background-size: 28.28px 100%;
+  opacity: 0.55;
+  animation: cant-faixa 900ms linear infinite;
+  animation-play-state: paused;
+}
+.cant.e-aberto .cant__faixa { animation-play-state: running; }
+@keyframes cant-faixa { to { background-position: 28.28px 0; } }
+
+/* ── o mecanismo ── */
+/* `max-height` junto com a largura: num card baixo é a altura que
+   aperta, e sem o teto o mecanismo empurrava o texto para fora. O
+   `preserveAspectRatio` padrão do SVG cuida do resto. */
+.cant__mec {
+  position: relative;
+  flex: 0 1 auto;
+  width: min(42%, 13rem);
+  max-height: 54%;
+  overflow: visible;
+}
+.cant__eng { fill: var(--cal); transform-origin: 0 0; }
+.cant__eng--grande {
+  animation: cant-gira 12s linear infinite;
+  animation-play-state: paused;
+}
+/* A menor tem 11 dentes contra 18 da maior: 12s × 11/18 = 7.33s, no
+   sentido contrário. É a razão de transmissão de verdade — e é o que
+   faz o par parecer engrenado em vez de duas peças girando perto. */
+.cant__eng--pequena {
+  fill: var(--solda);
+  animation: cant-gira-inv 7.33s linear infinite;
+  animation-play-state: paused;
+}
+.cant.e-aberto .cant__eng { animation-play-state: running; }
+
+/* O furo e o eixo são recortes: a cor do véu atravessa a peça, então
+   dá para ver o fundo girando por dentro dela. */
+.cant__furo, .cant__eixo { fill: var(--aco); }
+
+@keyframes cant-gira     { to { transform: rotate(360deg); } }
+@keyframes cant-gira-inv { to { transform: rotate(-360deg); } }
+
+/* ── o que está escrito ── */
+.cant__dizer {
+  position: relative;
+  max-width: 26rem;
+  text-align: center;
+}
+.cant__dizer b {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--solda);
+}
+.cant__dizer i {
+  display: block;
+  margin-top: 0.5rem;
+  font-family: var(--font-body);
+  font-style: normal;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: var(--fumaca);
+}
+
+/* Quem pediu menos movimento recebe o canteiro PARADO — e não um
+   canteiro vazio. As engrenagens ficam lá, engrenadas, sem girar: a
+   informação é a mesma, o movimento é que sai. */
+@media (prefers-reduced-motion: reduce) {
+  .cant__faixa,
+  .cant.e-aberto .cant__eng,
+  .cant.e-aberto .cant__faixa { animation: none; }
+  .cant { transition: none; }
+}
+
+/* Utilitário de leitor de tela — mesma receita do rótulo do marca-texto. */
+.visualmente-oculto {
+  position: absolute; width: 1px; height: 1px;
+  margin: 0; padding: 0; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap;
+}
 .obra__peca--sem-destino .obra__legenda b { color: var(--fumaca); }
 
 /* ═══════════════════════════════════════════════════════════════
