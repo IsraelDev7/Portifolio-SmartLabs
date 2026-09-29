@@ -44,6 +44,26 @@ export function usePageMotion() {
       return;
     }
 
+    /* ── a entrada da casa ──
+       Duas linhas do tempo sobre a mesma peca, com faixas de tamanhos
+       diferentes. A conta, numa tela de 980:
+
+         opacidade   940 -> 745   =  195px   (le-se cedo)
+         deslocamento 940 -> 451  =  489px   (ve-se mover)
+
+       Os 44px de percurso sao maiores que os 30 de antes justamente
+       porque agora ha espaco de rolagem para gasta-los devagar. */
+    const aparecer = (el) => {
+      gsap.fromTo(el, { opacity: 0 }, {
+        opacity: 1, ease: 'none',
+        scrollTrigger: { trigger: el, start: 'top bottom-=40', end: 'top 76%', scrub: 0.4 },
+      });
+      gsap.fromTo(el, { y: 44 }, {
+        y: 0, ease: 'none',
+        scrollTrigger: { trigger: el, start: 'top bottom-=40', end: 'top 46%', scrub: 0.6 },
+      });
+    };
+
     const ctx = gsap.context(() => {
       /* ---------- P1 · reveal por mascara ---------- */
       root.querySelectorAll('[data-anim="reveal"]').forEach((el) => {
@@ -127,19 +147,17 @@ export function usePageMotion() {
 
          `scrub: 0.5` e nao `true`: meio segundo de inercia tira o
          travamento de estar amarrado quadro a quadro ao dedo. */
-      root.querySelectorAll('[data-anim="rise"]').forEach((el) => {
-        gsap.fromTo(el,
-          { y: 30, opacity: 0 },
-          {
-            y: 0, opacity: 1, ease: 'power2.out',
-            scrollTrigger: {
-              trigger: el,
-              start: 'top bottom-=40',   // comeca assim que encosta na borda
-              end: 'top 74%',            // termina ANTES da zona de leitura
-              scrub: 0.5,
-            },
-          });
-      });
+      /* ── a faixa era curta demais ──
+         Com opacidade e deslocamento presos na MESMA faixa, tudo
+         acontecia entre 940px e 725px de altura de tela: 215px de
+         rolagem, duas voltas de roda. Tecnicamente animado, praticamente
+         invisivel — foi o que o Israel viu.
+
+         Separados, cada um pode ter a faixa que o seu trabalho pede:
+         a OPACIDADE fecha cedo, porque texto meio transparente e texto
+         que nao se le; o DESLOCAMENTO corre por mais que o dobro, e e
+         ele que entrega o gesto. */
+      root.querySelectorAll('[data-anim="rise"]').forEach((el) => aparecer(el));
 
       /* ---------- cascata nos filhos ---------- */
       /* ── por que cada filho tem o SEU gatilho, e nao o pai ──
@@ -156,19 +174,7 @@ export function usePageMotion() {
          texto sobem juntos, que era o ponto de nao usar `rise` em cada
          linha. */
       root.querySelectorAll('[data-anim="stagger"]').forEach((el) => {
-        gsap.utils.toArray(el.children).forEach((filho) => {
-          gsap.fromTo(filho,
-            { y: 30, opacity: 0 },
-            {
-              y: 0, opacity: 1, ease: 'power2.out',
-              scrollTrigger: {
-                trigger: filho,
-                start: 'top bottom-=40',
-                end: 'top 74%',
-                scrub: 0.5,
-              },
-            });
-        });
+        gsap.utils.toArray(el.children).forEach((filho) => aparecer(filho));
       });
 
       /* ---------- P5 · imagem: clip reveal + parallax interno ---------- */

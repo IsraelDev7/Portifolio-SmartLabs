@@ -391,13 +391,19 @@ export const PROJETOS = [
      hora, e o lead chega com o problema já nomeado. A conversa começa
      no segundo assunto.
 
-     ── por que as imagens têm layout próprio ──
-     O Israel pediu, e o material pedia junto: são quinze fotos reais de
-     jardins em Surrey, não telas de aplicação. Uma foto de apoio ao
-     lado do texto — o desenho das outras duas obras — desperdiçaria
-     catorze. O TRÍPTICO empilha três por capítulo, em ritmos de deriva
-     diferentes, ecoando as três colunas do portfólio do próprio site
-     dele.
+     ── de quem é esta página ──
+     Ela mostra o QUE FOI CONSTRUÍDO, não o jardim do cliente. Por isso
+     as peças dos capítulos são imagens feitas para cada afirmação —
+     uma por ponto de coleta, uma por etapa da triagem, uma por decisão
+     de alcance —, na linguagem da casa: macro industrial em Aço, Cal e
+     Solda, sem texto e sem gente.
+
+     As fotos reais de Surrey ficaram no único lugar em que o assunto é
+     o resultado do cliente: a TV do bloco de resultados, passando em
+     laço. E o retrato do Tiago no herói, porque a obra tem dono.
+
+     O TRÍPTICO alinha três por capítulo numa escada horizontal, cada
+     peça derivando num ritmo próprio.
      ══════════════════════════════════════════════════════════════ */
   {
     slug: 'tl-garden',
@@ -448,10 +454,13 @@ export const PROJETOS = [
           'Condição do solo, incidência de sol e irrigação. São as três causas de quase todo sintoma visível, e nenhuma delas aparece numa foto de jardim.',
           'Objetivo do dono. Manter, recuperar ou transformar são orçamentos de ordens de grandeza diferentes — perguntar antes evita a proposta que ninguém pediu.',
         ],
+        /* Uma peça por ponto de coleta, na ordem da lista acima. Não são
+           fotos do jardim: são a MECÂNICA do que foi construído, que é o
+           que esta página tem para mostrar. */
         triptico: [
-          { src: '/images/obra-tiago-sinal-a.jpg', legenda: 'Sebe e topiaria: acabamento que denuncia manutenção.' },
-          { src: '/images/obra-tiago-sinal-b.jpg', legenda: 'A forma só se sustenta com poda em calendário.' },
-          { src: '/images/obra-tiago-sinal-c.jpg', legenda: 'Canteiro com borda definida — desenho, não capina.' },
+          { src: '/images/obra-tiago-coleta-a.jpg', legenda: 'Tipo de propriedade: quatro caminhos, um escolhido.' },
+          { src: '/images/obra-tiago-coleta-b.jpg', legenda: 'Solo, sol e irrigação: as três causas que a foto não mostra.' },
+          { src: '/images/obra-tiago-coleta-c.jpg', legenda: 'Objetivo do dono: manter, recuperar ou transformar.' },
         ],
       },
       {
@@ -463,9 +472,9 @@ export const PROJETOS = [
         corpoExtra:
           'O formulário de orçamento aceita foto da área: até 5MB, JPG ou PNG. Num serviço em que o preço depende do estado do terreno, a imagem economiza uma visita inteira de avaliação. É também a parte que mais exige cuidado — upload aberto é porta aberta, e por isso as regras de acesso do armazenamento são parte da entrega, não um detalhe de configuração.',
         triptico: [
-          { src: '/images/obra-tiago-obra-a.jpg', legenda: 'A área como ela chega: caminho, estufa, canteiro.' },
-          { src: '/images/obra-tiago-obra-b.jpg', legenda: 'Uso real do espaço — é isso que o dono quer de volta.' },
-          { src: '/images/obra-tiago-obra-c.jpg', legenda: 'O corte em faixa: assinatura de manutenção regular.' },
+          { src: '/images/obra-tiago-exame-a.jpg', legenda: 'Sete perguntas, uma de cada vez, com o avanço à vista.' },
+          { src: '/images/obra-tiago-exame-b.jpg', legenda: 'O índice de saúde, calculado e devolvido na tela.' },
+          { src: '/images/obra-tiago-exame-c.jpg', legenda: 'O envio de foto: abertura estreita e com regra de acesso.' },
         ],
       },
       {
@@ -477,9 +486,9 @@ export const PROJETOS = [
         corpoExtra:
           'Os planos são três, e a régua é o nível de cuidado, não o desconto: Essential mantém, Performance acompanha, Signature gere. Em serviço recorrente, quem escolhe está decidindo com que frequência quer pensar no assunto — e essa é a pergunta que a tabela precisa responder.',
         triptico: [
-          { src: '/images/obra-tiago-praca-a.jpg', legenda: 'A escala real do trabalho em Surrey.' },
-          { src: '/images/obra-tiago-praca-b.jpg', legenda: 'Casa e jardim lidos como uma coisa só.' },
-          { src: '/images/obra-tiago-praca-c.jpg', legenda: 'O acabamento que a página promete na primeira dobra.' },
+          { src: '/images/obra-tiago-alcance-a.jpg', legenda: 'Busca local: um raio, não o mundo inteiro.' },
+          { src: '/images/obra-tiago-alcance-b.jpg', legenda: 'Três planos, e a régua é o nível de cuidado.' },
+          { src: '/images/obra-tiago-alcance-c.jpg', legenda: 'A linha entre o bruto e o acabado — que é o que se vende.' },
         ],
       },
     ],
@@ -489,6 +498,9 @@ export const PROJETOS = [
       rotulo: '(Resultados)',
       declaracao: 'O QUE A OBRA PRONTA ENTREGA.',
       sub: 'NÃO É UM SITE BONITO DE JARDINAGEM. É UMA TRIAGEM QUE CHEGA ANTES DA PRIMEIRA CONVERSA.',
+      /* As NOVE fotos reais de Surrey, todas aqui. Este é o único ponto
+         da página em que o assunto é o jardim do cliente, e não o que
+         foi construído — então é aqui que elas vivem, passando em laço. */
       imagens: [
         '/images/obra-tiago-praca-a.jpg',
         '/images/obra-tiago-sinal-b.jpg',
@@ -496,6 +508,9 @@ export const PROJETOS = [
         '/images/obra-tiago-praca-c.jpg',
         '/images/obra-tiago-sinal-c.jpg',
         '/images/obra-tiago-obra-c.jpg',
+        '/images/obra-tiago-sinal-a.jpg',
+        '/images/obra-tiago-obra-b.jpg',
+        '/images/obra-tiago-praca-b.jpg',
       ],
       imagemAlt: 'Jardins da TL Garden, em sequência',
 

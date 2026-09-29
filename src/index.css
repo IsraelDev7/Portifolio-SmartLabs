@@ -720,6 +720,21 @@ h3 {
   .modulo__seta { display: none; }
 }
 
+/* ── o tríptico só desiste da escada abaixo de 620 ──
+   Medido: em 768 a coluna unica empilhava tres pecas de 722x963 por
+   capitulo e a pagina ia a 19.141px — quase o dobro do desktop, e mais
+   longa que no telefone. A escada cabe bem ate ali; o que nao cabe e
+   uma peca de 105px, e isso so acontece em tela estreita de verdade. */
+@media (max-width: 620px) {
+  .prj__triptico { grid-template-columns: 1fr; gap: 1.4rem; }
+  .prj__triptico-peca,
+  .prj__triptico-peca:nth-child(2),
+  .prj__triptico-peca:nth-child(3),
+  .prj__cap--espelho .prj__triptico-peca:nth-child(1),
+  .prj__cap--espelho .prj__triptico-peca:nth-child(3) { margin-top: 0; }
+  .prj__triptico-peca .prj__legenda { font-size: 0.8rem; }
+}
+
 /* ═══════════════════════════════════════════════════════════
    FICHARIO — as fichas se rearranjam com o scroll
    Acervo Vance · Scroll Animation #21 (ScrollBasedLayoutAnimations)
@@ -5571,47 +5586,52 @@ html { scrollbar-gutter: stable; }
 .prj__cap--espelho .prj__figura { order: 1; }
 
 /* ══ o tríptico ══
-   O layout de imagem das obras fotográficas. Nas outras duas, o
-   material era tela de aplicação e uma peça de apoio bastava. Aqui são
-   quinze fotos reais de jardim: uma só desperdiçaria catorze.
+   O layout de imagem das obras fotográficas. Nas outras duas o material
+   era tela de aplicação e uma peça de apoio bastava; aqui são três por
+   capítulo.
 
-   Três peças na coluna da imagem, alternando a borda em que encostam —
-   a do meio recua para o lado oposto. É o que impede a pilha de ler
-   como uma galeria empilhada e faz o olho descer em ziguezague.
+   ── a versão anterior quebrava, e por um motivo bobo ──
+   As peças eram empilhadas EM COLUNA com margem negativa entrelaçando.
+   Só que cada peça tem legenda, e a margem negativa não sabe disso: a
+   imagem seguinte subia por cima da legenda da anterior. Some-se a isso
+   três imagens de 628x837 empilhadas por capítulo — 2.383px de coluna
+   contra um texto de 900 ao lado — e a página inteira esticava.
 
-   As margens negativas entrelaçam: cada peça sobe sobre a anterior, e
-   o conjunto ocupa menos altura do que a soma das três. */
+   ── agora é uma escada horizontal ──
+   As três lado a lado dentro da mesma coluna, descendo em degraus. A
+   altura total passa a ser a de UMA peça mais o degrau, não a soma de
+   três, e nenhuma legenda fica coberta porque nada se sobrepõe. */
 .prj__triptico {
-  display: flex;
-  flex-direction: column;
-  margin-top: clamp(0.5rem, 1vw, 1rem);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(0.5rem, 0.9vw, 0.9rem);
+  align-items: start;
+  margin-top: clamp(0.6rem, 1.2vw, 1.2rem);
 }
-.prj__triptico-peca {
-  margin: 0;
-  width: 82%;
-  align-self: flex-end;
-}
-.prj__triptico-peca + .prj__triptico-peca { margin-top: clamp(-4rem, -5vw, -2rem); }
-.prj__triptico-peca:nth-child(2) { align-self: flex-start; }
+.prj__triptico-peca { margin: 0; }
 
-/* A caixa da foto: mesma proporção e mesmo fundo de espera da figura
-   das outras obras, para as três páginas terem a mesma pele. */
+/* O degrau. A diferença entre os três é o que dá o movimento de
+   escada; junto com as taxas de deriva diferentes, as peças nunca
+   ficam alinhadas enquanto a página desce. */
+.prj__triptico-peca:nth-child(2) { margin-top: clamp(1.2rem, 2.2vw, 2.2rem); }
+.prj__triptico-peca:nth-child(3) { margin-top: clamp(2.4rem, 4.4vw, 4.4rem); }
+
+/* No espelho a escada desce para o outro lado, senão ela apontaria
+   contra a coluna de texto em vez de acompanhar a margem. */
+.prj__cap--espelho .prj__triptico-peca:nth-child(1) { margin-top: clamp(2.4rem, 4.4vw, 4.4rem); }
+.prj__cap--espelho .prj__triptico-peca:nth-child(3) { margin-top: 0; }
+
 .prj__triptico-peca .prj__foto {
   aspect-ratio: 3 / 4;
   background-color: var(--chapa);
 }
-/* A legenda de cada peça é menor que a da figura solteira: são três
-   numa coluna, e no mesmo corpo elas competiriam com o texto ao lado. */
+/* Legenda menor e mais apertada: são três numa linha, em colunas
+   estreitas, e no corpo da figura solteira elas viravam parágrafo. */
 .prj__triptico-peca .prj__legenda {
-  font-size: 0.78rem;
-  margin-top: 0.55rem;
+  font-size: 0.7rem;
+  line-height: 1.35;
+  margin-top: 0.5rem;
 }
-
-/* No espelho a pilha inverte junto: quem encosta à direita passa a
-   encostar à esquerda. Sem isso o ziguezague ficaria contra a coluna
-   de texto em vez de contra a margem. */
-.prj__cap--espelho .prj__triptico-peca { align-self: flex-start; }
-.prj__cap--espelho .prj__triptico-peca:nth-child(2) { align-self: flex-end; }
 .prj__cap-texto p {
   margin: 0 0 1.1rem;
   font-family: var(--font-body);
@@ -6231,15 +6251,13 @@ html { scrollbar-gutter: stable; }
   .prj__cap--espelho .prj__cap-texto,
   .prj__cap--espelho .prj__figura { order: 0; }
 
-  /* O tríptico no telefone: largura cheia e sem entrelace. A 82% com
-     margem negativa, as tres pecas ficariam com 300px numa tela de 375
-     e ainda cobrindo umas as outras. */
-  .prj__triptico-peca,
-  .prj__cap--espelho .prj__triptico-peca,
-  .prj__cap--espelho .prj__triptico-peca:nth-child(2),
-  .prj__triptico-peca:nth-child(2) { width: 100%; align-self: stretch; }
-  .prj__triptico-peca + .prj__triptico-peca { margin-top: 1.6rem; }
-  .prj__cap--espelho .prj__triptico { order: 0; }
+  /* O tríptico entre 620 e 820: a escada continua, porque a coluna
+     virou largura cheia e sobra espaço para as três lado a lado. O
+     degrau encolhe, e só. */
+  .prj__triptico-peca:nth-child(2) { margin-top: 1rem; }
+  .prj__triptico-peca:nth-child(3) { margin-top: 2rem; }
+  .prj__cap--espelho .prj__triptico-peca:nth-child(1) { margin-top: 2rem; }
+  .prj__triptico-peca .prj__legenda { font-size: 0.72rem; }
   .prj__cap-sub { max-width: 100%; }
   /* Três painéis lado a lado em 375px dariam 105px cada. Viram um
      carrossel horizontal: a peça mantém o tamanho e quem rola escolhe
