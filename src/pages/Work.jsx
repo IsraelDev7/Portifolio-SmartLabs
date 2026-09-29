@@ -25,7 +25,10 @@ gsap.registerPlugin(ScrollTrigger);
  * A imagem se monta em ripas (ver <Persiana>), e a legenda so aparece sob
  * o cursor: e a informacao de apoio, nao concorrente da foto.
  *
- * Nomes, clientes e datas ficam como PLACEHOLDER ate o portfolio chegar.
+ * As quatro obras sao reais e as quatro tem pagina: cada card leva a
+ * /work/<slug>. Nao ha mais placeholder aqui — se entrar uma obra nova
+ * sem pagina, ela vai para OUTRAS_OBRAS e aparece SEM link, que e a
+ * regra de nao prometer destino que nao existe.
  */
 
 const OBRAS = [
@@ -44,10 +47,11 @@ const OBRAS = [
     data: 'Set 2026',
     legenda: 'Sete anos cuidando de jardins em Surrey, e todo orçamento começando do zero. O site passou a fazer sete perguntas antes e a devolver um índice de saúde na tela — a conversa agora começa no segundo assunto.',
     imagem: '/images/obra-tiago-heroi.jpg', para: '/work/tl-garden' },
-  { n: '04', titulo: ['[ nome do', 'projeto ]'], sub: '[ uma linha dizendo o que o projeto e ]',
-    cliente: '[ cliente ]', tipo: '[ tipo de projeto ]', data: '[ mês e ano ]',
-    legenda: '[ o problema que existia, e o que a estrutura nova resolveu. duas ou tres linhas. ]',
-    imagem: '/images/work-infra.jpg', para: null },
+  { n: '04', titulo: ['SMART', 'LABS'], sub: 'A prova desta obra é a página em que você está.',
+    cliente: 'Obra própria · Método', tipo: 'Identidade · Site · Motor de movimento',
+    data: 'Set 2026',
+    legenda: 'As outras três você precisa acreditar que ficaram boas. Esta você está usando agora: 9.337 linhas de JavaScript e 6.315 de CSS escritas à mão, medidas em três larguras antes de subir.',
+    imagem: '/images/obra-smartlabs-heroi.jpg', para: '/work/portfolio-smartlabs' },
 ];
 
 export default function Work() {

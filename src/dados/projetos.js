@@ -554,26 +554,183 @@ export const PROJETOS = [
       url: 'https://tl-garden.vercel.app/',
     },
   },
+
+  /* ══════════════════════════════════════════════════════════════
+     PORTFÓLIO SMARTLABS
+
+     ── a única obra em que a prova é a própria página ──
+     As outras três argumentam a partir do resultado de um cliente:
+     você acredita ou não acredita. Esta não pede fé. O visitante está
+     DENTRO da entrega enquanto lê sobre ela — se a página trava, se
+     estoura no telefone, se o texto aparece atrasado, o argumento cai
+     sozinho na frente dele.
+
+     Isso muda o que a copy pode fazer. Ela não descreve um trabalho
+     ausente: ela aponta para coisas verificáveis aqui, agora, com o
+     inspetor aberto. Por isso os números desta página são números de
+     verdade, contados do repositório — 9.337 linhas de JS, 6.315 de
+     CSS escritas à mão, 28 componentes, 8 hooks, 11 dependências.
+
+     ── o limite ──
+     Nenhuma afirmação aqui pode depender de coisa que o visitante não
+     consiga conferir. Nada de "o mais rápido", nada de nota de
+     ferramenta que ninguém rodou. O que entra é o que se mede abrindo
+     o DevTools nesta aba.
+     ══════════════════════════════════════════════════════════════ */
+  {
+    slug: 'portfolio-smartlabs',
+    indice: '04',
+    ano: '2026',
+
+    /* ── herói ── */
+    chamada: 'A prova desta obra é a página em que você está.',
+    titulo: ['SMART', 'LABS'],
+    heroImagem: '/images/obra-smartlabs-heroi.jpg',
+    heroAlt: 'Retrato de Israel Passos',
+    lateralEsq: 'Obra própria · Método',
+    lateralDir: 'Set 2026',
+    heroTexto:
+      'Portfólio não se vende com adjetivo. As outras três obras desta seção você precisa acreditar que ficaram boas; esta você está usando agora. Se travar no seu telefone, se o texto chegar atrasado, se estourar para o lado — o argumento cai sozinho, na sua frente.',
+
+    /* ── ficha ── */
+    nome: 'PORTFÓLIO SMARTLABS',
+    subtitulo: 'O MÉTODO É O PRODUTO.',
+    declaracao:
+      'A ÚNICA OBRA DESTA SEÇÃO CUJA PROVA É A PÁGINA QUE VOCÊ ESTÁ LENDO.',
+    linkVivo: { rotulo: 'PROJETO NO AR', texto: 'VOCÊ ESTÁ NELE', url: null },
+    ficha: [
+      { valor: ['Identidade', 'Site', 'Motor de movimento', 'Caderno'], rotulo: 'TIPO DE TRABALHO' },
+      { valor: ['Obra própria'], rotulo: 'SETOR' },
+      { valor: ['React 19 · GSAP', 'Lenis · Three.js'], rotulo: 'FERRAMENTA' },
+      { valor: ['Set 2026'], rotulo: 'NO AR' },
+    ],
+
+    /* ── a nota do fecho ── */
+    introducao: {
+      destaque: 'Nada aqui é biblioteca de prateleira',
+      resto: 'Seis mil linhas de CSS escritas à mão, sem framework de estilo. Cada medida desta página saiu de uma régua, não de um palpite — e é por isso que ela cabe num telefone sem ninguém precisar girar o aparelho.',
+    },
+
+    /* ── capítulos ── */
+    capitulos: [
+      {
+        rotulo: '(A medida)',
+        declaracao: 'ENGENHARIA REVERSA SE FAZ COM RÉGUA, NÃO COM OLHO.',
+        sub: 'A REFERÊNCIA FOI LIDA EM NÚMEROS: CADA FAIXA ABERTA, MEDIDA NO DOM E REPRODUZIDA NA MEDIDA.',
+        corpo:
+          'Copiar uma página olhando para ela produz algo parecido de longe e errado de perto — as proporções não batem, e o olho sabe disso antes de conseguir dizer por quê. O caminho aqui foi outro: abrir a referência, medir cada peça no inspetor e anotar o número. Título em 140px, máscara de 773px, coluna começando em 66.5% e ocupando 30.8%. Depois construir para bater com o número.',
+        listaTitulo: 'O QUE A RÉGUA ENTREGA QUE O OLHO NÃO',
+        lista: [
+          'Proporção que sobrevive a outra tela. Um layout copiado a olho está certo na largura em que foi copiado e erra em todas as outras.',
+          'A intenção por trás do número. Quando a mesma medida reaparece em três lugares, ela é um sistema — e sistema se reproduz; aparência se imita.',
+          'O que NÃO copiar. Medir mostra onde a referência resolveu por acaso, e essas partes a gente refaz melhor em vez de herdar.',
+        ],
+        imagem: '/images/obra-smartlabs-medida.jpg',
+        legenda: 'A peça encostada na medida: é o número que decide, não a impressão.',
+      },
+      {
+        rotulo: '(A prova)',
+        declaracao: 'O QUE PASSA NO BUILD E QUEBRA NA TELA.',
+        sub: 'TRÊS DEFEITOS REAIS DESTA OBRA QUE NENHUM COMPILADOR ACUSOU E NENHUMA OLHADA PEGARIA.',
+        corpo:
+          'Build verde não é prova de nada: ele garante que o código compila, não que a página funciona. Numa faixa desta mesma seção, três fotos mediam zero por zero e apareciam como texto porque uma regra de CSS havia sumido — e o build passou. Num título, a última letra era comida pelo recorte porque espaçamento negativo encolhe a caixa depois do último desenho. Num telefone de 375px, um título ocupava 285px e era cortado em silêncio.',
+        corpoExtra:
+          'Nenhum dos três aparece numa olhada rápida, e nenhum aparece num teste de unidade. Todos aparecem em dez linhas de medição no DOM. É por isso que aqui nada é entregue por parecer certo: mede-se a largura, a altura, a sobreposição, a rolagem horizontal e o alvo de toque — e o que a régua reprova volta para a bancada.',
+        imagem: '/images/obra-smartlabs-prova.jpg',
+        legenda: 'A trinca que só a luz rasante mostra. Era ela que o build não via.',
+      },
+      {
+        rotulo: '(O acabamento)',
+        declaracao: 'A PARTE QUE NINGUÉM ELOGIA E TODO MUNDO SENTE.',
+        sub: 'TRÊS LARGURAS CONFERIDAS, ALVO DE TOQUE NA NORMA E UM CAMINHO SEM MOVIMENTO PARA QUEM PRECISA.',
+        corpo:
+          'Todo bloco desta obra passa pela mesma régua antes de ser dado como pronto: 1900, 768 e 375 medidos no DOM, zero rolagem horizontal, zero faixa sobreposta, nenhum alvo de toque abaixo de 44px. Não é zelo — é o que separa um site que impressiona no monitor do estúdio de um site que funciona no aparelho do cliente.',
+        corpoExtra:
+          'E quem pediu menos movimento recebe menos movimento de verdade: com `prefers-reduced-motion`, o conteúdo chega pronto em vez de chegar animado devagar. Acessibilidade aqui não é uma caixa marcada no fim — é um caminho paralelo que existe desde o começo, porque enxertar depois custa mais do que construir junto.',
+        imagem: '/images/obra-smartlabs-acabamento.jpg',
+        legenda: 'Blocos-padrão: o acabamento é o que permite empilhar sem folga.',
+      },
+    ],
+
+    /* ── resultados ── */
+    resultados: {
+      rotulo: '(Resultados)',
+      declaracao: 'O QUE A OBRA PRONTA ENTREGA.',
+      sub: 'UM SITE QUE É O ARGUMENTO, E UM CÓDIGO QUE EXPLICA POR QUE CADA DECISÃO FOI TOMADA.',
+      imagens: [
+        '/images/obra-smartlabs-sistema.jpg',
+        '/images/obra-smartlabs-medida.jpg',
+        '/images/obra-smartlabs-prova.jpg',
+        '/images/obra-smartlabs-acabamento.jpg',
+        '/images/hero-voxel.jpg',
+        '/images/camada-arquiteto.jpg',
+        '/images/camada-estrutura.jpg',
+        '/images/camada-interface.jpg',
+      ],
+      imagemAlt: 'Peças desta obra, em sequência',
+
+      /* Nas outras três o cartão traz um FATO sobre o cliente, porque
+         inventar depoimento é propaganda enganosa. Aqui não há cliente:
+         o fato é sobre o repositório, e é contável. */
+      registro: {
+        rotulo: 'Registro',
+        frase: 'O código conta o porquê, não o quê.',
+        texto:
+          'Comentário que descreve o que a linha faz é ruído — a linha já diz. O que não está em lugar nenhum é a razão: por que esta medida, o que foi tentado antes, qual armadilha isso evita. É isso que está escrito aqui.',
+        cartao: {
+          foto: '/images/obra-smartlabs-retrato.jpg',
+          texto: '9.337 linhas de JavaScript e 6.315 de CSS escritas à mão. 28 componentes, 8 hooks, 11 dependências — sem framework de estilo.',
+          assina: 'Israel Passos',
+          org: 'Smart LABS · Goiânia, BR',
+        },
+      },
+
+      blocos: [
+        {
+          titulo: 'CSS À MÃO, E DE PROPÓSITO',
+          texto:
+            'Seis mil linhas sem framework de estilo. Não é teimosia: classe utilitária resolve rápido o comum e fica no caminho no incomum — e uma página que existe para mostrar acabamento é feita de incomum.',
+        },
+        {
+          titulo: 'O MOVIMENTO É PRESO AO SCROLL',
+          texto:
+            'Entrada por tempo mede em segundos; a chegada do elemento mede em pixels de rolagem. Os dois não se falam. Aqui o progresso É a posição — então a animação nunca chega atrasada nem termina antes de você olhar.',
+        },
+        {
+          titulo: 'TRÊS LARGURAS, SEMPRE',
+          texto:
+            '1900, 768 e 375 medidos no DOM antes de qualquer entrega. Nenhuma faixa sobreposta, nenhuma rolagem horizontal, nenhum alvo de toque abaixo de 44px. É a mesma régua em toda obra desta seção.',
+        },
+      ],
+    },
+
+    /* ── fecho ── */
+    fecho: {
+      /* As outras três terminam dizendo que o código é do cliente e não
+         me cabe publicar. Esta vira a frase do avesso — e é o fecho
+         natural da seção inteira. */
+      texto:
+        'NAS OUTRAS TRÊS OBRAS O CÓDIGO NÃO É MEU PARA PUBLICAR. ESTE É — E ELE ESTÁ ESCRITO PARA SER LIDO POR QUEM VEM DEPOIS, NÃO SÓ PARA RODAR.',
+      esteira: 'Ver no GitHub',
+      url: 'https://github.com/IsraelDev7',
+    },
+  },
 ];
 
 /**
  * As obras que ainda não têm página própria.
  *
- * Elas aparecem na faixa "Mais obras" com o mesmo desenho das outras,
- * mas SEM link: card que não leva ao projeto é pior que card que não
- * clica, porque o primeiro quebra a confiança no resto da navegação.
- * À medida que cada página nascer, a entrada sai daqui e entra em
- * PROJETOS — o desenho da linha não muda.
+ * Hoje está VAZIA — as quatro obras têm página, e a faixa "Mais obras"
+ * se monta sozinha a partir de PROJETOS. O array fica porque a regra
+ * continua valendo para a próxima entrada: obra sem página entra aqui e
+ * aparece na faixa SEM link, com o mesmo desenho das outras.
+ *
+ * Card que não leva ao projeto é pior que card que não clica — o
+ * primeiro quebra a confiança no resto da navegação. Quando a página
+ * nascer, a entrada sai daqui e entra em PROJETOS, e o desenho da linha
+ * não muda.
  */
 export const OUTRAS_OBRAS = [
-  {
-    nome: 'PORTFÓLIO SMARTLABS',
-    subtitulo: 'O MÉTODO É O PRODUTO.',
-    tags: ['React 19', 'GSAP', 'Three.js'],
-    data: 'Set 2026',
-    heroImagem: '/images/work-performance.jpg',
-    heroAlt: 'Obra própria',
-  },
 ];
 
 export function acharProjeto(slug) {
