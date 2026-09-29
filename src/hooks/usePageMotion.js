@@ -101,43 +101,73 @@ export function usePageMotion() {
       });
 
       /* ---------- entrada de bloco ----------
-         `top 88%` disparava tarde demais. Medido numa tela de 768: o
-         gatilho cai em 676px, entao uma peca podia estar em y=749 — ou
-         seja, DENTRO da tela, na altura em que o olho ja chegou — e
-         ainda em opacidade 0. O leitor via o espaco do paragrafo antes
-         do paragrafo.
+         ── as duas falhas que vieram antes desta versao ──
+         Primeiro o gatilho era `top 88%` com um tween de tempo. Medido
+         numa tela de 768: o gatilho cai em 676px, entao uma peca podia
+         estar em y=749 — DENTRO da tela, na altura em que o olho ja
+         chegou — e ainda em opacidade 0. Aparecia atrasada.
 
-         `top 96%` poe o disparo praticamente na borda de baixo: a peca
-         comeca a se materializar no instante em que entra, e quando
-         sobe ate a faixa de leitura ja esta inteira.
+         Dai eu adiantei para `top 96%` e encurtei o gesto. O defeito
+         virou o oposto: medido na faixa de resultados, a cascata
+         inteira TERMINAVA enquanto o bloco ainda estava a 418px do topo
+         — ou seja, completava antes de entrar na zona de leitura. Nunca
+         dava para ver o movimento; o texto simplesmente ja estava la.
 
-         O movimento tambem encurtou: 40px de deslocamento com expo.out
-         de 0.9s e um gesto grande, e repetido dez vezes numa faixa so
-         vira agitacao. 22px em power3.out de 0.6s assenta sem chamar
-         atencao para si. */
+         ── por que agora e preso ao scroll ──
+         Tween de tempo tem um problema estrutural aqui: a duracao dele
+         e em SEGUNDOS e a chegada do elemento e em PIXELS DE SCROLL.
+         Os dois nao se falam, entao qualquer velocidade de rolagem
+         diferente da que eu imaginei quebra o encontro — rapido demais
+         e ele chega pronto, devagar demais e ele fica esperando.
+
+         Com `scrub`, o progresso E a posicao. A faixa vai da borda de
+         baixo ate 74% da altura: enquanto a peca sobe esse trecho ela
+         se materializa, e ao entrar na zona de leitura ja esta inteira.
+         Impossivel ler algo invisivel, e impossivel nao ver o gesto.
+
+         `scrub: 0.5` e nao `true`: meio segundo de inercia tira o
+         travamento de estar amarrado quadro a quadro ao dedo. */
       root.querySelectorAll('[data-anim="rise"]').forEach((el) => {
-        gsap.from(el, {
-          y: 22,
-          opacity: 0,
-          duration: 0.6,
-          ease: 'power3.out',
-          // reverse ao voltar: a referencia nao guarda estado, ela e lida
-          // na posicao do scroll — subir de novo desfaz a entrada
-          scrollTrigger: { trigger: el, start: 'top 96%', toggleActions: 'play none none reverse' },
-        });
+        gsap.fromTo(el,
+          { y: 30, opacity: 0 },
+          {
+            y: 0, opacity: 1, ease: 'power2.out',
+            scrollTrigger: {
+              trigger: el,
+              start: 'top bottom-=40',   // comeca assim que encosta na borda
+              end: 'top 74%',            // termina ANTES da zona de leitura
+              scrub: 0.5,
+            },
+          });
       });
 
       /* ---------- cascata nos filhos ---------- */
+      /* ── por que cada filho tem o SEU gatilho, e nao o pai ──
+         Com o gatilho no pai e um `stagger` fatiando a faixa, uma
+         coluna alta quebra: medido na faixa de resultados, a lista de
+         blocos tem ~700px, entao quando o PAI chegava ao fim da faixa
+         o terceiro bloco ainda estava 400px abaixo da dobra — ele
+         terminava de animar FORA DA TELA e o leitor o encontrava
+         parado.
+
+         Preso ao scroll, gatilho por filho ja produz a cascata sozinho:
+         cada peca sobe quando ELA entra. O grupo continua coerente
+         porque a unidade animada e o <li> inteiro — numero, titulo e
+         texto sobem juntos, que era o ponto de nao usar `rise` em cada
+         linha. */
       root.querySelectorAll('[data-anim="stagger"]').forEach((el) => {
-        gsap.from(el.children, {
-          y: 22,
-          opacity: 0,
-          duration: 0.6,
-          ease: 'power3.out',
-          stagger: 0.07,
-          /* O gatilho e o PAI, e nao cada filho: e isso que faz o grupo
-             entrar junto em vez de cada peca negociar a propria hora. */
-          scrollTrigger: { trigger: el, start: 'top 94%', toggleActions: 'play none none reverse' },
+        gsap.utils.toArray(el.children).forEach((filho) => {
+          gsap.fromTo(filho,
+            { y: 30, opacity: 0 },
+            {
+              y: 0, opacity: 1, ease: 'power2.out',
+              scrollTrigger: {
+                trigger: filho,
+                start: 'top bottom-=40',
+                end: 'top 74%',
+                scrub: 0.5,
+              },
+            });
         });
       });
 
