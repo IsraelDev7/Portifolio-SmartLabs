@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { usePageMotion } from '../hooks/usePageMotion';
 import RedesPixel from '../components/RedesPixel';
 
@@ -23,8 +23,65 @@ import RedesPixel from '../components/RedesPixel';
  * sombra o formulario disputaria leitura com a foto justamente onde ele
  * precisa ser lido.
  */
+/* As mensagens que a pessoa lê. Ficam aqui em cima para o texto ser
+   revisável sem caçar string no meio da lógica. */
+const AVISO = {
+  campos_invalidos: 'Faltou preencher: ',
+  canal_indisponivel: 'O canal de mensagens está fora do ar neste momento. Me chame direto em israel.devpf@gmail.com — respondo igual.',
+  canal_recusou: 'A mensagem não foi aceita do outro lado. Me chame em israel.devpf@gmail.com que eu resolvo.',
+  rede: 'Não consegui enviar — verifique a conexão e tente de novo. Se insistir, israel.devpf@gmail.com.',
+};
+
+const ROTULO = { nome: 'nome', email: 'um e-mail válido', mensagem: 'a descrição do projeto' };
+
 export default function Contact() {
   const motionRef = usePageMotion();
+
+  /* ── por que o estado mora aqui, e não num formulário controlado ──
+     Campo controlado por React re-renderiza a página a cada tecla, e
+     esta página tem timeline de GSAP viva. O <form> guarda o próprio
+     valor sozinho — é para isso que ele existe —, e eu só leio na hora
+     de enviar, com FormData. O estado que importa é o do ENVIO. */
+  const [estado, setEstado] = useState('parado');   // parado | enviando | enviado | erro
+  const [aviso, setAviso] = useState('');
+  const forma = useRef(null);
+
+  const enviar = async (e) => {
+    e.preventDefault();
+    if (estado === 'enviando') return;
+
+    const dados = Object.fromEntries(new FormData(e.currentTarget).entries());
+    setEstado('enviando');
+    setAviso('');
+
+    try {
+      const r = await fetch('/api/contato', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(dados),
+      });
+
+      if (r.ok) {
+        /* Limpa SÓ depois da confirmação. Limpar antes é o mesmo que
+           dizer "enviado" sem saber — e é exatamente o que esta página
+           acusa de errado nas outras obras. */
+        setEstado('enviado');
+        forma.current?.reset();
+        return;
+      }
+
+      const corpo = await r.json().catch(() => ({}));
+      setEstado('erro');
+      setAviso(
+        corpo.erro === 'campos_invalidos'
+          ? AVISO.campos_invalidos + (corpo.campos || []).map((c) => ROTULO[c] || c).join(', ') + '.'
+          : AVISO[corpo.erro] || AVISO.canal_indisponivel,
+      );
+    } catch {
+      setEstado('erro');
+      setAviso(AVISO.rede);
+    }
+  };
 
   return (
     <div ref={motionRef} className="contato">
@@ -74,7 +131,7 @@ export default function Contact() {
             </p>
           </div>
 
-          <form className="contato__forma" data-anim="stagger">
+          <form className="contato__forma" data-anim="stagger" ref={forma} onSubmit={enviar} noValidate>
             <div className="contato__par">
               <label>
                 <span>Nome</span>
@@ -106,10 +163,24 @@ export default function Contact() {
               />
             </label>
 
-            <button type="submit" className="contato__enviar">
-              Enviar
+            {/* A armadilha para robô: fora da tela, fora da ordem de
+                tabulação e escondida do leitor de tela. Pessoa nenhuma
+                chega nela; script preenche tudo que encontra. */}
+            <input type="text" name="site" tabIndex={-1} autoComplete="off"
+                   aria-hidden="true" className="contato__isca" />
+
+            <button type="submit" className="contato__enviar" disabled={estado === 'enviando'}>
+              {estado === 'enviando' ? 'Enviando' : estado === 'enviado' ? 'Recebido' : 'Enviar'}
               <i aria-hidden="true">▶▶</i>
             </button>
+
+            {/* `role="status"` e `aria-live`: quem não vê a cor do aviso
+                ouve o resultado sem ter que sair e voltar ao campo. */}
+            <p className={`contato__aviso contato__aviso--${estado}`} role="status" aria-live="polite">
+              {estado === 'enviado'
+                ? 'Recebido. Eu leio tudo e respondo — normalmente no mesmo dia.'
+                : aviso}
+            </p>
           </form>
         </div>
       </div>

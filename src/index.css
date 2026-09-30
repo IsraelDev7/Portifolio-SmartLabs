@@ -3139,6 +3139,43 @@ h3 {
 .contato__forma input:focus-visible,
 .contato__forma textarea:focus-visible { border-bottom-color: var(--solda); }
 
+/* ── a isca ──
+   Fora da tela e não `display: none`: campo escondido com `display` ou
+   `visibility` alguns robôs sabem ignorar, e leitor de tela também some
+   com ele. Deslocado para fora do fluxo, ele continua no DOM para o
+   script achar, e o `aria-hidden` mais o `tabIndex={-1}` garantem que
+   pessoa nenhuma esbarre. */
+.contato__isca {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ── o aviso do envio ──
+   Ocupa lugar sempre, mesmo vazio: sem isso o bloco pula para cima
+   quando a mensagem aparece, e o botão foge do dedo de quem acabou de
+   tocar nele. */
+.contato__aviso {
+  min-height: 1.4rem;
+  margin: 0.9rem 0 0;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: var(--fumaca);
+}
+.contato__aviso--enviado { color: var(--cal); }
+.contato__aviso--erro { color: var(--solda); }
+
+/* Enquanto envia, o botão para de aceitar clique e diz isso. O
+   `cursor` e a opacidade são a parte visível da mesma informação. */
+.contato__enviar:disabled {
+  opacity: 0.55;
+  cursor: progress;
+}
+
 .contato__enviar {
   align-self: flex-start;
   display: inline-flex;
