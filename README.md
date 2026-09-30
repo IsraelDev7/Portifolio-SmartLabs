@@ -4,9 +4,14 @@ Portfólio construído como demonstração do padrão que entra em cada projeto 
 cliente. O argumento não está no texto da página: está no **método** — e o
 histórico deste repositório é a prova dele.
 
+**No ar:** <https://portifolio-smartlabs.vercel.app>
+
 **Stack:** React 19 · Vite · GSAP + ScrollTrigger · Lenis · Three.js / R3F
-**81 commits**, todos em Conventional Commits, com o raciocínio de cada
+**114 commits**, todos em Conventional Commits, com o raciocínio de cada
 decisão escrito dentro da mensagem.
+
+9.759 linhas de JavaScript e 6.495 de CSS escritas à mão — sem framework de
+estilo, sem biblioteca de componente.
 
 ---
 
@@ -19,6 +24,27 @@ confiável aparece.
 Aqui o histórico é parte do produto. Cada correção registra o que quebrou, o
 número que provou que quebrou, e por que a solução escolhida foi aquela.
 Quem abrir `git log` lê um caderno de obra, não uma lista de "update".
+
+---
+
+## O que está no ar
+
+Quatro obras, cada uma com página própria, construídas sobre a mesma estrutura
+e medidas em 1900, 768 e 375 antes de subir:
+
+| | obra | o argumento |
+|---|---|---|
+| 01 | [Bruno Gutierres](https://portifolio-smartlabs.vercel.app/work/bruno-gutierres) | três endereços que não registravam de onde vinha um contato |
+| 02 | [Danila Souza](https://portifolio-smartlabs.vercel.app/work/danila-souza) | do código à tradução: o livro saiu em três idiomas |
+| 03 | [TL Garden](https://portifolio-smartlabs.vercel.app/work/tl-garden) | o site diagnostica antes de alguém pedir orçamento |
+| 04 | [Portfólio Smart LABS](https://portifolio-smartlabs.vercel.app/work/portfolio-smartlabs) | a única obra cuja prova é a página em que se está |
+
+Duas outras aparecem na listagem em estado de **canteiro**: sem página para
+levar, mas com trabalho acontecendo — o clique abre um par de engrenagens que
+engrenam de verdade (18 e 11 dentes, distância entre centros igual à soma dos
+raios primitivos, razão de giro 12s ÷ 7,33s). Dente calculado, não desenhado:
+contorno feito à mão não fecha o último dente no primeiro, e o erro aparece
+justamente quando gira.
 
 ---
 
@@ -155,7 +181,17 @@ src/
     Assinatura · Projetos · SceneSection · Preloader · Footer
   pages/
     Home · Work · About · Thoughts · Contact · Legal · 404
+    Projeto     a obra por inteiro, em /work/:slug
+    Artigo      a leitura de uma ideia, em /thoughts/:slug
+  dados/
+    projetos.js · artigos.js    o conteúdo mora aqui, o desenho no componente
+api/
+  contato.js    função serverless: recebe o formulário e entrega ao n8n
 ```
+
+O conteúdo é separado do componente de propósito: a página de obra tem
+estrutura fixa e texto que muda a cada projeto, então acrescentar uma obra é
+acrescentar um objeto — não mexer em JSX.
 
 ### O gerador determinístico
 
@@ -178,8 +214,18 @@ cintilação. A semente fixa dá às peças uma identidade estável.
 - **Sem CI.** O selo verde faz um trabalho desproporcional ao esforço — diz
   "isto roda" antes de qualquer pessoa clonar.
 - **A home não tem `<h1>`.** Detalhe de semântica que pesa em busca.
-- **Conteúdo provisório** em Work e Thoughts: nomes, datas e depoimentos
-  ainda são preenchimento. Não filmar em close até a copy final entrar.
+- **`N8N_CONTATO_WEBHOOK` precisa estar configurada** para o formulário
+  entregar. Sem ela a função responde 503 e a tela diz que o canal está fora,
+  com o e-mail direto como alternativa — ela não finge que enviou.
+- **As meta tags apontam para `smartlabs.ai`**, domínio que ainda não serve
+  este site. Enquanto for assim, o `canonical` manda o buscador para um
+  endereço que não responde.
+- **`public/images` pesa ~14 MB.** Não quebra nada e merece um passe.
+- **Rota inexistente responde 200**, não 404: o router renderiza a página de
+  erro, mas o status é de sucesso. É o comportamento normal de SPA estática.
+
+Deixou de ser limite: o conteúdo de Work não é mais preenchimento — as quatro
+obras são reais, com copy tirada dos endereços dos próprios clientes.
 
 ---
 
