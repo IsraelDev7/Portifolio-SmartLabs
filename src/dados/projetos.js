@@ -711,8 +711,11 @@ export const PROJETOS = [
          natural da seção inteira. */
       texto:
         'NAS OUTRAS TRÊS OBRAS O CÓDIGO NÃO É MEU PARA PUBLICAR. ESTE É — E ELE ESTÁ ESCRITO PARA SER LIDO POR QUEM VEM DEPOIS, NÃO SÓ PARA RODAR.',
-      esteira: 'Ver no GitHub',
-      url: 'https://github.com/IsraelDev7',
+      /* Aponta para o REPOSITORIO, e nao para o perfil: a frase acima
+         promete um codigo escrito para ser lido, e promessa que manda o
+         leitor para uma lista de repos nao se verifica. */
+      esteira: 'Ver o codigo',
+      url: 'https://github.com/IsraelDev7/Portifolio-SmartLabs',
     },
   },
 ];
