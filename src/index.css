@@ -3139,6 +3139,49 @@ h3 {
 .contato__forma input:focus-visible,
 .contato__forma textarea:focus-visible { border-bottom-color: var(--solda); }
 
+/* ── a permissão de ligar ──
+   Alvo de toque inteiro: o <label> envolve a caixa E o texto, então
+   qualquer ponto da linha marca. Caixa de 16px sozinha é alvo de 16px,
+   e isso reprova na régua de 44 que o resto da página cumpre. */
+.contato__permissao {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  min-height: 44px;
+  margin-top: 0.4rem;
+  padding: 0.5rem 0;
+  cursor: pointer;
+}
+.contato__permissao input {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  margin-top: 0.15rem;
+  accent-color: var(--solda);
+  cursor: pointer;
+}
+.contato__permissao span {
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  line-height: 1.35;
+  color: var(--cal);
+}
+/* A explicação em segundo plano: quem já decidiu não precisa ler, quem
+   está em dúvida precisa saber o que vai acontecer. */
+.contato__permissao i {
+  display: block;
+  margin-top: 0.2rem;
+  font-style: normal;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: var(--fumaca);
+}
+.contato__permissao:focus-within span { color: var(--cal); }
+.contato__permissao input:focus-visible {
+  outline: 2px solid var(--solda);
+  outline-offset: 2px;
+}
+
 /* ── a isca ──
    Fora da tela e não `display: none`: campo escondido com `display` ou
    `visibility` alguns robôs sabem ignorar, e leitor de tela também some

@@ -163,6 +163,23 @@ export default function Contact() {
               />
             </label>
 
+            {/* ── a permissão de ligar ──
+                A sequência de atendimento inclui uma ligação curta. Ligar
+                para quem não pediu é a única peça do arranjo que pode
+                azedar a impressão — e a permissão custa uma linha.
+
+                Nasce DESMARCADA de propósito: consentimento pré-marcado
+                não é consentimento, é pegadinha. E a pergunta já adianta
+                o que vai acontecer, porque promessa cumprida depois de
+                anunciada vale o dobro. */}
+            <label className="contato__permissao">
+              <input type="checkbox" name="podeLigar" value="sim" />
+              <span>
+                Pode me ligar
+                <i>Uma ligação curta, em horário comercial, só para confirmar que chegou.</i>
+              </span>
+            </label>
+
             {/* A armadilha para robô: fora da tela, fora da ordem de
                 tabulação e escondida do leitor de tela. Pessoa nenhuma
                 chega nela; script preenche tudo que encontra. */}

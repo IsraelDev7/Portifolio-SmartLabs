@@ -61,6 +61,10 @@ export default async function handler(req, res) {
     email: limpar(corpo.email, TETO.email),
     whatsapp: limpar(corpo.whatsapp, TETO.whatsapp),
     mensagem: limpar(corpo.mensagem, TETO.mensagem),
+    /* Booleano de verdade, e nao a string "sim" que o formulario manda:
+       quem decide se liga e uma condicao la no n8n, e condicao sobre
+       string e onde nascem os bugs que ninguem acha. */
+    podeLigar: corpo.podeLigar === 'sim' || corpo.podeLigar === true,
   };
 
   const faltando = [];
