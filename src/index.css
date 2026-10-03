@@ -3104,7 +3104,11 @@ h3 {
   margin-top: var(--space-4);
 }
 
-.contato__par { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
+/* `minmax(0, 1fr)` e não `1fr`: o atalho `1fr` significa `minmax(auto, 1fr)`,
+   e esse `auto` impede a coluna de encolher abaixo do conteúdo. Bastou uma
+   grade aninhada com piso próprio para a coluna vizinha despencar de 140px
+   para 64px — sem erro de build e sem aviso nenhum. */
+.contato__par { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-3); }
 
 .contato__forma label { display: block; }
 
@@ -3138,6 +3142,57 @@ h3 {
 
 .contato__forma input:focus-visible,
 .contato__forma textarea:focus-visible { border-bottom-color: var(--solda); }
+
+/* ── o par país + número ──
+   Linha inteira do formulário, e não metade: "Brasil (+55)" precisa de
+   ~119px só para não cortar, e numa célula de 140px não sobraria nada
+   para o número. O e-mail subiu para a linha de cima em troca. */
+.contato__fone {
+  display: grid;
+  grid-template-columns: minmax(0, 9rem) minmax(0, 1fr);
+  gap: var(--space-3);
+  align-items: end;
+}
+
+/* O select herda o visual de linha dos outros campos. `appearance: none`
+   remove o widget do sistema — e com ele some a seta, que volta como
+   desenho para o campo não parecer um input de texto que não aceita
+   digitação. */
+.contato__forma select {
+  width: 100%;
+  min-height: 44px;
+  padding: 0.6rem 1.3rem 0.6rem 0;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--linha);
+  color: var(--cal);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%238A8478' stroke-width='1.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.15rem center;
+  background-size: 10px 6px;
+  transition: border-color 200ms ease;
+}
+
+.contato__forma select:focus-visible { border-bottom-color: var(--solda); }
+
+/* A lista aberta é desenhada pelo sistema, não pela página. Sem estas
+   duas linhas ela sai com fundo claro no Windows e o texto Cal
+   desaparece dentro dela. */
+.contato__forma select option,
+.contato__forma select optgroup {
+  background: var(--grafite);
+  color: var(--cal);
+}
+
+/* O input de telefone com padding de 0.6rem fica em ~38px. A régua da
+   casa é 44 (WCAG 2.5.5), e ele está ao lado de um campo que já cumpre. */
+.contato__fone input { min-height: 44px; }
 
 /* ── a permissão de ligar ──
    Alvo de toque inteiro: o <label> envolve a caixa E o texto, então
@@ -3262,6 +3317,11 @@ h3 {
 
 @media (max-width: 560px) {
   .contato__par { grid-template-columns: 1fr; }
+
+  /* Em coluna única o par país+número teria ~118px para o seletor, e
+     "Brasil (+55)" já encosta nesse limite — nome maior cortaria no meio.
+     Empilhar custa uma linha de altura e devolve a largura inteira. */
+  .contato__fone { grid-template-columns: 1fr; gap: var(--space-2); }
 }
 
 /* ═══════════════════════════════════════════════════════════

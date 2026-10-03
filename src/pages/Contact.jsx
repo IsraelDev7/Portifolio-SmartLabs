@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { usePageMotion } from '../hooks/usePageMotion';
 import RedesPixel from '../components/RedesPixel';
+import { PAISES, GRUPOS, PAIS_PADRAO } from '../dados/paises';
 
 /**
  * Contact — reconstruida sobre a pagina de contato da referencia
@@ -143,14 +144,47 @@ export default function Contact() {
               </label>
             </div>
 
-            <div className="contato__par">
-              <label>
-                <span>E-mail</span>
-                <input type="email" name="email" placeholder="Seu e-mail" autoComplete="email" />
+            {/* O e-mail passou a ocupar a linha inteira porque o par
+                país+número precisa da largura toda: na coluna de 305px
+                desta página, dois campos lado a lado com um seletor
+                dentro de um deles deixavam o telefone com 64px. */}
+            <label className="contato__campo-largo">
+              <span>E-mail</span>
+              <input type="email" name="email" placeholder="Seu e-mail" autoComplete="email" />
+            </label>
+
+            {/* ── o país é escolhido, não adivinhado ──
+                  Quase ninguém digita o código do país: escreve-se "62
+                  99999-8888" e pronto. Sem saber de onde a pessoa fala,
+                  não há como montar um número discável — e é por isso
+                  que a ligação precisava chutar.
+
+                  Com o país na mão, o E.164 sai por construção. E a
+                  localização deixa de ser deduzida do número: ela é
+                  declarada por quem sabe.
+
+                  `<select>` nativo, e não lista estilizada: no celular
+                  ele abre o seletor do próprio sistema, que é melhor de
+                  usar que qualquer coisa que eu desenhasse, e custa zero
+                  JavaScript. O (+55) visível avisa para não digitar o
+                  código de novo. */}
+            <div className="contato__fone">
+              <label className="contato__fone-pais">
+                <span>País</span>
+                <select name="pais" defaultValue={PAIS_PADRAO} autoComplete="tel-country-code">
+                  {GRUPOS.map((grupo) => (
+                    <optgroup label={grupo} key={grupo}>
+                      {PAISES.filter((p) => p.grupo === grupo).map((p) => (
+                        <option value={p.iso} key={p.iso}>{p.nome} (+{p.ddi})</option>
+                      ))}
+                    </optgroup>
+                  ))}
+                </select>
               </label>
-              <label>
+              <label className="contato__fone-num">
                 <span>WhatsApp</span>
-                <input type="tel" name="whatsapp" placeholder="Seu WhatsApp" autoComplete="tel" />
+                <input type="tel" name="whatsapp" placeholder="DDD e número"
+                       autoComplete="tel-national" inputMode="tel" />
               </label>
             </div>
 

@@ -22,9 +22,47 @@
  * confirmou; qualquer outra coisa vira erro na cara de quem escreveu.
  */
 
+import { DDI_POR_ISO, PAIS_PADRAO } from '../src/dados/paises.js';
+
 /* Limites de tamanho por campo. Não é validação de conteúdo — é teto
    para o corpo da requisição não virar vetor de abuso. */
-const TETO = { nome: 120, empresa: 140, email: 160, whatsapp: 40, mensagem: 4000 };
+const TETO = { nome: 120, empresa: 140, email: 160, whatsapp: 40, mensagem: 4000, pais: 2 };
+
+/**
+ * Monta o número em E.164 a partir do país escolhido e do que foi digitado.
+ *
+ * ── por que aqui e não no n8n ──
+ * Isto é validação de entrada, e validação de entrada mora na porta. O
+ * n8n deve receber um número que já é discável; adivinhar formato no meio
+ * do fluxo é como descobrir que a fundação está torta no quinto andar.
+ *
+ * ── os três casos que quebram ──
+ * 1. A pessoa digita o código do país mesmo com o seletor preenchido
+ *    ("+55 62 9…"). Prefixar de novo geraria 5555…, que não existe.
+ * 2. Ela usa o zero de operadora antes do DDD ("062 9…"). O zero é
+ *    discagem interurbana nacional e não entra no E.164.
+ * 3. Ela cola com "00" na frente, que é o prefixo internacional de
+ *    algumas operadoras.
+ */
+export function paraE164(bruto, iso) {
+  const ddi = DDI_POR_ISO[iso];
+  if (!ddi) return '';
+
+  let d = String(bruto || '').replace(/\D/g, '');
+  if (!d) return '';
+
+  if (d.startsWith('00')) d = d.slice(2);          // prefixo internacional
+  if (d.startsWith(ddi) && d.length > ddi.length + 7) d = d.slice(ddi.length);
+  d = d.replace(/^0+/, '');                        // zero de operadora
+
+  /* Curto demais para ser telefone de lugar nenhum: o menor número
+     nacional em uso nesta lista tem 8 dígitos (celular brasileiro antigo
+     sem o nono). Melhor devolver vazio e seguir sem número do que mandar
+     lixo para a fila de ligação. */
+  if (d.length < 8) return '';
+
+  return `+${ddi}${d}`;
+}
 
 const limpar = (v, max) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
 
@@ -55,12 +93,22 @@ export default async function handler(req, res) {
      tenta de novo, robô que recebe sucesso vai embora. */
   if (limpar(corpo.site, 200)) return res.status(200).json({ ok: true });
 
+  /* País desconhecido cai no padrão em vez de recusar: o seletor sempre
+     manda um válido, então valor estranho aqui é requisição forjada — e a
+     essa altura o que importa é não quebrar, não discutir. */
+  const paisBruto = limpar(corpo.pais, TETO.pais).toUpperCase();
+  const pais = DDI_POR_ISO[paisBruto] ? paisBruto : PAIS_PADRAO;
+
   const dados = {
     nome: limpar(corpo.nome, TETO.nome),
     empresa: limpar(corpo.empresa, TETO.empresa),
     email: limpar(corpo.email, TETO.email),
     whatsapp: limpar(corpo.whatsapp, TETO.whatsapp),
     mensagem: limpar(corpo.mensagem, TETO.mensagem),
+    pais,
+    /* Já discável. O n8n não precisa saber de formato de telefone — só de
+       para quem ligar e em que canal. */
+    telefone: paraE164(corpo.whatsapp, pais),
     /* Booleano de verdade, e nao a string "sim" que o formulario manda:
        quem decide se liga e uma condicao la no n8n, e condicao sobre
        string e onde nascem os bugs que ninguem acha. */
