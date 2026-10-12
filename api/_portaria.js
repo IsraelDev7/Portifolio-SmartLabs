@@ -155,7 +155,10 @@ async function limiteNoBanco(id) {
   if (!url || !chave) {
     console.error('[contato] limite durável DESLIGADO: faltam SUPABASE_URL/SUPABASE_ANON_KEY ' +
                   'no ambiente da Vercel. Só o limite em memória está ativo.');
-    return { indisponivel: true };
+    /* Diz QUAL das duas falta: "salvei as variáveis" e "salvei as duas" são
+       afirmações diferentes, e tratá-las como uma só custou um ciclo. */
+    return { indisponivel: true, porque: !url && !chave ? 'sem-as-duas'
+                                        : !url ? 'sem-url' : 'sem-chave' };
   }
 
   try {
@@ -167,12 +170,12 @@ async function limiteNoBanco(id) {
     });
     if (!r.ok) {
       console.error('[contato] limite durável respondeu', r.status);
-      return { indisponivel: true };
+      return { indisponivel: true, porque: 'http-' + r.status };
     }
     return await r.json();
   } catch (e) {
     console.error('[contato] limite durável inacessível:', e?.name || e);
-    return { indisponivel: true };
+    return { indisponivel: true, porque: 'rede-' + (e?.name || 'erro') };
   }
 }
 
@@ -196,5 +199,9 @@ export async function excedeuOLimite(id) {
   if (r?.permitido === false) {
     return { excedeu: true, camada: 'banco', espere_s: r.espere_s || 600 };
   }
-  return { excedeu: false, camada: r?.indisponivel ? 'memoria' : 'banco' };
+  /* "memoria" sozinho junta tres causas distintas — variavel ausente, URL
+     errada e chave recusada — e eu perdi um ciclo tratando as tres como uma.
+     O motivo acompanha a camada. */
+  if (r?.indisponivel) return { excedeu: false, camada: 'memoria', porque: r.porque || 'desconhecido' };
+  return { excedeu: false, camada: 'banco' };
 }

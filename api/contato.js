@@ -159,7 +159,7 @@ export default async function handler(req, res) {
      dois casos produzem o mesmo silêncio. O cabeçalho informa só QUAL
      camada atendeu — nunca um valor, nunca um segredo — e transforma um
      diagnóstico de tentativa e erro numa leitura direta. */
-  res.setHeader('X-Limite', limite.camada);
+  res.setHeader('X-Limite', limite.camada + (limite.porque ? ':' + limite.porque : ''));
 
   if (limite.excedeu) {
     console.error('[contato] limite excedido na camada', limite.camada);
