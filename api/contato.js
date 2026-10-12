@@ -152,6 +152,15 @@ export default async function handler(req, res) {
      saber de quem é. O IP em si não é guardado em lugar nenhum. */
   const quem = identificar(ipDaRequisicao(req), destino);
   const limite = await excedeuOLimite(quem);
+
+  /* ── por que esta resposta diz qual camada decidiu ──
+     Sem acesso ao log do servidor não há como distinguir "a variável de
+     ambiente não chegou" de "o código não calculou o identificador": os
+     dois casos produzem o mesmo silêncio. O cabeçalho informa só QUAL
+     camada atendeu — nunca um valor, nunca um segredo — e transforma um
+     diagnóstico de tentativa e erro numa leitura direta. */
+  res.setHeader('X-Limite', limite.camada);
+
   if (limite.excedeu) {
     console.error('[contato] limite excedido na camada', limite.camada);
     res.setHeader('Retry-After', String(limite.espere_s));
