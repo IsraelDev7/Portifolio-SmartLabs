@@ -23,6 +23,9 @@
  */
 
 import { DDI_POR_ISO, PAIS_PADRAO } from '../src/dados/paises.js';
+import {
+  origemConfere, rapidoDemais, ipDaRequisicao, identificar, excedeuOLimite,
+} from './_portaria.js';
 
 /* Limites de tamanho por campo. Não é validação de conteúdo — é teto
    para o corpo da requisição não virar vetor de abuso. */
@@ -85,6 +88,14 @@ export default async function handler(req, res) {
     return res.status(503).json({ erro: 'canal_indisponivel' });
   }
 
+  /* ── a origem ──
+     Só o próprio site posta aqui. Script rodando de fora, ou sem navegador,
+     para nesta linha e não gasta mais nada do servidor. */
+  if (!origemConfere(req)) {
+    console.error('[contato] origem recusada:', req.headers['origin'] || req.headers['referer'] || '(ausente)');
+    return res.status(403).json({ erro: 'origem_nao_permitida' });
+  }
+
   const corpo = typeof req.body === 'string' ? safeJson(req.body) : (req.body || {});
 
   /* ── a armadilha para robô ──
@@ -92,6 +103,15 @@ export default async function handler(req, res) {
      preencheu é script. Devolve 200 de propósito: robô que recebe erro
      tenta de novo, robô que recebe sucesso vai embora. */
   if (limpar(corpo.site, 200)) return res.status(200).json({ ok: true });
+
+  /* ── o relógio ──
+     Menos de 2,5s entre abrir a página e enviar não é leitura humana.
+     Também devolve 200, pela mesma razão do campo-armadilha: resposta de
+     sucesso encerra a tentativa, resposta de erro ensina o robô a ajustar. */
+  if (rapidoDemais(corpo)) {
+    console.error('[contato] preenchimento rápido demais — tratado como robô');
+    return res.status(200).json({ ok: true });
+  }
 
   /* País desconhecido cai no padrão em vez de recusar: o seletor sempre
      manda um válido, então valor estranho aqui é requisição forjada — e a
@@ -121,6 +141,22 @@ export default async function handler(req, res) {
   else if (!pareceEmail(dados.email)) faltando.push('email');
   if (!dados.mensagem) faltando.push('mensagem');
   if (faltando.length) return res.status(422).json({ erro: 'campos_invalidos', campos: faltando });
+
+  /* ── o limite por IP ──
+     Vem DEPOIS da validação de propósito: requisição malformada nunca chega
+     ao n8n, então não dispara nada e não precisa consumir a cota de
+     ninguém. O que o limite segura é o laço de requisições BEM formadas —
+     é esse que vira mensagem de verdade e queima o número no WhatsApp.
+
+     O identificador é um HMAC do IP: serve para contar repetição, não para
+     saber de quem é. O IP em si não é guardado em lugar nenhum. */
+  const quem = identificar(ipDaRequisicao(req), destino);
+  const limite = await excedeuOLimite(quem);
+  if (limite.excedeu) {
+    console.error('[contato] limite excedido na camada', limite.camada);
+    res.setHeader('Retry-After', String(limite.espere_s));
+    return res.status(429).json({ erro: 'muitas_tentativas' });
+  }
 
   /* Timeout explícito: sem ele, um n8n fora do ar deixaria a pessoa
      olhando para um botão girando até o limite da plataforma. */

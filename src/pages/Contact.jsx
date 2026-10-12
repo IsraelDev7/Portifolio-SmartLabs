@@ -31,6 +31,11 @@ const AVISO = {
   canal_indisponivel: 'O canal de mensagens está fora do ar neste momento. Me chame direto em israel.devpf@gmail.com — respondo igual.',
   canal_recusou: 'A mensagem não foi aceita do outro lado. Me chame em israel.devpf@gmail.com que eu resolvo.',
   rede: 'Não consegui enviar — verifique a conexão e tente de novo. Se insistir, israel.devpf@gmail.com.',
+  /* O limite existe para conter envio automatizado, não para atrapalhar
+     quem errou um campo. Então a mensagem não acusa ninguém: diz o que
+     houve e oferece a saída imediata. */
+  muitas_tentativas: 'Já recebi algumas mensagens suas agora há pouco. Espere alguns minutos e tente de novo — ou me chame direto em israel.devpf@gmail.com.',
+  origem_nao_permitida: 'O envio foi recusado por segurança. Recarregue a página e tente de novo; se persistir, israel.devpf@gmail.com.',
 };
 
 const ROTULO = { nome: 'nome', email: 'um e-mail válido', mensagem: 'a descrição do projeto' };
@@ -46,6 +51,15 @@ export default function Contact() {
   const [estado, setEstado] = useState('parado');   // parado | enviando | enviado | erro
   const [aviso, setAviso] = useState('');
   const forma = useRef(null);
+
+  /* ── o relógio de preenchimento ──
+     Marca quando a página abriu. O servidor compara com a hora do envio:
+     menos de 2,5s não é leitura humana, é script.
+
+     `useRef` e não `useState` porque este valor não desenha nada — e
+     mudança de estado aqui re-renderizaria a página inteira, com as
+     timelines de GSAP vivas por cima. */
+  const carregadoEm = useRef(Date.now());
 
   const enviar = async (e) => {
     e.preventDefault();
@@ -219,6 +233,11 @@ export default function Contact() {
                 chega nela; script preenche tudo que encontra. */}
             <input type="text" name="site" tabIndex={-1} autoComplete="off"
                    aria-hidden="true" className="contato__isca" />
+
+            {/* Quando esta página abriu. Vai junto no envio e o servidor usa
+                para medir o tempo de preenchimento. Campo oculto de verdade,
+                fora da ordem de tabulação e do leitor de tela. */}
+            <input type="hidden" name="carregadoEm" defaultValue={carregadoEm.current} />
 
             <button type="submit" className="contato__enviar" disabled={estado === 'enviando'}>
               {estado === 'enviando' ? 'Enviando' : estado === 'enviado' ? 'Recebido' : 'Enviar'}
