@@ -56,17 +56,6 @@ const REDES = [
     ),
   },
   {
-    nome: 'LinkedIn',
-    url: 'https://www.linkedin.com/in/israel-passos-281374336/',
-    glifo: (
-      <svg {...CAIXA}>
-        <rect x="3.2" y="3.2" width="17.6" height="17.6" rx="2.2" />
-        <path d="M7.4 10.4v6.2M11.2 16.6v-6.2M11.2 13.1c0-1.5 1-2.7 2.4-2.7s2.4 1.2 2.4 2.7v3.5" />
-        <circle cx="7.4" cy="7.5" r="1" fill="currentColor" stroke="none" />
-      </svg>
-    ),
-  },
-  {
     nome: 'E-mail',
     url: 'mailto:israel.devpf@gmail.com',
     glifo: (

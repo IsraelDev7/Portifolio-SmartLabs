@@ -41,7 +41,6 @@ const NAV = [
 const REDES = [
   { rotulo: 'Instagram', url: 'https://www.instagram.com/israelp.fernandes/' },
   { rotulo: 'X (Twitter)', url: 'https://x.com/home' },
-  { rotulo: 'LinkedIn', url: 'https://www.linkedin.com/in/israel-passos-281374336/' },
 ];
 
 const EMAIL = 'israel.devpf@gmail.com';

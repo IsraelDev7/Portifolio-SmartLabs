@@ -86,8 +86,7 @@ export default function Sobre({ variante = 'pagina' }) {
             <span className="sobre__rotulo">Redes</span>
             <ul>
               <li><a href="https://github.com/IsraelDev7" target="_blank" rel="noreferrer">GitHub</a></li>
-              <li><a href="https://www.linkedin.com/" target="_blank" rel="noreferrer">LinkedIn</a></li>
-              <li><a href="https://www.instagram.com/" target="_blank" rel="noreferrer">Instagram</a></li>
+              <li><a href="https://www.instagram.com/israelp.fernandes/" target="_blank" rel="noreferrer">Instagram</a></li>
               <li><a href="/contact">E-mail</a></li>
             </ul>
           </div>
