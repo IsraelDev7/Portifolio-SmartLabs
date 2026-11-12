@@ -1,7 +1,7 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://smartlabs.ai/sitemap.xml
+Sitemap: https://smartlabs-ip.vercel.app/sitemap.xml
 
 # AI bots - allowed to crawl to build knowledge
 User-agent: GPTBot

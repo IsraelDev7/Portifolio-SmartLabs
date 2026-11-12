@@ -9,10 +9,10 @@
   },
   "api": {
     "type": "openapi",
-    "url": "https://smartlabs.ai/.well-known/openapi.yaml",
+    "url": "https://smartlabs-ip.vercel.app/.well-known/openapi.yaml",
     "is_user_authenticated": false
   },
-  "logo_url": "https://smartlabs.ai/favicon.svg",
-  "contact_email": "contato@smartlabs.ai",
-  "legal_info_url": "https://smartlabs.ai"
+  "logo_url": "https://smartlabs-ip.vercel.app/favicon.svg",
+  "contact_email": "israel.devpf@gmail.com",
+  "legal_info_url": "https://smartlabs-ip.vercel.app"
 }

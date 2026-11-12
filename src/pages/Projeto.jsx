@@ -684,7 +684,10 @@ export default function Projeto() {
           partilha sai da peça escura e vira uma linha clara, sozinha. */}
       <section className="prj__partilha">
         <p className="prj__rotulo">Compartilhar este projeto</p>
-        <Partilha url={`https://smartlabs.ai/work/${projeto.slug}`} titulo={projeto.nome} />
+        {/* Origem da própria página, não domínio fixo — ver a nota em
+            Artigo.jsx: o endereço escrito à mão apontava para um domínio
+            que não serve o site, e cada compartilhamento saía quebrado. */}
+        <Partilha url={`${window.location.origin}/work/${projeto.slug}`} titulo={projeto.nome} />
       </section>
 
       {/* ══════ MAIS OBRAS ══════ */}

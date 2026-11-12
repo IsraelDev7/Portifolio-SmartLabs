@@ -9,7 +9,7 @@ SmartLabs AI é uma empresa de tecnologia fundada por Israel Passos, operando de
 - Segurança & Infraestrutura Digital
 
 ## Contato
-Email: contato@smartlabs.ai
-Site: https://smartlabs.ai
+Email: israel.devpf@gmail.com
+Site: https://smartlabs-ip.vercel.app
 
 A missão da SmartLabs AI é construir arquiteturas digitais que transmitem autoridade imediata, com design obsessivo e tecnologia que funciona. Não fazemos apenas sites, construímos sedes digitais para empresas ambiciosas.

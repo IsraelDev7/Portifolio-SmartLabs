@@ -329,8 +329,13 @@ export default function Artigo() {
             <p className="art__rotulo">Por {artigo.autor}</p>
 
             <p className="art__rotulo art__partilha-rotulo">Compartilhar</p>
+            {/* A URL vem de onde a página está, e não de um domínio escrito
+                à mão: o endereço fixo aqui apontava para um domínio que não
+                serve este site, então cada compartilhamento publicava um
+                link quebrado. Derivando da origem, uma troca de domínio
+                nunca mais quebra isto. */}
             <Partilha
-              url={`https://smartlabs.ai/thoughts/${artigo.slug}`}
+              url={`${window.location.origin}/thoughts/${artigo.slug}`}
               titulo={artigo.titulo}
             />
           </div>

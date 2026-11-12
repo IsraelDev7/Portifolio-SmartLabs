@@ -4,7 +4,7 @@ Portfólio construído como demonstração do padrão que entra em cada projeto 
 cliente. O argumento não está no texto da página: está no **método** — e o
 histórico deste repositório é a prova dele.
 
-**No ar:** <https://portifolio-smartlabs.vercel.app>
+**No ar:** <https://smartlabs-ip.vercel.app>
 
 **Stack:** React 19 · Vite · GSAP + ScrollTrigger · Lenis · Three.js / R3F
 **114 commits**, todos em Conventional Commits, com o raciocínio de cada
@@ -34,10 +34,10 @@ e medidas em 1900, 768 e 375 antes de subir:
 
 | | obra | o argumento |
 |---|---|---|
-| 01 | [Bruno Gutierres](https://portifolio-smartlabs.vercel.app/work/bruno-gutierres) | três endereços que não registravam de onde vinha um contato |
-| 02 | [Danila Souza](https://portifolio-smartlabs.vercel.app/work/danila-souza) | do código à tradução: o livro saiu em três idiomas |
-| 03 | [TL Garden](https://portifolio-smartlabs.vercel.app/work/tl-garden) | o site diagnostica antes de alguém pedir orçamento |
-| 04 | [Portfólio Smart LABS](https://portifolio-smartlabs.vercel.app/work/portfolio-smartlabs) | a única obra cuja prova é a página em que se está |
+| 01 | [Bruno Gutierres](https://smartlabs-ip.vercel.app/work/bruno-gutierres) | três endereços que não registravam de onde vinha um contato |
+| 02 | [Danila Souza](https://smartlabs-ip.vercel.app/work/danila-souza) | do código à tradução: o livro saiu em três idiomas |
+| 03 | [TL Garden](https://smartlabs-ip.vercel.app/work/tl-garden) | o site diagnostica antes de alguém pedir orçamento |
+| 04 | [Portfólio Smart LABS](https://smartlabs-ip.vercel.app/work/portfolio-smartlabs) | a única obra cuja prova é a página em que se está |
 
 Duas outras aparecem na listagem em estado de **canteiro**: sem página para
 levar, mas com trabalho acontecendo — o clique abre um par de engrenagens que
@@ -217,9 +217,9 @@ cintilação. A semente fixa dá às peças uma identidade estável.
 - **`N8N_CONTATO_WEBHOOK` precisa estar configurada** para o formulário
   entregar. Sem ela a função responde 503 e a tela diz que o canal está fora,
   com o e-mail direto como alternativa — ela não finge que enviou.
-- **As meta tags apontam para `smartlabs.ai`**, domínio que ainda não serve
-  este site. Enquanto for assim, o `canonical` manda o buscador para um
-  endereço que não responde.
+- **`public/.well-known/ai-plugin.json` é arquivo morto.** Responde 404 em
+  produção, aponta para um `openapi.yaml` que nunca existiu, e usa o formato
+  de manifesto de plugin do ChatGPT, descontinuado. Candidato a remoção.
 - **`public/images` pesa ~14 MB.** Não quebra nada e merece um passe.
 - **Rota inexistente responde 200**, não 404: o router renderiza a página de
   erro, mas o status é de sucesso. É o comportamento normal de SPA estática.
